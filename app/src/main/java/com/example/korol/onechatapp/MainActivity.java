@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.korol.onechatapp.logic.common.Authorized;
 import com.example.korol.onechatapp.logic.vk.VkInfo;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (Authorized.isVkAuthorized())
+            Toast.makeText(this, Integer.toString(VkInfo.getUserId()), Toast.LENGTH_SHORT).show();
     }
 
     @Override
