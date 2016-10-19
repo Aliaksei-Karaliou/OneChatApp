@@ -5,11 +5,9 @@ import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.example.korol.onechatapp.logic.common.AuthIndormation;
+import com.example.korol.onechatapp.logic.common.Authorized;
 import com.example.korol.onechatapp.logic.vk.VkAuth;
 import com.example.korol.onechatapp.logic.vk.VkInfo;
-
-import java.util.Map;
 
 public class VkAuthActivity extends AppCompatActivity {
 
@@ -25,7 +23,6 @@ public class VkAuthActivity extends AppCompatActivity {
         final VkAuth vkAuth = new VkAuth(getResources().getInteger(R.integer.appId));
         vkAuth.setScope("messages");
         final WebView webView = (WebView) findViewById(R.id.vk_auth_web_view);
-        //  webView.setWebViewClient(new WebViewClient());
         webView.loadUrl(vkAuth.getUrl());
         webView.setWebViewClient(new WebViewClient() {
 
@@ -33,8 +30,8 @@ public class VkAuthActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 String webViewUrl = webView.getUrl();
                 if (webViewUrl.contains("access_token")) {
-                    VkInfo vkInfo = new VkInfo(webViewUrl);
-                    new AuthIndormation().setVkAuth(true);
+                    VkInfo.setUrl(webViewUrl);
+                    Authorized.setVkAuthorized(true);
                     finish();
                 }
                 super.onPageFinished(view, url);

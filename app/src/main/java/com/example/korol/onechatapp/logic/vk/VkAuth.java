@@ -54,20 +54,4 @@ public class VkAuth {
         //String string = String.format("https://oauth.vk.com/authorize?client_id=%d&display=mobile&redirect_uri=https://oauth.vk.com/blank.html&scope=%s&response_type=token&v=5.57&revoke=1", appId, scopeToString(scope));
         return String.format("https://oauth.vk.com/authorize?client_id=%d&display=mobile&redirect_uri=https://oauth.vk.com/blank.html&scope=%s&response_type=token&v=5.57&revoke=1", appId, scopeToString(scope));
     }
-
-    /**
-     * Data parsing from url
-     *
-     * @param url - Vk url with Access Token, UserId, Expired in time
-     * @return List of String( get(0) - AccessToken, get(1) - UserId, get(2) - Expired In
-     **/
-    public Map<String, String> dataParsing(String url) {
-        Map<String, String> result = new HashMap<>();
-        String[] array = url.split("#")[1].split("&");
-        for (String string : array) {
-            String[] keyValue = string.split("=");
-            result.put(keyValue[0], keyValue[1]);
-        }
-        return result;
-    }
 }
