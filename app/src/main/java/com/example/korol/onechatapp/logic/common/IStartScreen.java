@@ -2,12 +2,11 @@ package com.example.korol.onechatapp.logic.common;
 
 import java.util.List;
 
-public interface IDialog {
-    ISender getInterlocutor();
-
-    void setInterlocutor(ISender interlocutor);
+public interface IStartScreen {
 
     List<IMessage> getMessages();
+
+    void setMessages(List<IMessage> allMessages);
 
     void add(IMessage message);
 }

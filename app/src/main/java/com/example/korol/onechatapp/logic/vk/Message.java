@@ -3,9 +3,7 @@ package com.example.korol.onechatapp.logic.vk;
 import com.example.korol.onechatapp.logic.common.IMessage;
 import com.example.korol.onechatapp.logic.common.ISender;
 
-/**
- * Created by korol on 20-Oct-16.
- */
+import java.util.Date;
 
 public class Message implements IMessage {
     private ISender sender;
@@ -15,11 +13,6 @@ public class Message implements IMessage {
         return sender;
     }
 
-    @Override
-    public void setSender(ISender sender) {
-        this.sender = sender;
-    }
-
     private String text;
 
     @Override
@@ -27,8 +20,45 @@ public class Message implements IMessage {
         return text;
     }
 
+    private Date date;
+
     @Override
-    public void setText(String text) {
+    public Date getDate() {
+        return date;
+    }
+
+    private Message(ISender sender, String text, Date date) {
+        this.sender = sender;
         this.text = text;
+        this.date = date;
+    }
+
+    private Message() {
+    }
+
+    public static class Builder {
+
+        private Date date;
+        private String text;
+        private ISender sender;
+
+        public Builder setText(String text) {
+            this.text = text;
+            return this;
+        }
+
+        public Builder setSender(ISender sender) {
+            this.sender = sender;
+            return this;
+        }
+
+        public Builder setDate(Date date) {
+            this.date = date;
+            return this;
+        }
+
+        public Message build() {
+            return new Message(sender, text, date);
+        }
     }
 }
