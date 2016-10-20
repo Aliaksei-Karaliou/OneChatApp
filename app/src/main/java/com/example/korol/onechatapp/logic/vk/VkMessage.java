@@ -5,7 +5,7 @@ import com.example.korol.onechatapp.logic.common.ISender;
 
 import java.util.Date;
 
-public class Message implements IMessage {
+public class VkMessage implements IMessage {
     private ISender sender;
 
     @Override
@@ -27,14 +27,25 @@ public class Message implements IMessage {
         return date;
     }
 
-    private Message(ISender sender, String text, Date date) {
+    private VkMessage(ISender sender, String text, Date date) {
         this.sender = sender;
         this.text = text;
         this.date = date;
     }
 
-    private Message() {
+    private VkMessage() {
     }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public IMessage read() {
+        isRead = true;
+        return this;
+    }
+
+    private boolean isRead = false;
 
     public static class Builder {
 
@@ -57,8 +68,8 @@ public class Message implements IMessage {
             return this;
         }
 
-        public Message build() {
-            return new Message(sender, text, date);
+        public VkMessage build() {
+            return new VkMessage(sender, text, date);
         }
     }
 }

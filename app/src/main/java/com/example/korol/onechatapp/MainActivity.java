@@ -1,18 +1,23 @@
 package com.example.korol.onechatapp;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.korol.onechatapp.logic.common.Authorized;
+import com.example.korol.onechatapp.logic.vk.JSON_Parser.VkStartScreenParser;
 import com.example.korol.onechatapp.logic.vk.VkInfo;
+import com.example.korol.onechatapp.logic.vk.VkRequester;
+
+
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,8 +27,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (Authorized.isVkAuthorized())
+        if (Authorized.isVkAuthorized()) {
             Toast.makeText(this, Integer.toString(VkInfo.getUserId()), Toast.LENGTH_SHORT).show();
+            final VkRequester requester = new VkRequester("messages.getDialogs");
+            try {
+                String response = requester.execute().get();
+                if (!response.equals("Error request")) {
+                    VkStartScreenParser parser = new VkStartScreenParser();
+                    parser.parse(response);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

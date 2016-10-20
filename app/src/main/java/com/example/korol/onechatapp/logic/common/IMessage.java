@@ -8,5 +8,9 @@ public interface IMessage {
     String getText();
 
     Date getDate();
+
+    boolean isRead();
+
+    IMessage read();
 }
 

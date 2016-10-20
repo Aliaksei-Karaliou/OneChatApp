@@ -8,6 +8,10 @@ public class VkInfo {
         userId = Integer.parseInt(values[2].split("=")[1]);
     }
 
+    public static double getVkApiVersion() {
+        return 5.59;
+    }
+
     public static int getAppId() {
         return 5504374;
     }
