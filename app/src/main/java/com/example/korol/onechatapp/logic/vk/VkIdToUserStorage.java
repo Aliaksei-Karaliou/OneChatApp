@@ -4,6 +4,7 @@ import android.util.Pair;
 
 import com.example.korol.onechatapp.logic.common.IUser;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,17 +28,29 @@ public class VkIdToUserStorage {
         }
     }
 
-    public static List<IUser> getUsers(int... ids) {
+    public static List<IUser> getInterlocutors(Integer... ids) {
         List<IUser> result = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
+
+        // add new users
         for (int id : ids)
-            if (idToUserStorage.containsKey(id))
-                result.add(idToUserStorage.get(id));
-            else {
+            if (!idToUserStorage.containsKey(id))
                 builder.append(id).append("&");
-            }
         String params = builder.substring(0, builder.length() - 2);
+        List<IUser> userList = userJsonParser(params);
+        for (IUser user : userList) {
+            idToUserStorage.put(user.getId(), user);
+        }
+
+        // return all user from request
+        for (int id : ids) {
+            result.add(idToUserStorage.get(id));
+        }
         return result;
+    }
+
+    public static List<IUser> getInterlocutors(List<Integer> ids) {
+        return getInterlocutors(ids.toArray(new Integer[0]));
     }
 
     private static List<IUser> userJsonParser(String params) {
@@ -45,8 +58,12 @@ public class VkIdToUserStorage {
         try {
             VkRequester requester = new VkRequester("users.get", new Pair<String, String>("user_ids", params));
             JSONObject jsonObject = new JSONObject(requester.execute().get());
-            result.add(new User(jsonObject.getInt("id"), jsonObject.getString("first_name"), jsonObject.getString("last_name")));
-        } catch (JSONException e) {
+            JSONArray responceArray = jsonObject.getJSONArray("response");
+            for (int i = 0; i < responceArray.length(); i++) {
+                JSONObject responceObject = responceArray.getJSONObject(i);
+                result.add(new User(responceObject.getInt("id"), responceObject.getString("first_name"), responceObject.getString("last_name")));
+            }
+        } catch (JSONException | InterruptedException | ExecutionException e) {
             e.printStackTrace();
             result.add(null);
         }

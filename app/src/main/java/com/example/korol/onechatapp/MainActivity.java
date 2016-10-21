@@ -13,7 +13,6 @@ import com.example.korol.onechatapp.logic.vk.JSON_Parser.VkStartScreenParser;
 import com.example.korol.onechatapp.logic.vk.VkInfo;
 import com.example.korol.onechatapp.logic.vk.VkRequester;
 
-
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
             final VkRequester requester = new VkRequester("messages.getDialogs");
             try {
                 String response = requester.execute().get();
+                StringBuilder builder = new StringBuilder();
                 if (!response.equals("Error request")) {
                     VkStartScreenParser parser = new VkStartScreenParser();
                     parser.parse(response);

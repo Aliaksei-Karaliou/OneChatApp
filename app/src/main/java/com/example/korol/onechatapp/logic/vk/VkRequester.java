@@ -17,9 +17,17 @@ public class VkRequester extends AsyncTask<Void, Void, String> {
 
     private Pair<String, String>[] params;
 
+    private String stringParams = "";
+
     public VkRequester(String methodName, Pair<String, String>... params) {
         this.methodName = methodName;
         this.params = params;
+        StringBuilder paramsBuilder = new StringBuilder();
+        if (params.length > 0) {
+            for (Pair<String, String> param : params)
+                paramsBuilder.append(param.first).append("=").append(param.second).append("&");
+            stringParams = paramsBuilder.toString();
+        }
     }
 
     @Override
@@ -32,7 +40,7 @@ public class VkRequester extends AsyncTask<Void, Void, String> {
     }
 
     private String getJSON() throws IOException {
-        String stringUrl = String.format("https://api.vk.com/method/%s?access_token=%s&v=", methodName, VkInfo.getAccessToken());
+        String stringUrl = String.format("https://api.vk.com/method/%s?%s&access_token=%s&v=", methodName, stringParams, VkInfo.getAccessToken());
 
         URL url = new URL(stringUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
