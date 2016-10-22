@@ -6,16 +6,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.example.korol.onechatapp.logic.common.Authorized;
 import com.example.korol.onechatapp.logic.common.IMessage;
-import com.example.korol.onechatapp.logic.vk.JSON_Parser.VkStartScreenParser;
-import com.example.korol.onechatapp.logic.vk.VkInfo;
-import com.example.korol.onechatapp.logic.vk.VkRequester;
+import com.example.korol.onechatapp.logic.vk.getMethods.GetStartScreen;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,18 +27,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         if (Authorized.isVkAuthorized()) {
-            final VkRequester requester = new VkRequester("messages.getDialogs");
-            try {
-                String response = requester.execute().get();
-                List<IMessage> startScreenMessages;
-                if (!response.equals("Error request")) {
-                    startScreenMessages = (new VkStartScreenParser(response)).execute().get();
-                    StringBuilder builder = new StringBuilder();
+            List<IMessage> messages = GetStartScreen.getStartScreen();
+            ListView listView = (ListView) findViewById(R.id.list_view_main_messages);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+            if (messages != null) {
+                for (IMessage message : messages) {
+                    adapter.add(message.getText());
                 }
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
             }
+            listView.setAdapter(adapter);
+            StringBuilder builder = new StringBuilder();
         }
     }
 
