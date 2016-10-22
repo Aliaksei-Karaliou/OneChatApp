@@ -12,9 +12,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class VkStartScreenParser extends AsyncTask<Void,Void,List<IMessage>> {
+public class VkStartScreenParser extends AsyncTask<Void, Void, List<IMessage>> {
     private List<IMessage> parse(String JSONString) {
         List<IMessage> result = new ArrayList<>();
         try {
@@ -28,10 +29,9 @@ public class VkStartScreenParser extends AsyncTask<Void,Void,List<IMessage>> {
             List<IUser> list = VkIdToUserStorage.getUsers(userIdList);
             for (int i = 1; i < allMessages.length(); i++) {
                 JSONObject oneObject = allMessages.getJSONObject(i);
-                VkMessage.Builder builder = new VkMessage.Builder().setText(oneObject.getString("body")).setSender(list.get(i - 1));
+                VkMessage.Builder builder = new VkMessage.Builder().setText(oneObject.getString("body")).setSender(list.get(i - 1)).setDate(new Date(oneObject.getLong("date") * 1000)).setRead(oneObject.getInt("read_state") != 0);
                 result.add(builder.build());
             }
-            StringBuilder builder = new StringBuilder();
         } catch (JSONException e) {
             e.printStackTrace();
             result = null;

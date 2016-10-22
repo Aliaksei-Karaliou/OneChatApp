@@ -39,7 +39,12 @@ public class VkRequester extends AsyncTask<Void, Void, String> {
         }
     }
 
-    private String getJSON() throws IOException {
+    /**
+     * Don't use in UI thread. In UI thread use execute().get() method
+     * @return JSON request response
+     * @throws IOException
+     */
+    public String getJSON() throws IOException {
         String stringUrl = String.format("https://api.vk.com/method/%s?%s&access_token=%s&v=", methodName, stringParams, VkInfo.getAccessToken());
 
         URL url = new URL(stringUrl);

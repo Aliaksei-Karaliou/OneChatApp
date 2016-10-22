@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,13 +58,13 @@ public class VkIdToUserStorage {
         List<IUser> result = new ArrayList<>();
         try {
             VkRequester requester = new VkRequester("users.get", new Pair<String, String>("user_ids", params));
-            JSONObject jsonObject = new JSONObject(requester.execute().get());
+            JSONObject jsonObject = new JSONObject(requester.getJSON());
             JSONArray responceArray = jsonObject.getJSONArray("response");
             for (int i = 0; i < responceArray.length(); i++) {
                 JSONObject responceObject = responceArray.getJSONObject(i);
                 result.add(new User(responceObject.getInt("uid"), responceObject.getString("first_name"), responceObject.getString("last_name")));
             }
-        } catch (JSONException | InterruptedException | ExecutionException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             result.add(null);
         }

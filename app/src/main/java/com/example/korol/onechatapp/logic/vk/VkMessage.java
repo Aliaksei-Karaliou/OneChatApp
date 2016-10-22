@@ -27,10 +27,11 @@ public class VkMessage implements IMessage {
         return date;
     }
 
-    private VkMessage(ISender sender, String text, Date date) {
+    private VkMessage(ISender sender, String text, Date date, boolean isRead) {
         this.sender = sender;
         this.text = text;
         this.date = date;
+        this.isRead = isRead;
     }
 
     private VkMessage() {
@@ -52,6 +53,12 @@ public class VkMessage implements IMessage {
         private Date date;
         private String text;
         private ISender sender;
+        private boolean read;
+
+        public Builder setRead(boolean read) {
+            this.read = read;
+            return this;
+        }
 
         public Builder setText(String text) {
             this.text = text;
@@ -69,7 +76,7 @@ public class VkMessage implements IMessage {
         }
 
         public VkMessage build() {
-            return new VkMessage(sender, text, date);
+            return new VkMessage(sender, text, date, read);
         }
     }
 }

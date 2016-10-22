@@ -29,15 +29,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (Authorized.isVkAuthorized()) {
-            Toast.makeText(this, Integer.toString(VkInfo.getUserId()), Toast.LENGTH_SHORT).show();
             final VkRequester requester = new VkRequester("messages.getDialogs");
             try {
                 String response = requester.execute().get();
                 List<IMessage> startScreenMessages;
                 if (!response.equals("Error request")) {
                     startScreenMessages = (new VkStartScreenParser(response)).execute().get();
+                    StringBuilder builder = new StringBuilder();
                 }
-                StringBuilder builder = new StringBuilder();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
