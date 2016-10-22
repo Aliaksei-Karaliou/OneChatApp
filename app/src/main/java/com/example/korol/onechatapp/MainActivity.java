@@ -9,10 +9,12 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.korol.onechatapp.logic.common.Authorized;
+import com.example.korol.onechatapp.logic.common.IMessage;
 import com.example.korol.onechatapp.logic.vk.JSON_Parser.VkStartScreenParser;
 import com.example.korol.onechatapp.logic.vk.VkInfo;
 import com.example.korol.onechatapp.logic.vk.VkRequester;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,11 +33,11 @@ public class MainActivity extends AppCompatActivity {
             final VkRequester requester = new VkRequester("messages.getDialogs");
             try {
                 String response = requester.execute().get();
-                StringBuilder builder = new StringBuilder();
+                List<IMessage> startScreenMessages;
                 if (!response.equals("Error request")) {
-                    VkStartScreenParser parser = new VkStartScreenParser();
-                    parser.parse(response);
+                    startScreenMessages = (new VkStartScreenParser(response)).execute().get();
                 }
+                StringBuilder builder = new StringBuilder();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }

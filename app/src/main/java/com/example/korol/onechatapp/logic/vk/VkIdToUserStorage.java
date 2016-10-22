@@ -28,15 +28,15 @@ public class VkIdToUserStorage {
         }
     }
 
-    public static List<IUser> getInterlocutors(Integer... ids) {
+    public static List<IUser> getUsers(Integer... ids) {
         List<IUser> result = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
 
         // add new users
         for (int id : ids)
             if (!idToUserStorage.containsKey(id))
-                builder.append(id).append("&");
-        String params = builder.substring(0, builder.length() - 2);
+                builder.append(id).append(",");
+        String params = builder.substring(0, builder.length() - 1);
         List<IUser> userList = userJsonParser(params);
         for (IUser user : userList) {
             idToUserStorage.put(user.getId(), user);
@@ -49,8 +49,8 @@ public class VkIdToUserStorage {
         return result;
     }
 
-    public static List<IUser> getInterlocutors(List<Integer> ids) {
-        return getInterlocutors(ids.toArray(new Integer[0]));
+    public static List<IUser> getUsers(List<Integer> ids) {
+        return getUsers(ids.toArray(new Integer[0]));
     }
 
     private static List<IUser> userJsonParser(String params) {
@@ -61,7 +61,7 @@ public class VkIdToUserStorage {
             JSONArray responceArray = jsonObject.getJSONArray("response");
             for (int i = 0; i < responceArray.length(); i++) {
                 JSONObject responceObject = responceArray.getJSONObject(i);
-                result.add(new User(responceObject.getInt("id"), responceObject.getString("first_name"), responceObject.getString("last_name")));
+                result.add(new User(responceObject.getInt("uid"), responceObject.getString("first_name"), responceObject.getString("last_name")));
             }
         } catch (JSONException | InterruptedException | ExecutionException e) {
             e.printStackTrace();
