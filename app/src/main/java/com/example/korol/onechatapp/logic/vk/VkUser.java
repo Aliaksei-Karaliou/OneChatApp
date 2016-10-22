@@ -2,13 +2,14 @@ package com.example.korol.onechatapp.logic.vk;
 
 import com.example.korol.onechatapp.logic.common.IUser;
 
-public class User implements IUser {
+public class VkUser implements IUser {
     private int id;
 
-    public User(int id, String firstName, String lastName) {
+    public VkUser(int id, String firstName, String lastName, String photoUrl) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.photoUrl = photoUrl;
     }
 
     @Override
@@ -21,7 +22,14 @@ public class User implements IUser {
         this.id = id;
     }
 
-    private String firstName;
+    @Override
+    public String getName() {
+        if (firstName != null && lastName != null) {
+            return firstName + " " + lastName;
+        } else return "";
+    }
+
+    private String firstName = "";
 
     @Override
     public String getFirstName() {
@@ -33,7 +41,7 @@ public class User implements IUser {
         this.firstName = firstName;
     }
 
-    private String lastName;
+    private String lastName = "";
 
     @Override
     public String getLastName() {
@@ -43,5 +51,17 @@ public class User implements IUser {
     @Override
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    private String photoUrl;
+
+    @Override
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    @Override
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }

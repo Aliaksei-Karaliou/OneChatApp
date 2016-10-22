@@ -5,15 +5,12 @@ import android.util.Pair;
 import com.example.korol.onechatapp.logic.common.IUser;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 public class VkIdToUserStorage {
 
@@ -57,12 +54,12 @@ public class VkIdToUserStorage {
     private static List<IUser> userJsonParser(String params) {
         List<IUser> result = new ArrayList<>();
         try {
-            VkRequester requester = new VkRequester("users.get", new Pair<String, String>("user_ids", params));
+            VkRequester requester = new VkRequester("users.get", new Pair<String, String>("user_ids", params),new Pair<String, String>("fields","photo"));
             JSONObject jsonObject = new JSONObject(requester.getJSON());
             JSONArray responceArray = jsonObject.getJSONArray("response");
             for (int i = 0; i < responceArray.length(); i++) {
                 JSONObject responceObject = responceArray.getJSONObject(i);
-                result.add(new User(responceObject.getInt("uid"), responceObject.getString("first_name"), responceObject.getString("last_name")));
+                result.add(new VkUser(responceObject.getInt("uid"), responceObject.getString("first_name"), responceObject.getString("last_name"), responceObject.getString("photo")));
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -17,7 +17,10 @@ public class VkMessage implements IMessage {
 
     @Override
     public String getText() {
-        return text;
+        if (text != null)
+            return text;
+        else
+            return "Some group";
     }
 
     private Date date;
@@ -61,7 +64,10 @@ public class VkMessage implements IMessage {
         }
 
         public Builder setText(String text) {
-            this.text = text;
+            if (text != null)
+                this.text = text;
+            else
+                this.text = "";
             return this;
         }
 

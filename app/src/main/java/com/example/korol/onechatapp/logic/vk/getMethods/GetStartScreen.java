@@ -11,7 +11,8 @@ import java.util.concurrent.ExecutionException;
 
 public class GetStartScreen {
     public static List<IMessage> getStartScreen() {
-        final VkRequester requester = new VkRequester("messages.getDialogs", new Pair<String, String>("count", "200"));
+        //final VkRequester requester = new VkRequester("messages.getDialogs", new Pair<String, String>("count", "200"));
+        final VkRequester requester = new VkRequester("messages.getDialogs", new Pair<String, String>("preview_length", "30"));
         try {
             String response = requester.execute().get();
             if (!response.equals("Error request"))
