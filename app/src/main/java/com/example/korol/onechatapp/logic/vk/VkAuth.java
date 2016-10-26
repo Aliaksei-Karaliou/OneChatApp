@@ -1,16 +1,16 @@
 package com.example.korol.onechatapp.logic.vk;
 
 import android.annotation.SuppressLint;
-import android.provider.Settings;
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class VkAuth {
+
 
     private int appId;
 

@@ -2,8 +2,6 @@ package com.example.korol.onechatapp;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -12,16 +10,16 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-import com.example.korol.onechatapp.logic.common.Authorized;
 import com.example.korol.onechatapp.logic.common.IMessage;
 import com.example.korol.onechatapp.logic.common.ImageFromUrl;
+import com.example.korol.onechatapp.logic.vk.VkAuth;
+import com.example.korol.onechatapp.logic.vk.VkInfo;
 import com.example.korol.onechatapp.logic.vk.getMethods.GetStartScreen;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,13 +32,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        VkInfo.userGetAuth(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (Authorized.isVkAuthorized()) {
+        if (VkInfo.isAuthorized()) {
+            VkInfo.userSetAuth(this);
             List<IMessage> messages = GetStartScreen.getStartScreen();
             ListView listView = (ListView) findViewById(R.id.list_view_main_messages);
             ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();

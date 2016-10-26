@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.example.korol.onechatapp.logic.common.Authorized;
 import com.example.korol.onechatapp.logic.vk.VkAuth;
 import com.example.korol.onechatapp.logic.vk.VkInfo;
 
@@ -31,7 +30,6 @@ public class VkAuthActivity extends AppCompatActivity {
                 String webViewUrl = webView.getUrl();
                 if (webViewUrl.contains("access_token")) {
                     VkInfo.setUrl(webViewUrl);
-                    Authorized.setVkAuthorized(true);
                     finish();
                 }
                 super.onPageFinished(view, url);
