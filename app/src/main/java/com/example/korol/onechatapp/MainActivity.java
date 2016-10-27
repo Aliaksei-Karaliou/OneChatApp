@@ -9,10 +9,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import com.example.korol.onechatapp.logic.common.IMessage;
-import com.example.korol.onechatapp.logic.common.ImageFromUrl;
-import com.example.korol.onechatapp.logic.vk.VkAuth;
+import com.example.korol.onechatapp.logic.exceptions.AccessTokenException;
+import com.example.korol.onechatapp.logic.imageLoader.ImageLoader;
 import com.example.korol.onechatapp.logic.vk.VkInfo;
 import com.example.korol.onechatapp.logic.vk.getMethods.GetStartScreen;
 
@@ -39,38 +40,40 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (VkInfo.isAuthorized()) {
-            VkInfo.userSetAuth(this);
-            List<IMessage> messages = GetStartScreen.getStartScreen();
-            ListView listView = (ListView) findViewById(R.id.list_view_main_messages);
-            ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
-            Map<String, Object> map;
-            IMessage messageException;
+                VkInfo.userSetAuth(this);
             try {
-                for (IMessage message : messages) {
-                    //   messageException = message;
-                    map = new HashMap<>();
-                    if (message.getSender() != null) {
-                        Bitmap d = ImageFromUrl.getImageFromUrl(message.getSender().getPhotoUrl());
-                        map.put(ATTRIBUTE_USER_PHOTO, ImageFromUrl.getImageFromUrl(message.getSender().getPhotoUrl()));
-                        map.put(ATTRIBUTE_USER_NAME, message.getSender().getName());
-                    } else {
-                        map.put(ATTRIBUTE_USER_PHOTO, ImageFromUrl.getImageFromUrl(message.getSender().getPhotoUrl()));
-                        map.put(ATTRIBUTE_USER_NAME, "");
+                List<IMessage> messages = GetStartScreen.getStartScreen();
+                ListView listView = (ListView) findViewById(R.id.list_view_main_messages);
+                ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+                Map<String, Object> map;
+                try {
+                    for (IMessage message : messages) {
+                        map = new HashMap<>();
+                        if (message.getSender() != null) {
+     //                       Bitmap bitmap = new ImageLoader().getBitmapFromUrl(message.getSender().getPhotoUrl());
+   //                         map.put(ATTRIBUTE_USER_PHOTO, bitmap);
+                            map.put(ATTRIBUTE_USER_NAME, message.getSender().getName());
+                        } else {
+                          //   map.put(ATTRIBUTE_USER_PHOTO, ImageFromUrl.getImageFromUrl(message.getSender().getPhotoUrl()));
+                            map.put(ATTRIBUTE_USER_NAME, "");
+                        }
+                        map.put(ATTRIBUTE_USER_TEXT, message.getText());
+
+                        data.add(map);
                     }
-                    map.put(ATTRIBUTE_USER_TEXT, message.getText());
 
-                    data.add(map);
+                } catch (Exception e) {
+                    StringBuilder builder = new StringBuilder();
                 }
+                String[] from = new String[]{ATTRIBUTE_USER_NAME, ATTRIBUTE_USER_TEXT, ATTRIBUTE_USER_PHOTO};
+                int[] to = {R.id.start_screen_message_name, R.id.start_screen_message_message, R.id.start_screen_message_avatar};
 
-            } catch (Exception e) {
+                SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.start_screen_message_item, from, to);
+                listView.setAdapter(adapter);
                 StringBuilder builder = new StringBuilder();
+            } catch (AccessTokenException e) {
+                Toast.makeText(this, getString(R.string.access_token_error), Toast.LENGTH_SHORT).show();
             }
-            String[] from = new String[]{ATTRIBUTE_USER_NAME, ATTRIBUTE_USER_TEXT, ATTRIBUTE_USER_PHOTO};
-            int[] to = {R.id.start_screen_message_name, R.id.start_screen_message_message, R.id.start_screen_message_avatar};
-
-            SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.start_screen_message_item, from, to);
-            listView.setAdapter(adapter);
-            StringBuilder builder = new StringBuilder();
         }
     }
 

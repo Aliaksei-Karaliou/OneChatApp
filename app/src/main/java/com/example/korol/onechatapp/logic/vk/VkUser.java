@@ -18,11 +18,6 @@ public class VkUser implements IUser {
     }
 
     @Override
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Override
     public String getName() {
         if (firstName != null && lastName != null) {
             return firstName + " " + lastName;

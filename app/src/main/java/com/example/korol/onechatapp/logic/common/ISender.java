@@ -4,8 +4,6 @@ public interface ISender {
 
     int getId();
 
-    void setId(int id);
-
     String getName();
 
     String getPhotoUrl();

@@ -61,6 +61,10 @@ public class VkInfo {
         }
     }
 
+    public static boolean isUserAuthorized() {
+        return userId > 0 && accessToken != null;
+    }
+
     public static boolean isAuthorized() {
         return authorized;
     }
