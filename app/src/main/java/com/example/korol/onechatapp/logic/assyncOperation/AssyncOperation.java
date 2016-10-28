@@ -1,24 +1,22 @@
 package com.example.korol.onechatapp.logic.assyncOperation;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
 
 public abstract class AssyncOperation<Param, Result> {
 
-    private Param param;
+    private ExecutorService service = Executors.newCachedThreadPool();
 
     protected abstract Result doInBackground(Param param);
 
-    public final Result execute(Param param) throws Exception {
-        this.param = param;
+    public final Result execute(Param param) throws ExecutionException, InterruptedException {
         final AssyncOperationCallableImplementation callableImplementation = new AssyncOperationCallableImplementation(param, new AssyncOperationInterface<Param, Result>() {
             @Override
             public Result doIt(Param parameter) {
                 return doInBackground(parameter);
             }
         });
-        final FutureTask<Result> futureTask = new FutureTask(callableImplementation);
-        return futureTask.get();
+        final Future<Result> future = service.submit(callableImplementation);
+        return future.get();
     }
 
     private class AssyncOperationCallableImplementation implements Callable<Result> {
@@ -37,7 +35,7 @@ public abstract class AssyncOperation<Param, Result> {
         }
     }
 
-    private interface AssyncOperationInterface<Param, Result> {
-        Result doIt(Param parameter);
+    private interface AssyncOperationInterface<P, Result> {
+        Result doIt(P parameter);
     }
 }

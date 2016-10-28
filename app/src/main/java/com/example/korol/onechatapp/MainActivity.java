@@ -47,19 +47,20 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
                 Map<String, Object> map;
                 try {
-                    for (IMessage message : messages) {
-                        map = new HashMap<>();
-                        if (message.getSender() != null) {
-     //                       Bitmap bitmap = new ImageLoader().getBitmapFromUrl(message.getSender().getPhotoUrl());
-   //                         map.put(ATTRIBUTE_USER_PHOTO, bitmap);
-                            map.put(ATTRIBUTE_USER_NAME, message.getSender().getName());
-                        } else {
-                          //   map.put(ATTRIBUTE_USER_PHOTO, ImageFromUrl.getImageFromUrl(message.getSender().getPhotoUrl()));
-                            map.put(ATTRIBUTE_USER_NAME, "");
+                    if (messages != null) {
+                        for (IMessage message : messages) {
+                            map = new HashMap<>();
+                            if (message.getSender() != null) {
+                                Bitmap bitmap = new ImageLoader().getBitmapFromUrl(message.getSender().getPhotoUrl());
+                                map.put(ATTRIBUTE_USER_PHOTO, bitmap);
+                                map.put(ATTRIBUTE_USER_NAME, message.getSender().getName());
+                            } else {
+                                 map.put(ATTRIBUTE_USER_PHOTO, "");
+                                map.put(ATTRIBUTE_USER_NAME, "");
+                            }
+                            map.put(ATTRIBUTE_USER_TEXT, message.getText());
+                            data.add(map);
                         }
-                        map.put(ATTRIBUTE_USER_TEXT, message.getText());
-
-                        data.add(map);
                     }
 
                 } catch (Exception e) {
