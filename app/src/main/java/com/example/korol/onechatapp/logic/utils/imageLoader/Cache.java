@@ -1,4 +1,4 @@
-package com.example.korol.onechatapp.logic.imageLoader;
+package com.example.korol.onechatapp.logic.utils.imageLoader;
 
 import android.support.annotation.Nullable;
 

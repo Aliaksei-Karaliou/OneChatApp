@@ -1,4 +1,4 @@
-package com.example.korol.onechatapp.logic.exceptions;
+package com.example.korol.onechatapp.logic.utils.exceptions;
 
 public class AccessTokenException extends Exception {
     public AccessTokenException() {

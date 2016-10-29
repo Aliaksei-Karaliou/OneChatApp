@@ -1,6 +1,6 @@
 package com.example.korol.onechatapp;
 
-import com.example.korol.onechatapp.logic.imageLoader.OperationMemoryCache;
+import com.example.korol.onechatapp.logic.utils.imageLoader.OperationMemoryCache;
 
 public class ThisApplication extends android.app.Application {
     @Override

@@ -1,9 +1,8 @@
 package com.example.korol.onechatapp.logic.vk;
 
-import android.os.AsyncTask;
 import android.util.Pair;
 
-import com.example.korol.onechatapp.logic.assyncOperation.AsyncOperation;
+import com.example.korol.onechatapp.logic.utils.asyncOperation.AsyncOperation;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -11,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 
 public class VkRequester extends AsyncOperation<Void, String> {
 
@@ -32,12 +30,6 @@ public class VkRequester extends AsyncOperation<Void, String> {
         }
     }
 
-
-    /**
-     * Don't use in UI thread. In UI thread use execute().get() method
-     * @return JSON request response
-     * @throws IOException
-     */
     private String getJSON() throws IOException {
         String stringUrl = String.format("https://api.vk.com/method/%s?%s&access_token=%s&v=", methodName, stringParams, VkInfo.getAccessToken());
 

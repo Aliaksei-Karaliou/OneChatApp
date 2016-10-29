@@ -1,7 +1,8 @@
 package com.example.korol.onechatapp.logic.vk;
 
 import com.example.korol.onechatapp.logic.common.IChat;
-import com.example.korol.onechatapp.logic.common.IUser;
+import com.example.korol.onechatapp.logic.common.IMessage;
+import com.example.korol.onechatapp.logic.common.VkUser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,21 +11,32 @@ import java.util.List;
 
 public class VkChat implements IChat {
 
-    public VkChat(int id, String name, String photoUrl, List<IUser> userList) {
+    private List<VkUser> userList;
+    private List<IMessage> messageList;
+    private long id = -1;
+    private String name = "";
+    private String photoUrl = null;
+
+    public VkChat(int id, String name, String photoUrl, List<VkUser> userList) {
         this.id = id;
         this.name = name;
         this.photoUrl = photoUrl;
         this.userList = userList;
+        this.messageList = new ArrayList<>();
+
     }
 
-    private int id = -1;
-    private String name = "";
-    private String photoUrl = null;
+    public VkChat(int id, String name, String photoUrl) {
+        this.id = id;
+        this.name = name;
+        this.photoUrl = photoUrl;
+        this.userList = new ArrayList<>();
+        this.messageList = new ArrayList<>();
+    }
 
-    private List<IUser> userList = new ArrayList<>();
 
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -49,32 +61,42 @@ public class VkChat implements IChat {
     }
 
     @Override
-    public List<IUser> getUserList() {
+    public List<VkUser> getUserList() {
         return userList;
     }
 
     @Override
-    public void addUser(IUser user) {
+    public void addUser(VkUser user) {
         userList.add(user);
     }
 
     @Override
-    public void addUsers(List<IUser> users) {
+    public void addUsers(List<VkUser> users) {
         userList.addAll(users);
     }
 
     @Override
-    public void addUsers(IUser... users) {
+    public void addUsers(VkUser... users) {
         userList.addAll(Arrays.asList(users));
     }
 
     @Override
-    public boolean deleteUser(IUser user) {
+    public boolean deleteUser(VkUser user) {
         return userList.remove(user);
     }
 
     @Override
-    public boolean containsUser(IUser user) {
+    public boolean containsUser(VkUser user) {
         return userList.contains(user);
+    }
+
+    @Override
+    public void addMessage(IMessage message) {
+        messageList.add(message);
+    }
+
+    @Override
+    public void addMessages(List<IMessage> messages) {
+        messageList.addAll(messages);
     }
 }

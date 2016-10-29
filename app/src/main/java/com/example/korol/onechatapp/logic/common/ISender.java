@@ -2,7 +2,7 @@ package com.example.korol.onechatapp.logic.common;
 
 public interface ISender {
 
-    int getId();
+    long getId();
 
     String getName();
 

@@ -1,4 +1,4 @@
-package com.example.korol.onechatapp.logic.adapters;
+package com.example.korol.onechatapp.logic.utils.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.example.korol.onechatapp.R;
 import com.example.korol.onechatapp.logic.common.IMessage;
-import com.example.korol.onechatapp.logic.imageLoader.ImageLoader;
+import com.example.korol.onechatapp.logic.utils.imageLoader.ImageLoader;
 
 import java.util.List;
 

@@ -11,10 +11,10 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.korol.onechatapp.logic.adapters.StartMessagesScreenAdapter;
+import com.example.korol.onechatapp.logic.utils.adapters.StartMessagesScreenAdapter;
 import com.example.korol.onechatapp.logic.common.IMessage;
-import com.example.korol.onechatapp.logic.exceptions.AccessTokenException;
-import com.example.korol.onechatapp.logic.imageLoader.OperationMemoryCache;
+import com.example.korol.onechatapp.logic.utils.exceptions.AccessTokenException;
+import com.example.korol.onechatapp.logic.utils.imageLoader.OperationMemoryCache;
 import com.example.korol.onechatapp.logic.vk.VkInfo;
 import com.example.korol.onechatapp.logic.vk.getMethods.GetStartScreen;
 
@@ -46,9 +46,6 @@ public class MainActivity extends AppCompatActivity {
                 adapter.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        final ListView currentListView = (ListView) view;
-                        final View focusedChild = currentListView.getFocusedChild();
-                        final StringBuilder builder = new StringBuilder();
                     }
                 });
                 listView.setAdapter(adapter);

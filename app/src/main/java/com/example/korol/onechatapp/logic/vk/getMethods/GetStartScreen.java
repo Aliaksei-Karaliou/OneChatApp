@@ -2,9 +2,9 @@ package com.example.korol.onechatapp.logic.vk.getMethods;
 
 import android.util.Pair;
 
-import com.example.korol.onechatapp.logic.exceptions.AccessTokenException;
+import com.example.korol.onechatapp.logic.utils.exceptions.AccessTokenException;
 import com.example.korol.onechatapp.logic.common.IMessage;
-import com.example.korol.onechatapp.logic.vk.JSON_Parser.VkStartScreenParser;
+import com.example.korol.onechatapp.logic.vk.JSON_Parsers.VkStartScreenParser;
 import com.example.korol.onechatapp.logic.vk.VkRequester;
 
 import java.util.List;

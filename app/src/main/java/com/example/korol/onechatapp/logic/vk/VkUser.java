@@ -1,9 +1,7 @@
 package com.example.korol.onechatapp.logic.vk;
 
-import com.example.korol.onechatapp.logic.common.IUser;
-
-public class VkUser implements IUser {
-    private int id;
+public class VkUser implements com.example.korol.onechatapp.logic.common.VkUser {
+    private long id;
 
     public VkUser(int id, String firstName, String lastName, String photoUrl) {
         this.id = id;
@@ -13,7 +11,7 @@ public class VkUser implements IUser {
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 

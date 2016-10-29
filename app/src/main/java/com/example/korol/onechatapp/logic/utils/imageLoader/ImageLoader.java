@@ -1,10 +1,10 @@
-package com.example.korol.onechatapp.logic.imageLoader;
+package com.example.korol.onechatapp.logic.utils.imageLoader;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.Nullable;
 
-import com.example.korol.onechatapp.logic.assyncOperation.AsyncOperation;
+import com.example.korol.onechatapp.logic.utils.asyncOperation.AsyncOperation;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;

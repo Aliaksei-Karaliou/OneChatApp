@@ -1,4 +1,4 @@
-package com.example.korol.onechatapp.logic.assyncOperation;
+package com.example.korol.onechatapp.logic.utils.asyncOperation;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
