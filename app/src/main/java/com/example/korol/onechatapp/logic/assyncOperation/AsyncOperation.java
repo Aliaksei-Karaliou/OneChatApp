@@ -1,8 +1,11 @@
 package com.example.korol.onechatapp.logic.assyncOperation;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
-public abstract class AssyncOperation<Param, Result> {
+public abstract class AsyncOperation<Param, Result> {
 
     protected abstract Result doInBackground(Param param);
 

@@ -3,6 +3,8 @@ package com.example.korol.onechatapp.logic.vk;
 import android.os.AsyncTask;
 import android.util.Pair;
 
+import com.example.korol.onechatapp.logic.assyncOperation.AsyncOperation;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-public class VkRequester extends AsyncTask<Void, Void, String> {
+public class VkRequester extends AsyncOperation<Void, String> {
 
     private String methodName;
 
@@ -30,21 +32,13 @@ public class VkRequester extends AsyncTask<Void, Void, String> {
         }
     }
 
-    @Override
-    protected String doInBackground(Void... params) {
-        try {
-            return getJSON();
-        } catch (IOException e) {
-            return "Error request";
-        }
-    }
 
     /**
      * Don't use in UI thread. In UI thread use execute().get() method
      * @return JSON request response
      * @throws IOException
      */
-    public String getJSON() throws IOException {
+    private String getJSON() throws IOException {
         String stringUrl = String.format("https://api.vk.com/method/%s?%s&access_token=%s&v=", methodName, stringParams, VkInfo.getAccessToken());
 
         URL url = new URL(stringUrl);
@@ -65,5 +59,14 @@ public class VkRequester extends AsyncTask<Void, Void, String> {
             return builder.toString();
         } else
             throw new IOException();
+    }
+
+    @Override
+    protected String doInBackground(Void aVoid) {
+        try {
+            return getJSON();
+        } catch (IOException e) {
+            return "Error request";
+        }
     }
 }

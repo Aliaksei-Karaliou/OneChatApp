@@ -54,8 +54,8 @@ public class VkIdToUserStorage {
     private static List<IUser> userJsonParser(String params) {
         List<IUser> result = new ArrayList<>();
         try {
-            VkRequester requester = new VkRequester("users.get", new Pair<String, String>("user_ids", params),new Pair<String, String>("fields","photo"));
-            JSONObject jsonObject = new JSONObject(requester.getJSON());
+            VkRequester requester = new VkRequester("users.get", new Pair<String, String>("user_ids", params), new Pair<String, String>("fields", "photo"));
+            JSONObject jsonObject = new JSONObject(requester.execute(null));
             JSONArray responceArray = jsonObject.getJSONArray("response");
             for (int i = 0; i < responceArray.length(); i++) {
                 JSONObject responceObject = responceArray.getJSONObject(i);

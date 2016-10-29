@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.Nullable;
 
-import com.example.korol.onechatapp.logic.assyncOperation.AssyncOperation;
+import com.example.korol.onechatapp.logic.assyncOperation.AsyncOperation;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -12,8 +12,14 @@ import java.net.URL;
 
 public class ImageLoader {
 
+    private static OperationMemoryCache operationMemoryCache=new OperationMemoryCache();
+
     public Bitmap getBitmapFromUrl(String url) {
-        final AssyncOperation<String, Bitmap> assyncOperation = new AssyncOperation<String, Bitmap>() {
+        final long idHash = url.hashCode();
+        if (operationMemoryCache.contains(idHash))
+            return operationMemoryCache.get(idHash);
+
+        final AsyncOperation<String, Bitmap> asyncOperation = new AsyncOperation<String, Bitmap>() {
             @Nullable
             @Override
             protected Bitmap doInBackground(String s) {
@@ -23,7 +29,9 @@ public class ImageLoader {
                     connection.setDoInput(true);
                     connection.connect();
                     InputStream input = connection.getInputStream();
-                    return BitmapFactory.decodeStream(input);
+                    Bitmap bitmap=BitmapFactory.decodeStream(input);
+                    operationMemoryCache.put(idHash,bitmap);
+                    return bitmap;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -31,7 +39,7 @@ public class ImageLoader {
             }
         };
         try {
-            return assyncOperation.execute(url);
+            return asyncOperation.execute(url);
         } catch (Exception e) {
             e.printStackTrace();
         }

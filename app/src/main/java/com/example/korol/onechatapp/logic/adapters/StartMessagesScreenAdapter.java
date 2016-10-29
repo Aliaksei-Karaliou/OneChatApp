@@ -1,7 +1,6 @@
 package com.example.korol.onechatapp.logic.adapters;
 
 import android.content.Context;
-import android.support.v4.view.LayoutInflaterFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +20,16 @@ public class StartMessagesScreenAdapter extends BaseAdapter {
 
     private final LayoutInflater inflater;
 
+    private View.OnClickListener onClickListener;
+
     public StartMessagesScreenAdapter(Context context, List<IMessage> messageList) {
         this.messageList = messageList;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final StringBuilder builder = new StringBuilder();
+    }
+
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     @Override
@@ -54,6 +59,8 @@ public class StartMessagesScreenAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.start_screen_message_message)).setText(currentMessage.getText());
         ((TextView) view.findViewById(R.id.start_screen_message_name)).setText(currentMessage.getSender().getName());
 
+       /* if (onClickListener != null)
+            view.findViewById(R.id.start_screen_message_item).setOnClickListener(onClickListener);*/
         return view;
     }
 }
