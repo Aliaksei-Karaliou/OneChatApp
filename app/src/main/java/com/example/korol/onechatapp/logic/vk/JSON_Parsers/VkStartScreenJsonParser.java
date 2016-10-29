@@ -1,14 +1,14 @@
 package com.example.korol.onechatapp.logic.vk.JSON_Parsers;
 
-import android.os.AsyncTask;
+import android.util.Pair;
 
 import com.example.korol.onechatapp.logic.common.IMessage;
-import com.example.korol.onechatapp.logic.common.ISender;
-import com.example.korol.onechatapp.logic.common.VkUser;
+import com.example.korol.onechatapp.logic.utils.asyncOperation.AsyncOperation;
 import com.example.korol.onechatapp.logic.vk.VkChat;
+import com.example.korol.onechatapp.logic.vk.VkMessage;
+import com.example.korol.onechatapp.logic.vk.VkRequester;
 import com.example.korol.onechatapp.logic.vk.storages.VkIdToChatStorage;
 import com.example.korol.onechatapp.logic.vk.storages.VkIdToUserStorage;
-import com.example.korol.onechatapp.logic.vk.VkMessage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,9 +17,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
-public class VkStartScreenParser extends AsyncTask<Void, Void, List<IMessage>> {
+public class VkStartScreenJsonParser extends AsyncOperation<Void, List<IMessage>> {
     private List<IMessage> parse(String JSONString) {
         List<IMessage> result = new ArrayList<>();
         try {
@@ -33,7 +33,8 @@ public class VkStartScreenParser extends AsyncTask<Void, Void, List<IMessage>> {
                     userIdList.add(oneObject.getInt("uid"));
                 else {
                     int id = oneObject.getInt("chat_id");
-                    VkChat chat = new VkChat(id, oneObject.getString("title"), "http://vk.com/images/camera_c.gif");
+                    String url = new VkRequester("messages.getChat", new Pair<String, String>("chat_id", Integer.toString(id))).execute(null);
+                    VkChat chat = BasicChatJsonParser.parse(url);
                     VkIdToChatStorage.put(id, chat);
                 }
             }
@@ -47,7 +48,7 @@ public class VkStartScreenParser extends AsyncTask<Void, Void, List<IMessage>> {
                     builder.setSender(VkIdToChatStorage.get(oneObject.getInt("chat_id")));
                 result.add(builder.build());
             }
-        } catch (JSONException e) {
+        } catch (JSONException | InterruptedException | ExecutionException e) {
             e.printStackTrace();
             result = null;
         }
@@ -55,14 +56,14 @@ public class VkStartScreenParser extends AsyncTask<Void, Void, List<IMessage>> {
         return result;
     }
 
-    @Override
-    protected List<IMessage> doInBackground(Void... params) {
-        return parse(json);
-    }
-
-    public VkStartScreenParser(String json) {
+    public VkStartScreenJsonParser(String json) {
         this.json = json;
     }
 
     private String json;
+
+    @Override
+    protected List<IMessage> doInBackground(Void aVoid) {
+        return parse(json);
+    }
 }

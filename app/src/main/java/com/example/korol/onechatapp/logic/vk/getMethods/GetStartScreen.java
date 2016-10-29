@@ -4,7 +4,7 @@ import android.util.Pair;
 
 import com.example.korol.onechatapp.logic.utils.exceptions.AccessTokenException;
 import com.example.korol.onechatapp.logic.common.IMessage;
-import com.example.korol.onechatapp.logic.vk.JSON_Parsers.VkStartScreenParser;
+import com.example.korol.onechatapp.logic.vk.JSON_Parsers.VkStartScreenJsonParser;
 import com.example.korol.onechatapp.logic.vk.VkRequester;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class GetStartScreen {
             if (response.contains("User authorization failed: no access_token passed."))
                 throw new AccessTokenException();
             else if (!response.equals("Error request"))
-                return (new VkStartScreenParser(response)).execute().get();
+                return new VkStartScreenJsonParser(response).execute(null);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }

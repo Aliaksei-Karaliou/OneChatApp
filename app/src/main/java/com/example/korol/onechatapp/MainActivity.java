@@ -43,11 +43,6 @@ public class MainActivity extends AppCompatActivity {
                 messages = GetStartScreen.getStartScreen();
                 ListView listView = (ListView) findViewById(R.id.list_view_main_messages);
                 StartMessagesScreenAdapter adapter = new StartMessagesScreenAdapter(this, messages);
-                adapter.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                    }
-                });
                 listView.setAdapter(adapter);
                 final Map<Long, Bitmap> cache = new OperationMemoryCache().getCache();
                 StringBuilder builder = new StringBuilder();
