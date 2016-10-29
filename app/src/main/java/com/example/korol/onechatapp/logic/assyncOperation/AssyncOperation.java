@@ -4,8 +4,6 @@ import java.util.concurrent.*;
 
 public abstract class AssyncOperation<Param, Result> {
 
-    private ExecutorService service = Executors.newCachedThreadPool();
-
     protected abstract Result doInBackground(Param param);
 
     public final Result execute(Param param) throws ExecutionException, InterruptedException {
@@ -15,19 +13,19 @@ public abstract class AssyncOperation<Param, Result> {
                 return doInBackground(parameter);
             }
         });
-        final Future<Result> future = service.submit(callableImplementation);
+        final Future<Result> future = Executors.newCachedThreadPool().submit(callableImplementation);
         return future.get();
     }
 
     private class AssyncOperationCallableImplementation implements Callable<Result> {
 
-        public AssyncOperationCallableImplementation(Param param, AssyncOperationInterface<Param, Result> operationInterface) {
+        public AssyncOperationCallableImplementation(final Param param, final AssyncOperationInterface<Param, Result> operationInterface) {
             this.param = param;
             this.operationInterface = operationInterface;
         }
 
         AssyncOperationInterface<Param, Result> operationInterface;
-        Param param;
+        final Param param;
 
         @Override
         public Result call() throws Exception {

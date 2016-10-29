@@ -3,4 +3,5 @@
     <string name="authorization_menu">Authorization</string>
     <string name="vk">VK</string>
     <string name="access_token_error">Access Token is not valid. Reauthorize to use the app</string>
+    <string name="start_screen_user_avatar_description" translatable="false">Start screen user avatar</string>
 </resources>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">OneChat</string>
     <string name="authorization_menu">Авторизация</string>
     <string name="vk">ВКонтакте</string>
     <string name="access_token_error">Для продолжения работы авторизируйтесь заново</string>

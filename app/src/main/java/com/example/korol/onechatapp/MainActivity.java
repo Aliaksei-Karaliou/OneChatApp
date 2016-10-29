@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.example.korol.onechatapp.logic.adapters.StartMessagesScreenAdapter;
 import com.example.korol.onechatapp.logic.common.IMessage;
 import com.example.korol.onechatapp.logic.exceptions.AccessTokenException;
 import com.example.korol.onechatapp.logic.imageLoader.ImageLoader;
@@ -40,11 +41,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (VkInfo.isAuthorized()) {
-                VkInfo.userSetAuth(this);
+            VkInfo.userSetAuth(this);
             try {
                 List<IMessage> messages = GetStartScreen.getStartScreen();
                 ListView listView = (ListView) findViewById(R.id.list_view_main_messages);
-                ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+            /*    ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
                 Map<String, Object> map;
                 try {
                     if (messages != null) {
@@ -69,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
                 String[] from = new String[]{ATTRIBUTE_USER_NAME, ATTRIBUTE_USER_TEXT, ATTRIBUTE_USER_PHOTO};
                 int[] to = {R.id.start_screen_message_name, R.id.start_screen_message_message, R.id.start_screen_message_avatar};
 
-                SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.start_screen_message_item, from, to);
+                SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.start_screen_message_item, from, to);*/
+                StartMessagesScreenAdapter adapter = new StartMessagesScreenAdapter(this, messages);
                 listView.setAdapter(adapter);
                 StringBuilder builder = new StringBuilder();
             } catch (AccessTokenException e) {
