@@ -13,8 +13,9 @@ import com.example.korol.onechatapp.logic.common.IMessage;
 import com.example.korol.onechatapp.logic.utils.imageLoader.ImageLoader;
 
 import java.util.List;
+import java.util.Locale;
 
-public class StartMessagesScreenAdapter extends BaseAdapter {
+public class VkStartMessagesScreenAdapter extends BaseAdapter {
 
     private final List<IMessage> messageList;
 
@@ -22,7 +23,7 @@ public class StartMessagesScreenAdapter extends BaseAdapter {
 
     private View.OnClickListener onClickListener;
 
-    public StartMessagesScreenAdapter(Context context, List<IMessage> messageList) {
+    public VkStartMessagesScreenAdapter(Context context, List<IMessage> messageList) {
         this.messageList = messageList;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final StringBuilder builder = new StringBuilder();
@@ -55,12 +56,15 @@ public class StartMessagesScreenAdapter extends BaseAdapter {
 
         IMessage currentMessage = messageList.get(i);
 
+        long id = currentMessage.getSender().getId();
+
         ((ImageView) view.findViewById(R.id.start_screen_message_avatar)).setImageBitmap(imageLoader.getBitmapFromUrl(currentMessage.getSender().getPhotoUrl()));
         ((TextView) view.findViewById(R.id.start_screen_message_message)).setText(currentMessage.getText());
         ((TextView) view.findViewById(R.id.start_screen_message_name)).setText(currentMessage.getSender().getName());
+        ((TextView) view.findViewById(R.id.start_screen_message_id)).setText(String.format(Locale.getDefault(), "%d", id));
 
-       /* if (onClickListener != null)
-            view.findViewById(R.id.start_screen_message_item).setOnClickListener(onClickListener);*/
+        if (onClickListener != null)
+            view.findViewById(R.id.start_screen_message_item).setOnClickListener(onClickListener);
         return view;
     }
 }

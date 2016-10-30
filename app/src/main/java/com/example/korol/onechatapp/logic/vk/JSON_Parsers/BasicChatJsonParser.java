@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 public class BasicChatJsonParser extends AsyncOperation<Void, VkChat> {
 
+    public static final String DEFAULT_CHAT_PHOTO_URL = "http://vk.com/images/camera_c.gif";
     private final String json;
 
     public static VkChat parse(String JSONString) {
@@ -19,7 +20,7 @@ public class BasicChatJsonParser extends AsyncOperation<Void, VkChat> {
             try {
                 url = allMessages.getString("photo_50");
             } catch (Exception e) {
-                url = "http://vk.com/images/camera_c.gif";
+                url = DEFAULT_CHAT_PHOTO_URL;
             }
             return new VkChat(allMessages.getInt("chat_id"), allMessages.getString("title"), url);
         } catch (JSONException e) {

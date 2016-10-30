@@ -9,14 +9,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.korol.onechatapp.logic.utils.adapters.StartMessagesScreenAdapter;
+import com.example.korol.onechatapp.logic.utils.adapters.VkStartMessagesScreenAdapter;
 import com.example.korol.onechatapp.logic.common.IMessage;
 import com.example.korol.onechatapp.logic.utils.exceptions.AccessTokenException;
 import com.example.korol.onechatapp.logic.utils.imageLoader.OperationMemoryCache;
 import com.example.korol.onechatapp.logic.vk.VkInfo;
 import com.example.korol.onechatapp.logic.vk.getMethods.GetStartScreen;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 import java.util.Map;
@@ -42,7 +45,14 @@ public class MainActivity extends AppCompatActivity {
             try {
                 messages = GetStartScreen.getStartScreen();
                 ListView listView = (ListView) findViewById(R.id.list_view_main_messages);
-                StartMessagesScreenAdapter adapter = new StartMessagesScreenAdapter(this, messages);
+                VkStartMessagesScreenAdapter adapter = new VkStartMessagesScreenAdapter(this, messages);
+                adapter.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        final TextView name = (TextView) view.findViewWithTag("ID");
+                        Toast.makeText(MainActivity.this, name.getText(), Toast.LENGTH_SHORT).show();
+                    }
+                });
                 listView.setAdapter(adapter);
                 final Map<Long, Bitmap> cache = new OperationMemoryCache().getCache();
                 StringBuilder builder = new StringBuilder();
