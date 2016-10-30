@@ -12,45 +12,35 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.korol.onechatapp.logic.utils.adapters.VkStartMessagesScreenAdapter;
 import com.example.korol.onechatapp.logic.common.IMessage;
 import com.example.korol.onechatapp.logic.utils.exceptions.AccessTokenException;
 import com.example.korol.onechatapp.logic.utils.imageLoader.OperationMemoryCache;
 import com.example.korol.onechatapp.logic.vk.VkInfo;
-import com.example.korol.onechatapp.logic.vk.getMethods.GetStartScreen;
-
-import org.w3c.dom.Text;
+import com.example.korol.onechatapp.logic.vk.adapters.VkStartMessagesScreenAdapter;
+import com.example.korol.onechatapp.logic.vk.getMethods.VkGetStartScreen;
 
 import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private List<IMessage> messages;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         VkInfo.userGetAuth(this);
-        messages = ((List<IMessage>) getLastNonConfigurationInstance());
-        final StringBuilder builder = new StringBuilder();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         if (VkInfo.isAuthorized()) {
             VkInfo.userSetAuth(this);
             try {
-                messages = GetStartScreen.getStartScreen();
+                List<IMessage> messages = VkGetStartScreen.getStartScreen();
                 ListView listView = (ListView) findViewById(R.id.list_view_main_messages);
                 VkStartMessagesScreenAdapter adapter = new VkStartMessagesScreenAdapter(this, messages);
                 adapter.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        final TextView name = (TextView) view.findViewWithTag("ID");
-                        Toast.makeText(MainActivity.this, name.getText(), Toast.LENGTH_SHORT).show();
+                        long id = Long.parseLong(((TextView) view.findViewWithTag("ID")).getText().toString());
+                        final String type = ((TextView) view.findViewById(R.id.start_screen_message_sender_type)).getText().toString();
+                        startActivity(new Intent(MainActivity.this, ConversationActivity.class).putExtra("TYPE", type).putExtra("ID", id));
                     }
                 });
                 listView.setAdapter(adapter);
@@ -72,14 +62,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.authorization_menu)
-            startActivity(new Intent(this, AuthActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            startActivity(new Intent(this, AuthActivity.class));
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    public Object onRetainCustomNonConfigurationInstance() {
-        return messages;
-    }
-
 
 }

@@ -1,4 +1,4 @@
-package com.example.korol.onechatapp.logic.vk;
+package com.example.korol.onechatapp.logic.vk.entities;
 
 public class VkUser implements com.example.korol.onechatapp.logic.common.VkUser {
     private long id;

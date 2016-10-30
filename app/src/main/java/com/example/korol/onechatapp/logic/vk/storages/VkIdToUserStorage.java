@@ -60,7 +60,7 @@ public class VkIdToUserStorage {
             JSONArray responceArray = jsonObject.getJSONArray("response");
             for (int i = 0; i < responceArray.length(); i++) {
                 JSONObject responceObject = responceArray.getJSONObject(i);
-                result.add(new com.example.korol.onechatapp.logic.vk.VkUser(responceObject.getInt("uid"), responceObject.getString("first_name"), responceObject.getString("last_name"), responceObject.getString("photo")));
+                result.add(new com.example.korol.onechatapp.logic.vk.entities.VkUser(responceObject.getInt("uid"), responceObject.getString("first_name"), responceObject.getString("last_name"), responceObject.getString("photo")));
             }
         } catch (Exception e) {
             e.printStackTrace();

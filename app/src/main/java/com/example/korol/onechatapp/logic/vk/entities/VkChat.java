@@ -1,4 +1,4 @@
-package com.example.korol.onechatapp.logic.vk;
+package com.example.korol.onechatapp.logic.vk.entities;
 
 import com.example.korol.onechatapp.logic.common.IChat;
 import com.example.korol.onechatapp.logic.common.IMessage;

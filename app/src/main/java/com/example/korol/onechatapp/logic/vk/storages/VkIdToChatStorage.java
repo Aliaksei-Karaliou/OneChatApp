@@ -1,6 +1,6 @@
 package com.example.korol.onechatapp.logic.vk.storages;
 
-import com.example.korol.onechatapp.logic.vk.VkChat;
+import com.example.korol.onechatapp.logic.vk.entities.VkChat;
 
 import java.util.HashMap;
 import java.util.Map;

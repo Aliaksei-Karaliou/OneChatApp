@@ -1,20 +1,23 @@
-package com.example.korol.onechatapp.logic.vk.JSON_Parsers;
+package com.example.korol.onechatapp.logic.vk.json;
+
+import android.support.annotation.Nullable;
 
 import com.example.korol.onechatapp.logic.utils.asyncOperation.AsyncOperation;
-import com.example.korol.onechatapp.logic.vk.VkChat;
+import com.example.korol.onechatapp.logic.vk.entities.VkChat;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class BasicChatJsonParser extends AsyncOperation<Void, VkChat> {
+public class VkBasicChatJsonParser extends AsyncOperation<String, VkChat> {
 
     public static final String DEFAULT_CHAT_PHOTO_URL = "http://vk.com/images/camera_c.gif";
-    private final String json;
 
-    public static VkChat parse(String JSONString) {
+    @Nullable
+    @Override
+    protected VkChat doInBackground(String json) {
         JSONObject jObject = null;
         try {
-            jObject = new JSONObject(JSONString);
+            jObject = new JSONObject(json);
             JSONObject allMessages = jObject.getJSONObject("response");
             String url;
             try {
@@ -27,14 +30,5 @@ public class BasicChatJsonParser extends AsyncOperation<Void, VkChat> {
             e.printStackTrace();
         }
         return null;
-    }
-
-    @Override
-    protected VkChat doInBackground(Void aVoid) {
-        return parse(json);
-    }
-
-    public BasicChatJsonParser(String json) {
-        this.json = json;
     }
 }
