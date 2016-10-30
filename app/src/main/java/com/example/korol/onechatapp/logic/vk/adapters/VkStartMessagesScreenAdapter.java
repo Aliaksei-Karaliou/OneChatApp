@@ -30,7 +30,6 @@ public class VkStartMessagesScreenAdapter extends BaseAdapter {
     public VkStartMessagesScreenAdapter(Context context, List<IMessage> messageList) {
         this.messageList = messageList;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final StringBuilder builder = new StringBuilder();
     }
 
     public void setOnClickListener(View.OnClickListener onClickListener) {
