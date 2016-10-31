@@ -16,7 +16,7 @@ public class VkGetStartScreen {
         final VkRequester requester = new VkRequester("messages.getDialogs", new Pair<String, String>("preview_length", "30"));
         try {
             String response = requester.execute(null);
-            if (response.contains("User authorization failed: no access_token passed."))
+            if (response.contains("User authorization failed: no access_token passed.") || response.contains("User authorization failed: access_token was given to another ip address.") )
                 throw new AccessTokenException();
             else if (!response.equals("Error request"))
                 return new VkStartScreenJsonParser().execute(response);

@@ -49,6 +49,6 @@ public class VkAuth {
     @SuppressLint("DefaultLocale")
     public String getUrl() {
         //String string = String.format("https://oauth.vk.com/authorize?client_id=%d&display=mobile&redirect_uri=https://oauth.vk.com/blank.html&scope=%s&response_type=token&v=5.57&revoke=1", appId, scopeToString(scope));
-        return String.format("https://oauth.vk.com/authorize?client_id=%d&display=mobile&redirect_uri=https://oauth.vk.com/blank.html&scope=%s&response_type=token&v=%f&revoke=1", appId, scopeToString(scope), VkInfo.getVkApiVersion());
+        return String.format("https://oauth.vk.com/authorize?client_id=%d&display=mobile&redirect_uri=https://oauth.vk.com/blank.html&scope=offline,%s&response_type=token&v=%f&revoke=1", appId, scopeToString(scope), VkInfo.getVkApiVersion());
     }
 }
