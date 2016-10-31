@@ -1,6 +1,6 @@
 package com.example.korol.onechatapp.logic.common;
 
-public interface VkUser extends ISender {
+public interface IUser extends ISender {
     String getFirstName();
 
     void setFirstName(String firstName);

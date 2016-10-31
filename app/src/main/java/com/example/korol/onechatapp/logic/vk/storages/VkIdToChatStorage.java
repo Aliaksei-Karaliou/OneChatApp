@@ -7,13 +7,13 @@ import java.util.Map;
 
 public class VkIdToChatStorage {
 
-    private static Map<Integer, VkChat> storage = new HashMap<>();
+    private static Map<Long, VkChat> storage = new HashMap<>();
 
-    public static void put(int id, VkChat chat) {
+    public static void put(long id, VkChat chat) {
         storage.put(id, chat);
     }
 
-    public static VkChat get(int id) {
+    public static VkChat getChat(long id) {
         return storage.get(id);
     }
 

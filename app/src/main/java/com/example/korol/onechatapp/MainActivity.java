@@ -16,7 +16,7 @@ import com.example.korol.onechatapp.logic.common.IMessage;
 import com.example.korol.onechatapp.logic.utils.exceptions.AccessTokenException;
 import com.example.korol.onechatapp.logic.utils.imageLoader.OperationMemoryCache;
 import com.example.korol.onechatapp.logic.vk.VkInfo;
-import com.example.korol.onechatapp.logic.vk.adapters.VkStartMessagesScreenAdapter;
+import com.example.korol.onechatapp.logic.common.adapters.StartMessagesScreenAdapter;
 import com.example.korol.onechatapp.logic.vk.getMethods.VkGetStartScreen;
 
 import java.util.List;
@@ -39,13 +39,14 @@ public class MainActivity extends AppCompatActivity {
             try {
                 List<IMessage> messages = VkGetStartScreen.getStartScreen();
                 ListView listView = (ListView) findViewById(R.id.list_view_main_messages);
-                VkStartMessagesScreenAdapter adapter = new VkStartMessagesScreenAdapter(this, messages);
+                StartMessagesScreenAdapter adapter = new StartMessagesScreenAdapter(this, messages);
                 adapter.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        long id = Long.parseLong(((TextView) view.findViewWithTag("ID")).getText().toString());
+                        long id = Long.parseLong(((TextView) view.findViewById(R.id.start_screen_message_id)).getText().toString());
                         final String type = ((TextView) view.findViewById(R.id.start_screen_message_sender_type)).getText().toString();
-                        startActivity(new Intent(MainActivity.this, ConversationActivity.class).putExtra("TYPE", type).putExtra("ID", id));
+                        final String name = ((TextView) view.findViewById(R.id.start_screen_message_name)).getText().toString();
+                        startActivity(new Intent(MainActivity.this, ConversationActivity.class).putExtra("TYPE", type).putExtra("ID", id).putExtra("NAME", name));
                     }
                 });
                 listView.setAdapter(adapter);

@@ -12,7 +12,7 @@ import java.net.URL;
 
 public class ImageLoader {
 
-    private static OperationMemoryCache operationMemoryCache=new OperationMemoryCache();
+    private static OperationMemoryCache operationMemoryCache = new OperationMemoryCache();
 
     public Bitmap getBitmapFromUrl(String url) {
         final long idHash = url.hashCode();
@@ -29,8 +29,8 @@ public class ImageLoader {
                     connection.setDoInput(true);
                     connection.connect();
                     InputStream input = connection.getInputStream();
-                    Bitmap bitmap=BitmapFactory.decodeStream(input);
-                    operationMemoryCache.put(idHash,bitmap);
+                    Bitmap bitmap = BitmapFactory.decodeStream(input);
+                    operationMemoryCache.put(idHash, bitmap);
                     return bitmap;
                 } catch (Exception e) {
                     e.printStackTrace();

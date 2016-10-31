@@ -1,4 +1,4 @@
-package com.example.korol.onechatapp.logic.vk.adapters;
+package com.example.korol.onechatapp.logic.common.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -19,7 +19,7 @@ import com.example.korol.onechatapp.logic.vk.entities.VkUser;
 import java.util.List;
 import java.util.Locale;
 
-public class VkStartMessagesScreenAdapter extends BaseAdapter {
+public class StartMessagesScreenAdapter extends BaseAdapter {
 
     private final List<IMessage> messageList;
 
@@ -27,7 +27,7 @@ public class VkStartMessagesScreenAdapter extends BaseAdapter {
 
     private View.OnClickListener onClickListener;
 
-    public VkStartMessagesScreenAdapter(Context context, List<IMessage> messageList) {
+    public StartMessagesScreenAdapter(Context context, List<IMessage> messageList) {
         this.messageList = messageList;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }

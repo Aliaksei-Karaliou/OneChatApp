@@ -1,6 +1,8 @@
 package com.example.korol.onechatapp.logic.vk.entities;
 
-public class VkUser implements com.example.korol.onechatapp.logic.common.VkUser {
+import com.example.korol.onechatapp.logic.common.IUser;
+
+public class VkUser implements IUser {
     private long id;
 
     public VkUser(int id, String firstName, String lastName, String photoUrl) {

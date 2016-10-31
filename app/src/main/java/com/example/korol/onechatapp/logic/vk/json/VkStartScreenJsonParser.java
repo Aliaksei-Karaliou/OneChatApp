@@ -36,8 +36,9 @@ public class VkStartScreenJsonParser extends AsyncOperation<String, List<IMessag
                     int id = oneObject.getInt("chat_id");
                     String url = new VkRequester("messages.getChat", new Pair<String, String>("chat_id", Integer.toString(id))).execute(null);
                     VkChat chat = new VkBasicChatJsonParser().execute(url);
-                    VkIdToChatStorage.put(id, chat);
+                    VkIdToChatStorage.put(id + 2000000000, chat);
                 }
+
             }
             VkIdToUserStorage.getUsers(userIdList);
             for (int i = 1; i < allMessages.length(); i++) {
@@ -46,14 +47,13 @@ public class VkStartScreenJsonParser extends AsyncOperation<String, List<IMessag
                 if (oneObject.getString("title").equals(" ... "))
                     builder.setSender(VkIdToUserStorage.getUser(oneObject.getInt("uid")));
                 else
-                    builder.setSender(VkIdToChatStorage.get(oneObject.getInt("chat_id")));
+                    builder.setSender(VkIdToChatStorage.getChat(oneObject.getInt("chat_id") + 2000000000));
                 result.add(builder.build());
             }
         } catch (JSONException | InterruptedException | ExecutionException e) {
             e.printStackTrace();
             result = null;
         }
-        StringBuilder builder = new StringBuilder();
         return result;
     }
 }

@@ -5,17 +5,17 @@ import java.util.List;
 public interface IChat extends ISender {
     void setName(String name);
 
-    List<VkUser> getUserList();
+    List<IUser> getUserList();
 
-    void addUser(VkUser user);
+    void addUser(IUser user);
 
-    void addUsers(List<VkUser> users);
+    void addUsers(List<IUser> users);
 
-    void addUsers(VkUser... users);
+    void addUsers(IUser... users);
 
-    boolean deleteUser(VkUser user);
+    boolean deleteUser(IUser user);
 
-    boolean containsUser(VkUser user);
+    boolean containsUser(IUser user);
 
     void addMessage(IMessage message);
 
