@@ -14,7 +14,8 @@ public class VkIdToChatStorage {
     }
 
     public static VkChat getChat(long id) {
-        return storage.get(id);
+        final VkChat vkChat = storage.get(id);
+        return vkChat;
     }
 
     public static boolean containsKey(int id){

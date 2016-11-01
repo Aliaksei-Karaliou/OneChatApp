@@ -50,8 +50,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 listView.setAdapter(adapter);
-                final Map<Long, Bitmap> cache = new OperationMemoryCache().getCache();
-                StringBuilder builder = new StringBuilder();
+             //   final Map<Long, Bitmap> cache = new OperationMemoryCache().getCache();
             } catch (AccessTokenException e) {
                 Toast.makeText(this, getString(R.string.access_token_error), Toast.LENGTH_SHORT).show();
             }
@@ -71,5 +70,5 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, AuthActivity.class));
         return super.onOptionsItemSelected(item);
     }
-
+    //Broadcast Receiver
 }

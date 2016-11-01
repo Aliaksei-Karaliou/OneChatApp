@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import com.example.korol.onechatapp.logic.common.IDialog;
 import com.example.korol.onechatapp.logic.common.ISender;
+import com.example.korol.onechatapp.logic.common.IUser;
 import com.example.korol.onechatapp.logic.common.adapters.DialogAdapter;
 import com.example.korol.onechatapp.logic.vk.entities.VkSenderType;
 import com.example.korol.onechatapp.logic.vk.getMethods.VkGetDialog;
@@ -36,7 +37,7 @@ public class ConversationActivity extends AppCompatActivity {
         } else
             interlocutor = VkIdToChatStorage.getChat(interlocutorId);
 
-        if (interlocutor != null) {
+        if (interlocutor instanceof IUser) {
             IDialog list = VkGetDialog.getDialog(interlocutor);
             DialogAdapter adapter = new DialogAdapter(this, list);
             ((ListView) findViewById(R.id.activity_conversation_message_list)).setAdapter(adapter);

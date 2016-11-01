@@ -25,7 +25,7 @@ public class VkBasicChatJsonParser extends AsyncOperation<String, VkChat> {
             } catch (Exception e) {
                 url = DEFAULT_CHAT_PHOTO_URL;
             }
-            return new VkChat(allMessages.getInt("chat_id"), allMessages.getString("title"), url);
+            return new VkChat(allMessages.getInt("id"), allMessages.getString("title"), url);
         } catch (JSONException e) {
             e.printStackTrace();
         }

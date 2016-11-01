@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Locale;
 
 public class VkRequester extends AsyncOperation<Void, String> {
 
@@ -26,12 +27,13 @@ public class VkRequester extends AsyncOperation<Void, String> {
         if (params.length > 0) {
             for (Pair<String, String> param : params)
                 paramsBuilder.append(param.first).append("=").append(param.second).append("&");
-            stringParams = paramsBuilder.toString();
+            stringParams = paramsBuilder.toString().substring(0, paramsBuilder.length() - 1);
+            final StringBuilder stringBuilder = new StringBuilder();
         }
     }
 
     private String getJSON() throws IOException {
-        String stringUrl = String.format("https://api.vk.com/method/%s?%s&access_token=%s&v=", methodName, stringParams, VkInfo.getAccessToken());
+        String stringUrl = String.format(Locale.getDefault(), "https://api.vk.com/method/%s?%s&access_token=%s&v=%.2f", methodName, stringParams, VkInfo.getAccessToken(), VkInfo.getVkApiVersion());
 
         URL url = new URL(stringUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();

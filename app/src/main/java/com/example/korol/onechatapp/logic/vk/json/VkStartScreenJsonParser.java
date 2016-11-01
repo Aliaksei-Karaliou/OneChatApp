@@ -26,12 +26,12 @@ public class VkStartScreenJsonParser extends AsyncOperation<String, List<IMessag
         List<IMessage> result = new ArrayList<>();
         try {
             List<Integer> userIdList = new ArrayList<>();
-            JSONArray allMessages = new JSONObject(json).getJSONArray("response");
-            for (int i = 1; i < allMessages.length(); i++) {
-                JSONObject oneObject = allMessages.getJSONObject(i);
+            JSONArray allMessages = new JSONObject(json).getJSONObject("response").getJSONArray("items");
+            for (int i = 0; i < allMessages.length(); i++) {
+                JSONObject oneObject = allMessages.getJSONObject(i).getJSONObject("message");
 
                 if (oneObject.getString("title").equals(" ... "))
-                    userIdList.add(oneObject.getInt("uid"));
+                    userIdList.add(oneObject.getInt("user_id"));
                 else {
                     int id = oneObject.getInt("chat_id");
                     String url = new VkRequester("messages.getChat", new Pair<String, String>("chat_id", Integer.toString(id))).execute(null);
@@ -41,18 +41,18 @@ public class VkStartScreenJsonParser extends AsyncOperation<String, List<IMessag
 
             }
             VkIdToUserStorage.getUsers(userIdList);
-            for (int i = 1; i < allMessages.length(); i++) {
-                JSONObject oneObject = allMessages.getJSONObject(i);
+            for (int i = 0; i < allMessages.length(); i++) {
+                JSONObject oneObject = allMessages.getJSONObject(i).getJSONObject("message");
                 VkMessage.Builder builder = new VkMessage.Builder().setText(oneObject.getString("body")).setDate(new Date(oneObject.getLong("date") * 1000)).setRead(oneObject.getInt("read_state") != 0);
                 if (oneObject.getString("title").equals(" ... "))
-                    builder.setSender(VkIdToUserStorage.getUser(oneObject.getInt("uid")));
+                    builder.setSender(VkIdToUserStorage.getUser(oneObject.getLong("user_id")));
                 else
                     builder.setSender(VkIdToChatStorage.getChat(oneObject.getInt("chat_id") + 2000000000));
                 result.add(builder.build());
             }
         } catch (JSONException | InterruptedException | ExecutionException e) {
             e.printStackTrace();
-            result = null;
+            return null;
         }
         return result;
     }

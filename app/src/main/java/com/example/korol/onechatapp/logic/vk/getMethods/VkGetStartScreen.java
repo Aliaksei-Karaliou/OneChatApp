@@ -23,8 +23,11 @@ public class VkGetStartScreen {
             String response = requester.execute(null);
             if (response.contains(NO_ACCESS_TOKEN_PASSED) || response.contains(ACCESS_TOKEN_WAS_GIVEN_TO_ANOTHER_IP_ADDRESS) || response.contains(ACCESS_TOKEN_HAS_EXPIRED))
                 throw new AccessTokenException();
-            else if (!response.equals("Error request"))
-                return new VkStartScreenJsonParser().execute(response);
+            else if (!response.equals("Error request")){
+                final List<IMessage> execute = new VkStartScreenJsonParser().execute(response);
+                return execute;
+            }
+
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }

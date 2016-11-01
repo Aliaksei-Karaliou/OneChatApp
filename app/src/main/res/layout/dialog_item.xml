@@ -8,15 +8,16 @@
         android:id="@+id/dialog_item_avatar"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:contentDescription="@string/dialog_item_avatar"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:contentDescription="@string/dialog_item_avatar"/>
 
     <TextView
         android:id="@+id/dialog_item_message"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Some message"
+        android:layout_height="match_parent"
+        android:layout_marginStart="10dp"
         android:gravity="center_vertical"
-        android:textSize="20sp"
-        android:layout_marginStart="10dp"/>
+        android:text="Some message"
+        android:textSize="15sp"/>
+
 </LinearLayout>

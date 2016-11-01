@@ -20,7 +20,6 @@ public class VkGetDialog {
     public static IDialog getDialog(@NonNull ISender sender) {
         List<IMessage> list = new ArrayList<>();
         try {
-            //TODO correct problem with peer_id
             String responce = new VkRequester("messages.getHistory", new Pair<String, String>("peer_id", Long.toString(sender.getId()))).execute(null);
             list = new VkDialogJsonParser().execute(responce);
         } catch (ExecutionException | InterruptedException e) {
