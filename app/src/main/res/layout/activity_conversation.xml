@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
+        android:background="?attr/selectableItemBackground"
         android:orientation="horizontal">
 
         <EditText
@@ -28,14 +29,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.1"
-            android:text="Send"
-            android:onClick="sendButtonOnClick"/>
+            android:onClick="sendButtonOnClick"
+            android:text="@string/activity_conversation_send_button_text"/>
     </LinearLayout>
+
+    <View
+        android:id="@+id/activity_conversation_separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/activity_conversation_new_message_line"
+        android:background="@android:color/darker_gray"/>
 
     <ListView
         android:id="@+id/activity_conversation_message_list"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/activity_conversation_new_message_line">
+        android:layout_above="@+id/activity_conversation_separator">
     </ListView>
 </RelativeLayout>

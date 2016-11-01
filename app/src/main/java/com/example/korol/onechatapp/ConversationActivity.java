@@ -37,7 +37,7 @@ public class ConversationActivity extends AppCompatActivity {
         } else
             interlocutor = VkIdToChatStorage.getChat(interlocutorId);
 
-        if (interlocutor instanceof IUser) {
+        if (interlocutor != null) {
             IDialog list = VkGetDialog.getDialog(interlocutor);
             DialogAdapter adapter = new DialogAdapter(this, list);
             ((ListView) findViewById(R.id.activity_conversation_message_list)).setAdapter(adapter);

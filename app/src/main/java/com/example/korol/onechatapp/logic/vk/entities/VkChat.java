@@ -18,7 +18,8 @@ public class VkChat implements IChat {
     private String photoUrl = null;
 
     public VkChat(int id, String name, String photoUrl, List<IUser> userList) {
-        this.id = id;
+        if (id < 2000000000)
+            this.id = id + 2000000000;
         this.name = name;
         this.photoUrl = photoUrl;
         this.userList = userList;
@@ -27,7 +28,8 @@ public class VkChat implements IChat {
     }
 
     public VkChat(int id, String name, String photoUrl) {
-        this.id = id;
+        if (id < 2000000000)
+            this.id = id + 2000000000;
         this.name = name;
         this.photoUrl = photoUrl;
         this.userList = new ArrayList<>();
