@@ -11,18 +11,22 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.example.korol.onechatapp.logic.common.IDialog;
+import com.example.korol.onechatapp.logic.common.IMessageSender;
 import com.example.korol.onechatapp.logic.common.ISender;
-import com.example.korol.onechatapp.logic.common.IUser;
 import com.example.korol.onechatapp.logic.common.adapters.DialogAdapter;
-import com.example.korol.onechatapp.logic.vk.entities.VkSenderType;
+import com.example.korol.onechatapp.logic.common.enums.SenderType;
+import com.example.korol.onechatapp.logic.common.enums.SocialNetwork;
+import com.example.korol.onechatapp.logic.vk.VkMessageSender;
 import com.example.korol.onechatapp.logic.vk.getMethods.VkGetDialog;
 import com.example.korol.onechatapp.logic.vk.storages.VkIdToChatStorage;
 import com.example.korol.onechatapp.logic.vk.storages.VkIdToUserStorage;
 
 public class ConversationActivity extends AppCompatActivity {
 
-    private VkSenderType type;
+    private SenderType type;
     private ISender interlocutor;
+    private SocialNetwork socialNetwork;
+    private IMessageSender messageSender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +34,10 @@ public class ConversationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_conversation);
         final Intent intent = getIntent();
         long interlocutorId = intent.getLongExtra("ID", -1);
-        type = VkSenderType.valueOf(intent.getStringExtra("TYPE"));
+        socialNetwork = SocialNetwork.valueOf(intent.getStringExtra("SOCIAL NETWORK"));
+        type = SenderType.valueOf(intent.getStringExtra("TYPE"));
         getSupportActionBar().setTitle(intent.getStringExtra("NAME"));
-        if (type == VkSenderType.USER) {
+        if (type == SenderType.USER) {
             interlocutor = VkIdToUserStorage.getUser(interlocutorId);
         } else
             interlocutor = VkIdToChatStorage.getChat(interlocutorId);
@@ -43,6 +48,9 @@ public class ConversationActivity extends AppCompatActivity {
             ((ListView) findViewById(R.id.activity_conversation_message_list)).setAdapter(adapter);
         }
 
+        if (socialNetwork == SocialNetwork.Vk) {
+            messageSender = new VkMessageSender();
+        }
     }
 
     @Override
@@ -63,7 +71,7 @@ public class ConversationActivity extends AppCompatActivity {
         final EditText messageEditText = (EditText) findViewById(R.id.activity_conversation_new_message_text);
         final String message = messageEditText.getText().toString();
         messageEditText.setText("");
-
+        messageSender.send(interlocutor, message);
 
     }
 }

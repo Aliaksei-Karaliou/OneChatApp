@@ -1,6 +1,8 @@
 package com.example.korol.onechatapp.logic.vk.entities;
 
 import com.example.korol.onechatapp.logic.common.IUser;
+import com.example.korol.onechatapp.logic.common.enums.SenderType;
+import com.example.korol.onechatapp.logic.common.enums.SocialNetwork;
 
 public class VkUser implements IUser {
     private long id;
@@ -58,5 +60,15 @@ public class VkUser implements IUser {
     @Override
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
+    }
+
+    @Override
+    public SocialNetwork getSocialNetwork() {
+        return SocialNetwork.Vk;
+    }
+
+    @Override
+    public SenderType getSenderType() {
+        return SenderType.USER;
     }
 }

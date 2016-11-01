@@ -11,9 +11,9 @@ import android.widget.TextView;
 import com.example.korol.onechatapp.R;
 import com.example.korol.onechatapp.logic.common.IMessage;
 import com.example.korol.onechatapp.logic.common.ISender;
+import com.example.korol.onechatapp.logic.common.enums.SenderType;
 import com.example.korol.onechatapp.logic.utils.imageLoader.ImageLoader;
 import com.example.korol.onechatapp.logic.vk.entities.VkChat;
-import com.example.korol.onechatapp.logic.vk.entities.VkSenderType;
 import com.example.korol.onechatapp.logic.vk.entities.VkUser;
 
 import java.util.List;
@@ -59,26 +59,15 @@ public class StartMessagesScreenAdapter extends BaseAdapter {
 
         IMessage currentMessage = messageList.get(i);
 
-        final VkSenderType senderType = getSenderType(currentMessage.getSender());
-
         ((ImageView) view.findViewById(R.id.start_screen_message_avatar)).setImageBitmap(imageLoader.getBitmapFromUrl(currentMessage.getSender().getPhotoUrl()));
         ((TextView) view.findViewById(R.id.start_screen_message_message)).setText(currentMessage.getText());
         ((TextView) view.findViewById(R.id.start_screen_message_name)).setText(currentMessage.getSender().getName());
         ((TextView) view.findViewById(R.id.start_screen_message_id)).setText(String.format(Locale.getDefault(), "%d", currentMessage.getSender().getId()));
-        ((TextView) view.findViewById(R.id.start_screen_message_sender_type)).setText(senderType.toString());
+        ((TextView) view.findViewById(R.id.start_screen_message_sender_type)).setText(currentMessage.getSender().getSenderType().toString());
+        ((TextView) view.findViewById(R.id.start_screen_message_social_network)).setText(currentMessage.getSender().getSocialNetwork().toString());
 
         if (onClickListener != null)
             view.findViewById(R.id.start_screen_message_item).setOnClickListener(onClickListener);
         return view;
-    }
-
-    private VkSenderType getSenderType(ISender sender) {
-
-        if (sender instanceof VkUser)
-            return VkSenderType.USER;
-        else if (sender instanceof VkChat)
-            return VkSenderType.CHAT;
-        else
-            return VkSenderType.GROUP;
     }
 }

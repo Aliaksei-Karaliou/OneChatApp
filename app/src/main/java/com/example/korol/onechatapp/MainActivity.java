@@ -46,11 +46,12 @@ public class MainActivity extends AppCompatActivity {
                         long id = Long.parseLong(((TextView) view.findViewById(R.id.start_screen_message_id)).getText().toString());
                         final String type = ((TextView) view.findViewById(R.id.start_screen_message_sender_type)).getText().toString();
                         final String name = ((TextView) view.findViewById(R.id.start_screen_message_name)).getText().toString();
-                        startActivity(new Intent(MainActivity.this, ConversationActivity.class).putExtra("TYPE", type).putExtra("ID", id).putExtra("NAME", name));
+                        final String socialNetwork = ((TextView) view.findViewById(R.id.start_screen_message_social_network)).getText().toString();
+                        startActivity(new Intent(MainActivity.this, ConversationActivity.class).putExtra("TYPE", type).putExtra("ID", id).putExtra("NAME", name).putExtra("SOCIAL NETWORK", socialNetwork));
                     }
                 });
                 listView.setAdapter(adapter);
-             //   final Map<Long, Bitmap> cache = new OperationMemoryCache().getCache();
+                //   final Map<Long, Bitmap> cache = new OperationMemoryCache().getCache();
             } catch (AccessTokenException e) {
                 Toast.makeText(this, getString(R.string.access_token_error), Toast.LENGTH_SHORT).show();
             }

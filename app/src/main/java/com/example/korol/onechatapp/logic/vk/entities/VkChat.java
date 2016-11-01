@@ -3,6 +3,8 @@ package com.example.korol.onechatapp.logic.vk.entities;
 import com.example.korol.onechatapp.logic.common.IChat;
 import com.example.korol.onechatapp.logic.common.IMessage;
 import com.example.korol.onechatapp.logic.common.IUser;
+import com.example.korol.onechatapp.logic.common.enums.SenderType;
+import com.example.korol.onechatapp.logic.common.enums.SocialNetwork;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,6 +57,16 @@ public class VkChat implements IChat {
     @Override
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
+    }
+
+    @Override
+    public SocialNetwork getSocialNetwork() {
+        return SocialNetwork.Vk;
+    }
+
+    @Override
+    public SenderType getSenderType() {
+        return SenderType.CHAT;
     }
 
     @Override
