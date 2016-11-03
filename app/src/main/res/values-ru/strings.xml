@@ -4,4 +4,6 @@
     <string name="vk">ВКонтакте</string>
     <string name="access_token_error">Для продолжения работы авторизируйтесь заново</string>
     <string name="activity_conversation_send_button_text">Отправить</string>
+    <string name="message_chat_invite">%s был приглашён в чат</string>
+    <string name="message_chat_kick">%s был удалён из чата</string>
 </resources>

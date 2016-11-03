@@ -11,46 +11,30 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.example.korol.onechatapp.logic.common.IDialog;
-import com.example.korol.onechatapp.logic.common.IMessageSender;
 import com.example.korol.onechatapp.logic.common.ISender;
+import com.example.korol.onechatapp.logic.common.MessageSender;
 import com.example.korol.onechatapp.logic.common.adapters.DialogAdapter;
-import com.example.korol.onechatapp.logic.common.enums.SenderType;
-import com.example.korol.onechatapp.logic.common.enums.SocialNetwork;
-import com.example.korol.onechatapp.logic.vk.VkMessageSender;
 import com.example.korol.onechatapp.logic.vk.getMethods.VkGetDialog;
-import com.example.korol.onechatapp.logic.vk.storages.VkIdToChatStorage;
-import com.example.korol.onechatapp.logic.vk.storages.VkIdToUserStorage;
+import com.example.korol.onechatapp.logic.vk.packers.Packer;
 
 public class ConversationActivity extends AppCompatActivity {
 
-    private SenderType type;
-    private ISender interlocutor;
-    private SocialNetwork socialNetwork;
-    private IMessageSender messageSender;
+    ISender sender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
         final Intent intent = getIntent();
-        long interlocutorId = intent.getLongExtra("ID", -1);
-        socialNetwork = SocialNetwork.valueOf(intent.getStringExtra("SOCIAL NETWORK"));
-        type = SenderType.valueOf(intent.getStringExtra("TYPE"));
-        getSupportActionBar().setTitle(intent.getStringExtra("NAME"));
-        if (type == SenderType.USER) {
-            interlocutor = VkIdToUserStorage.getUser(interlocutorId);
-        } else
-            interlocutor = VkIdToChatStorage.getChat(interlocutorId);
-
-        if (interlocutor != null) {
-            IDialog list = VkGetDialog.getDialog(interlocutor);
-            DialogAdapter adapter = new DialogAdapter(this, list);
-            ((ListView) findViewById(R.id.activity_conversation_message_list)).setAdapter(adapter);
+        Packer packer = new Packer();
+        try {
+            sender = packer.unPack(intent.getStringExtra("Sender Packer"));
+        } catch (Packer.PackerException e) {
+            e.printStackTrace();
         }
-
-        if (socialNetwork == SocialNetwork.Vk) {
-            messageSender = new VkMessageSender();
-        }
+        final IDialog messages = VkGetDialog.getDialog(this, sender);
+        DialogAdapter adapter = new DialogAdapter(this, messages);
+        ((ListView) findViewById(R.id.activity_conversation_message_list)).setAdapter(adapter);
     }
 
     @Override
@@ -70,8 +54,7 @@ public class ConversationActivity extends AppCompatActivity {
     public void sendButtonOnClick(View view) {
         final EditText messageEditText = (EditText) findViewById(R.id.activity_conversation_new_message_text);
         final String message = messageEditText.getText().toString();
-        messageEditText.setText("");
-        messageSender.send(interlocutor, message);
-
+        if (MessageSender.getInstance(sender.getSocialNetwork(), sender.getSenderType()).send(sender, message))
+            messageEditText.setText("");
     }
 }

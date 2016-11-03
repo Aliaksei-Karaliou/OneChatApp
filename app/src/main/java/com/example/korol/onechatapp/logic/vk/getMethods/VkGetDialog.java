@@ -1,5 +1,6 @@
 package com.example.korol.onechatapp.logic.vk.getMethods;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
@@ -17,11 +18,11 @@ import java.util.concurrent.ExecutionException;
 
 public class VkGetDialog {
 
-    public static IDialog getDialog(@NonNull ISender sender) {
+    public static IDialog getDialog(Context context, @NonNull ISender sender) {
         List<IMessage> list = new ArrayList<>();
         try {
             String responce = new VkRequester("messages.getHistory", new Pair<String, String>("peer_id", Long.toString(sender.getId()))).execute(null);
-            list = new VkDialogJsonParser().execute(responce);
+            list = new VkDialogJsonParser(context).execute(responce);
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }

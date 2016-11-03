@@ -6,4 +6,5 @@
     <string name="start_screen_user_avatar_description" translatable="false">Start screen user avatar</string>
     <string name="dialog_item_avatar" translatable="false">dialog_item_avatar</string>
     <string name="activity_conversation_send_button_text">Send</string>
+    <string name="message_chat_invite">%s was invited to this chat</string>
 </resources>

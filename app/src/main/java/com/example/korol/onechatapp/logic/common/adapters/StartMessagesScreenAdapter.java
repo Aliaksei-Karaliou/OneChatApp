@@ -10,14 +10,10 @@ import android.widget.TextView;
 
 import com.example.korol.onechatapp.R;
 import com.example.korol.onechatapp.logic.common.IMessage;
-import com.example.korol.onechatapp.logic.common.ISender;
-import com.example.korol.onechatapp.logic.common.enums.SenderType;
 import com.example.korol.onechatapp.logic.utils.imageLoader.ImageLoader;
-import com.example.korol.onechatapp.logic.vk.entities.VkChat;
-import com.example.korol.onechatapp.logic.vk.entities.VkUser;
+import com.example.korol.onechatapp.logic.vk.packers.Packer;
 
 import java.util.List;
-import java.util.Locale;
 
 public class StartMessagesScreenAdapter extends BaseAdapter {
 
@@ -59,12 +55,12 @@ public class StartMessagesScreenAdapter extends BaseAdapter {
 
         IMessage currentMessage = messageList.get(i);
 
+        Packer packer = new Packer();
+
         ((ImageView) view.findViewById(R.id.start_screen_message_avatar)).setImageBitmap(imageLoader.getBitmapFromUrl(currentMessage.getSender().getPhotoUrl()));
         ((TextView) view.findViewById(R.id.start_screen_message_message)).setText(currentMessage.getText());
         ((TextView) view.findViewById(R.id.start_screen_message_name)).setText(currentMessage.getSender().getName());
-        ((TextView) view.findViewById(R.id.start_screen_message_id)).setText(String.format(Locale.getDefault(), "%d", currentMessage.getSender().getId()));
-        ((TextView) view.findViewById(R.id.start_screen_message_sender_type)).setText(currentMessage.getSender().getSenderType().toString());
-        ((TextView) view.findViewById(R.id.start_screen_message_social_network)).setText(currentMessage.getSender().getSocialNetwork().toString());
+        ((TextView) view.findViewById(R.id.start_screen_message_sender_packer)).setText(packer.pack(currentMessage.getSender()));
 
         if (onClickListener != null)
             view.findViewById(R.id.start_screen_message_item).setOnClickListener(onClickListener);

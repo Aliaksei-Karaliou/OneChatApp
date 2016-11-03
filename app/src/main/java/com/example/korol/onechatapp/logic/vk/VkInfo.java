@@ -18,7 +18,7 @@ public class VkInfo {
     }
 
     public static double getVkApiVersion() {
-        return 5.59;
+        return 5.60;
     }
 
     public static int getAppId() {
