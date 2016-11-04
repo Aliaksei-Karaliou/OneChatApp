@@ -28,13 +28,14 @@ public class ConversationActivity extends AppCompatActivity {
         final Intent intent = getIntent();
         Packer packer = new Packer();
         try {
-            sender = packer.unPack(intent.getStringExtra("Sender Packer"));
+            sender = packer.unpack(intent.getStringExtra("Sender Packer"));
         } catch (Packer.PackerException e) {
             e.printStackTrace();
         }
         final IDialog messages = VkGetDialog.getDialog(this, sender);
         DialogAdapter adapter = new DialogAdapter(this, messages);
         ((ListView) findViewById(R.id.activity_conversation_message_list)).setAdapter(adapter);
+        getSupportActionBar().setTitle(sender.getName());
     }
 
     @Override

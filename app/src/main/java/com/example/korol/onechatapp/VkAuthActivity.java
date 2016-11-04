@@ -19,7 +19,7 @@ public class VkAuthActivity extends AppCompatActivity {
     }
 
     private void webViewNavigate() {
-        final VkAuth vkAuth = new VkAuth(getResources().getInteger(R.integer.appId));
+        final VkAuth vkAuth = new VkAuth(getResources().getInteger(VkInfo.getAppId()));
         vkAuth.setScope("messages");
         final WebView webView = (WebView) findViewById(R.id.vk_auth_web_view);
         webView.loadUrl(vkAuth.getUrl());

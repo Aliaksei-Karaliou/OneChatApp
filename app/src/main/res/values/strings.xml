@@ -7,4 +7,6 @@
     <string name="dialog_item_avatar" translatable="false">dialog_item_avatar</string>
     <string name="activity_conversation_send_button_text">Send</string>
     <string name="message_chat_invite">%s was invited to this chat</string>
+    <string name="message_chat_kick">%s was kicked from this chat</string>
+    <string name="acivity_auth_vk">Acivity_auth_vk</string>
 </resources>

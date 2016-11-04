@@ -17,6 +17,7 @@
     android:src="@drawable/vk_button"
     android:scaleType="fitStart"
     android:background="?attr/selectableItemBackground"
-    android:onClick="VkAuthClick"/>
+    android:onClick="VkAuthClick"
+    android:contentDescription="@string/acivity_auth_vk"/>
 
 </LinearLayout>

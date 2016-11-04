@@ -22,8 +22,8 @@
             android:name=".AuthActivity"
             android:noHistory="true"/>
         <activity android:name=".VkAuthActivity"/>
-        <activity android:name=".ConversationActivity">
-        </activity>
+        <activity android:name=".ConversationActivity"/>
+        <receiver android:name=".logic.common.broadcastReceiver.MessageReceiver"/>
     </application>
 
 </manifest>

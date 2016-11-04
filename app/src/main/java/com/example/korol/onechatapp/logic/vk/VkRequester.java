@@ -26,9 +26,8 @@ public class VkRequester extends AsyncOperation<Void, String> {
         StringBuilder paramsBuilder = new StringBuilder();
         if (params.length > 0) {
             for (Pair<String, String> param : params)
-                paramsBuilder.append(param.first).append("=").append(param.second).append("&");
+                paramsBuilder.append(param.first).append("=").append(param.second.replace(" ", "%20")).append("&");
             stringParams = paramsBuilder.toString().substring(0, paramsBuilder.length() - 1);
-            final StringBuilder stringBuilder = new StringBuilder();
         }
     }
 

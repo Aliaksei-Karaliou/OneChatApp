@@ -26,7 +26,7 @@ public class Packer {
         return builder.append(sender.getId()).toString();
     }
 
-    public ISender unPack(String packer) throws PackerException {
+    public ISender unpack(String packer) throws PackerException {
         SocialNetwork network;
         SenderType type;
 

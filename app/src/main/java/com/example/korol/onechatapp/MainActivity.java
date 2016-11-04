@@ -7,19 +7,24 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.korol.onechatapp.logic.common.IMessage;
+import com.example.korol.onechatapp.logic.common.broadcastReceiver.MessageReceiver;
 import com.example.korol.onechatapp.logic.utils.exceptions.AccessTokenException;
 import com.example.korol.onechatapp.logic.vk.VkInfo;
 import com.example.korol.onechatapp.logic.common.adapters.StartMessagesScreenAdapter;
+import com.example.korol.onechatapp.logic.vk.VkRequester;
 import com.example.korol.onechatapp.logic.vk.getMethods.VkGetStartScreen;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static int offset = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +42,28 @@ public class MainActivity extends AppCompatActivity {
                 List<IMessage> messages = VkGetStartScreen.getStartScreen();
                 if (messages == null)
                     throw new AccessTokenException();
-                ListView listView = (ListView) findViewById(R.id.list_view_main_messages);
+                final ListView listView = (ListView) findViewById(R.id.activity_main_list_view_main_messages);
+                listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+                    @Override
+                    public void onScrollStateChanged(AbsListView absListView, int i) {
+
+                    }
+
+                    @Override
+                    public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                        if (firstVisibleItem + visibleItemCount == totalItemCount) {
+                            offset += 20;
+                            if (listView.getId() == R.id.activity_main_list_view_main_messages) {
+                                try {
+                                    List list = VkGetStartScreen.getStartScreen(offset);
+                                    final StringBuilder builder = new StringBuilder();
+                                } catch (AccessTokenException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                });
                 StartMessagesScreenAdapter adapter = new StartMessagesScreenAdapter(this, messages);
                 adapter.setOnClickListener(new View.OnClickListener() {
                     @Override
