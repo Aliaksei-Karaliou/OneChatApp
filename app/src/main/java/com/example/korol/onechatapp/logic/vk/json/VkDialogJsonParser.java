@@ -45,8 +45,8 @@ public class VkDialogJsonParser extends AsyncOperation<String, List<IMessage>> {
                     }
                 }
                 list.add(builder.build());
-                return list;
             }
+            return list;
         } catch (JSONException e) {
             e.printStackTrace();
         }
