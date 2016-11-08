@@ -1,9 +1,11 @@
 package com.example.korol.onechatapp.logic.common;
 
+import android.os.Parcelable;
+
 import com.example.korol.onechatapp.logic.common.enums.SenderType;
 import com.example.korol.onechatapp.logic.common.enums.SocialNetwork;
 
-public interface ISender {
+public interface ISender extends Parcelable {
 
     long getId();
 

@@ -15,7 +15,6 @@ import com.example.korol.onechatapp.logic.common.ISender;
 import com.example.korol.onechatapp.logic.common.MessageSender;
 import com.example.korol.onechatapp.logic.common.adapters.DialogAdapter;
 import com.example.korol.onechatapp.logic.vk.getMethods.VkGetDialog;
-import com.example.korol.onechatapp.logic.vk.packers.Packer;
 
 public class ConversationActivity extends AppCompatActivity {
 
@@ -26,15 +25,11 @@ public class ConversationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
         final Intent intent = getIntent();
-        Packer packer = new Packer();
-        try {
-            sender = packer.unpack(intent.getStringExtra("Sender Packer"));
-        } catch (Packer.PackerException e) {
-            e.printStackTrace();
-        }
-        final IDialog messages = VkGetDialog.getDialog(this, sender);
-        DialogAdapter adapter = new DialogAdapter(this, messages);
-        ((ListView) findViewById(R.id.activity_conversation_message_list)).setAdapter(adapter);
+        sender = intent.getParcelableExtra("Sender");
+        assert (sender != null);
+        IDialog dialog = VkGetDialog.getDialog(this, sender);
+        ((ListView) findViewById(R.id.activity_conversation_message_list)).setAdapter(new DialogAdapter(this, dialog));
+
         getSupportActionBar().setTitle(sender.getName());
     }
 

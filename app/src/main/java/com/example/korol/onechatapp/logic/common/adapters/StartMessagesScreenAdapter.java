@@ -60,7 +60,6 @@ public class StartMessagesScreenAdapter extends BaseAdapter {
         ((ImageView) view.findViewById(R.id.start_screen_message_avatar)).setImageBitmap(imageLoader.getBitmapFromUrl(currentMessage.getSender().getPhotoUrl()));
         ((TextView) view.findViewById(R.id.start_screen_message_message)).setText(currentMessage.getText());
         ((TextView) view.findViewById(R.id.start_screen_message_name)).setText(currentMessage.getSender().getName());
-        ((TextView) view.findViewById(R.id.start_screen_message_sender_packer)).setText(packer.pack(currentMessage.getSender()));
 
         if (onClickListener != null)
             view.findViewById(R.id.start_screen_message_item).setOnClickListener(onClickListener);
