@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.example.korol.onechatapp.logic.common.IMessage;
 import com.example.korol.onechatapp.logic.common.ISender;
-import com.example.korol.onechatapp.logic.common.adapters.StartMessagesRecyclerViewAdapter;
+import com.example.korol.onechatapp.logic.common.adapters.StartScreenMessagesAdapter;
 import com.example.korol.onechatapp.logic.utils.exceptions.AccessTokenException;
 import com.example.korol.onechatapp.logic.vk.VkInfo;
 import com.example.korol.onechatapp.logic.vk.getMethods.VkGetStartScreen;
@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
                     throw new AccessTokenException();
                 final RecyclerView messagesRecyclerView = (RecyclerView) findViewById(R.id.activity_main_recycler_view_main_messages);
                 messagesRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-                final StartMessagesRecyclerViewAdapter adapter = new StartMessagesRecyclerViewAdapter(messages);
-                adapter.setOnMessageClick(new StartMessagesRecyclerViewAdapter.OnMessageClick() {
+                final StartScreenMessagesAdapter adapter = new StartScreenMessagesAdapter(messages);
+                adapter.onItemClick(new StartScreenMessagesAdapter.OnMessageClick() {
                     @Override
                     public void onClick(ISender sender) {
                         Intent intent = new Intent(MainActivity.this, ConversationActivity.class).putExtra("Sender", sender);

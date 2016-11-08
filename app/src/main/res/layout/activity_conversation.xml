@@ -40,10 +40,10 @@
         android:layout_above="@+id/activity_conversation_new_message_line"
         android:background="@android:color/darker_gray"/>
 
-    <ListView
-        android:id="@+id/activity_conversation_message_list"
-        android:layout_width="fill_parent"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/activity_conversation_message_recycler_view"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/activity_conversation_separator">
-    </ListView>
+    </android.support.v7.widget.RecyclerView>
 </RelativeLayout>

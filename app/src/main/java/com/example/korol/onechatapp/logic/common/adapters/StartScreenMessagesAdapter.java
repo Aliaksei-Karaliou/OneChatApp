@@ -14,15 +14,15 @@ import com.example.korol.onechatapp.logic.utils.imageLoader.ImageLoader;
 
 import java.util.List;
 
-public class StartMessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class StartScreenMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    public void setOnMessageClick(OnMessageClick onMessageClick) {
+    public void onItemClick(OnMessageClick onMessageClick) {
         this.onMessageClick = onMessageClick;
     }
 
     private OnMessageClick onMessageClick;
 
-    public StartMessagesRecyclerViewAdapter(List<IMessage> messageList) {
+    public StartScreenMessagesAdapter(List<IMessage> messageList) {
         this.messageList = messageList;
     }
 
@@ -36,11 +36,10 @@ public class StartMessagesRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        final StartMessagesRecyclerViewHolder viewHolder = ((StartMessagesRecyclerViewHolder) holder);
         final IMessage currentMessage = messageList.get(position);
+        final ImageLoader loader = new ImageLoader();
 
-        ImageLoader loader = new ImageLoader();
-
-        StartMessagesRecyclerViewHolder viewHolder = ((StartMessagesRecyclerViewHolder) holder);
 
         viewHolder.avatarImageView.setImageBitmap(loader.getBitmapFromUrl(currentMessage.getSender().getPhotoUrl()));
         viewHolder.messageTextView.setText(currentMessage.getText());
@@ -57,8 +56,6 @@ public class StartMessagesRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
     public int getItemCount() {
         return messageList.size();
     }
-
-
 
     private class StartMessagesRecyclerViewHolder extends RecyclerView.ViewHolder {
 
