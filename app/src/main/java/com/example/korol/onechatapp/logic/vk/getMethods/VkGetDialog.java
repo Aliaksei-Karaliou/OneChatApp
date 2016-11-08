@@ -7,7 +7,6 @@ import android.util.Pair;
 import com.example.korol.onechatapp.logic.common.IDialog;
 import com.example.korol.onechatapp.logic.common.IMessage;
 import com.example.korol.onechatapp.logic.common.ISender;
-import com.example.korol.onechatapp.logic.common.IUser;
 import com.example.korol.onechatapp.logic.vk.VkRequester;
 import com.example.korol.onechatapp.logic.vk.entities.VkDialog;
 import com.example.korol.onechatapp.logic.vk.json.VkDialogJsonParser;
@@ -22,7 +21,7 @@ public class VkGetDialog {
         List<IMessage> list = new ArrayList<>();
         try {
             String responce = new VkRequester("messages.getHistory", new Pair<String, String>("peer_id", Long.toString(sender.getId()))).execute(null);
-            list = new VkDialogJsonParser(context).execute(responce);
+            list = new VkDialogJsonParser(context, sender.getSenderType()).execute(responce);
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
