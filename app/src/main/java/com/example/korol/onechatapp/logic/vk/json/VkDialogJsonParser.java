@@ -28,23 +28,28 @@ public class VkDialogJsonParser extends AsyncOperation<String, List<IMessage>> {
     private Context context;
     
     @Override
-    protected List<IMessage> doInBackground(String json) throws JSONException {
-        List<IMessage> list = new ArrayList<>();
-        JSONArray allMessages = new JSONObject(json).getJSONObject("response").getJSONArray("items");
-        for (int i = 0; i < allMessages.length(); i++) {
-            JSONObject jsonMessageObject = allMessages.getJSONObject(i);
-            VkMessage.Builder builder = new VkMessage.Builder().setText(jsonMessageObject.getString("body")).setSender(VkIdToUserStorage.getUser(jsonMessageObject.getLong("from_id"))).setDate(new Date(jsonMessageObject.getLong("date") * 1000));
-            if (jsonMessageObject.has("action")) {
-                if (Objects.equals(jsonMessageObject.getString("action"), "chat_invite_user")) {
-                    final IUser actioning = VkIdToUserStorage.getUser(jsonMessageObject.getLong("action_mid"));
-                    builder.setText(String.format(Locale.getDefault(), context.getString(R.string.message_chat_invite), actioning.getName()));
-                } else if (Objects.equals(jsonMessageObject.getString("action"), "chat_kick_user")) {
-                    final IUser actioning = VkIdToUserStorage.getUser(jsonMessageObject.getLong("action_mid"));
-                    builder.setText(String.format(Locale.getDefault(), "%s was removed from this chat", actioning.getName()));
+    protected List<IMessage> doInBackground(String json) {
+        try {
+            List<IMessage> list = new ArrayList<>();
+            JSONArray allMessages = new JSONObject(json).getJSONObject("response").getJSONArray("items");
+            for (int i = 0; i < allMessages.length(); i++) {
+                JSONObject jsonMessageObject = allMessages.getJSONObject(i);
+                VkMessage.Builder builder = new VkMessage.Builder().setText(jsonMessageObject.getString("body")).setSender(VkIdToUserStorage.getUser(jsonMessageObject.getLong("from_id"))).setDate(new Date(jsonMessageObject.getLong("date") * 1000));
+                if (jsonMessageObject.has("action")) {
+                    if (Objects.equals(jsonMessageObject.getString("action"), "chat_invite_user")) {
+                        final IUser actioning = VkIdToUserStorage.getUser(jsonMessageObject.getLong("action_mid"));
+                        builder.setText(String.format(Locale.getDefault(), context.getString(R.string.message_chat_invite), actioning.getName()));
+                    } else if (Objects.equals(jsonMessageObject.getString("action"), "chat_kick_user")) {
+                        final IUser actioning = VkIdToUserStorage.getUser(jsonMessageObject.getLong("action_mid"));
+                        builder.setText(String.format(Locale.getDefault(), "%s was removed from this chat", actioning.getName()));
+                    }
                 }
+                list.add(builder.build());
+                return list;
             }
-            list.add(builder.build());
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        return list;
+        return null;
     }
 }

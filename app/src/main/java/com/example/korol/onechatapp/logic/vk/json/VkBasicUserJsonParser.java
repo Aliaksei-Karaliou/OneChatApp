@@ -16,7 +16,7 @@ import java.util.List;
 public class VkBasicUserJsonParser extends AsyncOperation<String, List<IUser>> {
 
     @Override
-    protected List<IUser> doInBackground(String s) throws JSONException {
+    protected List<IUser> doInBackground(String s){
         List<IUser> result = new ArrayList<>();
         try {
             VkRequester requester = new VkRequester("users.get", new Pair<String, String>("user_ids", s), new Pair<String, String>("fields", "photo"));

@@ -9,7 +9,7 @@ import java.util.concurrent.Future;
 
 public abstract class AsyncOperation<Param, Result> {
 
-    protected abstract Result doInBackground(Param param) throws JSONException;
+    protected abstract Result doInBackground(Param param);
 
     public final Result execute(final Param param) throws ExecutionException, InterruptedException {
         final AssyncOperationCallableImplementation callableImplementation = new AssyncOperationCallableImplementation(param, new AssyncOperationInterface<Param, Result>() {
