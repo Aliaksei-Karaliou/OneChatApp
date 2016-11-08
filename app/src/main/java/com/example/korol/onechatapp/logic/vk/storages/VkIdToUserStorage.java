@@ -1,21 +1,14 @@
 package com.example.korol.onechatapp.logic.vk.storages;
 
-import android.util.Pair;
-
 import com.example.korol.onechatapp.logic.common.IUser;
-import com.example.korol.onechatapp.logic.vk.VkRequester;
 import com.example.korol.onechatapp.logic.vk.json.VkBasicUserJsonParser;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public class VkIdToUserStorage {
+public abstract class VkIdToUserStorage {
 
     private static Map<Long, IUser> idToUserStorage = new HashMap<>();
 
@@ -34,12 +27,12 @@ public class VkIdToUserStorage {
         }
     }
 
-    public static Map<Long, IUser> getUsers(Integer... ids) {
+    public static Map<Long, IUser> getUsers(Long... ids) {
         Map<Long, IUser> result = new HashMap<>();
         StringBuilder builder = new StringBuilder();
 
         // add new users
-        for (int id : ids)
+        for (long id : ids)
             if (!idToUserStorage.containsKey(id) && id > 0)
                 builder.append(id).append(",");
         String params = builder.substring(0, builder.length() - 1);
@@ -61,7 +54,11 @@ public class VkIdToUserStorage {
         return result;
     }
 
-    public static Map<Long, IUser> getUsers(List<Integer> ids) {
-        return getUsers(ids.toArray(new Integer[0]));
+    public static Map<Long, IUser> getUsers(List<Long> ids) {
+        return getUsers(ids.toArray(new Long[0]));
+    }
+
+    public static boolean contains(long id) {
+        return idToUserStorage.containsKey(id);
     }
 }

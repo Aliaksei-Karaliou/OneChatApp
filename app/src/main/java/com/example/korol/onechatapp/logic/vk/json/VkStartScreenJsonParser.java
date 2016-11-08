@@ -20,13 +20,13 @@ public class VkStartScreenJsonParser extends AsyncOperation<String, List<IMessag
     protected List<IMessage> doInBackground(String json) {
         List<IMessage> result = new ArrayList<>();
         try {
-            List<Integer> userIdList = new ArrayList<>();
+            List<Long> userIdList = new ArrayList<>();
             List<Long> chatIdList = new ArrayList<>();
             JSONArray allMessages = new JSONObject(json).getJSONObject("response").getJSONArray("items");
             for (int i = 0; i < allMessages.length(); i++) {
                 final JSONObject oneObject = allMessages.getJSONObject(i).getJSONObject("message");
                 if (oneObject.getString("title").equals(" ... "))
-                    userIdList.add(oneObject.getInt("user_id"));
+                    userIdList.add(oneObject.getLong("user_id"));
                 else {
                     chatIdList.add(oneObject.getLong("chat_id") + 2000000000);
                 }

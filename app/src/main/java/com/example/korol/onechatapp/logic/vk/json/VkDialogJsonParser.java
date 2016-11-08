@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class VkDialogJsonParser extends AsyncOperation<String, List<IMessage>> {
 
@@ -32,14 +31,21 @@ public class VkDialogJsonParser extends AsyncOperation<String, List<IMessage>> {
         try {
             List<IMessage> list = new ArrayList<>();
             JSONArray allMessages = new JSONObject(json).getJSONObject("response").getJSONArray("items");
+            List<Long> idList = new ArrayList<>();
+            for (int i = 0; i < allMessages.length(); i++) {
+                JSONObject jsonMessageObject = allMessages.getJSONObject(i);
+                long userId = jsonMessageObject.getLong("from_id");
+                idList.add(userId);
+            }
+            VkIdToUserStorage.getUsers(idList);
             for (int i = 0; i < allMessages.length(); i++) {
                 JSONObject jsonMessageObject = allMessages.getJSONObject(i);
                 VkMessage.Builder builder = new VkMessage.Builder().setText(jsonMessageObject.getString("body")).setSender(VkIdToUserStorage.getUser(jsonMessageObject.getLong("from_id"))).setDate(new Date(jsonMessageObject.getLong("date") * 1000));
                 if (jsonMessageObject.has("action")) {
-                    if (Objects.equals(jsonMessageObject.getString("action"), "chat_invite_user")) {
+                    if (jsonMessageObject.getString("action") == "chat_invite_user") {
                         final IUser actioning = VkIdToUserStorage.getUser(jsonMessageObject.getLong("action_mid"));
                         builder.setText(String.format(Locale.getDefault(), context.getString(R.string.message_chat_invite), actioning.getName()));
-                    } else if (Objects.equals(jsonMessageObject.getString("action"), "chat_kick_user")) {
+                    } else if (jsonMessageObject.getString("action") == "chat_kick_user") {
                         final IUser actioning = VkIdToUserStorage.getUser(jsonMessageObject.getLong("action_mid"));
                         builder.setText(String.format(Locale.getDefault(), "%s was removed from this chat", actioning.getName()));
                     }
