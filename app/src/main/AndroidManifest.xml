@@ -5,13 +5,13 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:name=".ThisApplication"
+        android:name=".ui.activities.ThisApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -19,11 +19,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AuthActivity"
+            android:name=".ui.activities.AuthActivity"
             android:noHistory="true"/>
-        <activity android:name=".VkAuthActivity"/>
-        <activity android:name=".ConversationActivity"/>
-        <receiver android:name=".logic.common.broadcastReceiver.MessageReceiver"/>
+        <activity android:name=".ui.activities.VkAuthActivity"/>
+        <activity android:name=".ui.activities.ConversationActivity"/>
+        <service android:name=".services.ReceivingService"/>
+        <receiver android:name=".services.broadcastReceiver.MessageReceiver"/>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.example.korol.onechatapp;
+package com.example.korol.onechatapp.ui.activities;
 
 import com.example.korol.onechatapp.logic.utils.imageLoader.OperationMemoryCache;
 

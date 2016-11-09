@@ -30,7 +30,6 @@ public class VkStartScreenJsonParser extends AsyncOperation<String, List<IMessag
                 else {
                     chatIdList.add(oneObject.getLong("chat_id") + 2000000000);
                 }
-
             }
             VkIdToUserStorage.getUsers(userIdList);
             VkIdToChatStorage.getChats(chatIdList);

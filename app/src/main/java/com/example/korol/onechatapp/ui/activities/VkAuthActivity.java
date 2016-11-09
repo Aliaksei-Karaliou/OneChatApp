@@ -1,10 +1,11 @@
-package com.example.korol.onechatapp;
+package com.example.korol.onechatapp.ui.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.example.korol.onechatapp.R;
 import com.example.korol.onechatapp.logic.vk.VkAuth;
 import com.example.korol.onechatapp.logic.vk.VkInfo;
 
@@ -19,7 +20,7 @@ public class VkAuthActivity extends AppCompatActivity {
     }
 
     private void webViewNavigate() {
-        final VkAuth vkAuth = new VkAuth(getResources().getInteger(VkInfo.getAppId()));
+        final VkAuth vkAuth = new VkAuth(VkInfo.getAppId());
         vkAuth.setScope("messages");
         final WebView webView = (WebView) findViewById(R.id.vk_auth_web_view);
         webView.loadUrl(vkAuth.getUrl());

@@ -1,4 +1,4 @@
-package com.example.korol.onechatapp;
+package com.example.korol.onechatapp.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,20 +8,21 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.example.korol.onechatapp.R;
 import com.example.korol.onechatapp.logic.common.IMessage;
 import com.example.korol.onechatapp.logic.common.ISender;
-import com.example.korol.onechatapp.logic.common.adapters.StartScreenMessagesAdapter;
 import com.example.korol.onechatapp.logic.utils.exceptions.AccessTokenException;
 import com.example.korol.onechatapp.logic.vk.VkInfo;
 import com.example.korol.onechatapp.logic.vk.getMethods.VkGetStartScreen;
+import com.example.korol.onechatapp.ui.adapters.StartScreenMessagesAdapter;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private static int offset = 0;
+    private static List<IMessage> messages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +37,11 @@ public class MainActivity extends AppCompatActivity {
         if (VkInfo.isAuthorized()) {
             VkInfo.userSetAuth(this);
             try {
-                List<IMessage> messages = VkGetStartScreen.getStartScreen();
-                if (messages == null)
-                    throw new AccessTokenException();
+                messages = VkGetStartScreen.getStartScreen();
                 final RecyclerView messagesRecyclerView = (RecyclerView) findViewById(R.id.activity_main_recycler_view_main_messages);
-                messagesRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-                final StartScreenMessagesAdapter adapter = new StartScreenMessagesAdapter(messages);
+                final LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+                messagesRecyclerView.setLayoutManager(layoutManager);
+                final StartScreenMessagesAdapter adapter = new StartScreenMessagesAdapter(this.messages);
                 adapter.onItemClick(new StartScreenMessagesAdapter.OnMessageClick() {
                     @Override
                     public void onClick(ISender sender) {
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 });
                 messagesRecyclerView.setAdapter(adapter);
             } catch (AccessTokenException e) {
-                Toast.makeText(this, getString(R.string.access_token_error), Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
             }
         }
     }

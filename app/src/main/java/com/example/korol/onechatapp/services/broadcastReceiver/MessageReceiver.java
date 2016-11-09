@@ -1,4 +1,4 @@
-package com.example.korol.onechatapp.logic.common.broadcastReceiver;
+package com.example.korol.onechatapp.services.broadcastReceiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

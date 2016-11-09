@@ -1,4 +1,4 @@
-package com.example.korol.onechatapp.logic.common.adapters;
+package com.example.korol.onechatapp.ui.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

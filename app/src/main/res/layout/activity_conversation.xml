@@ -5,7 +5,7 @@
     android:id="@+id/activity_conversation"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.korol.onechatapp.ConversationActivity">
+    tools:context="com.example.korol.onechatapp.ui.activities.ConversationActivity">
 
     <LinearLayout
         android:id="@+id/activity_conversation_new_message_line"

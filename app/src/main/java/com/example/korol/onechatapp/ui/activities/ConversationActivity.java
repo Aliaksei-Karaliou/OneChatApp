@@ -1,4 +1,4 @@
-package com.example.korol.onechatapp;
+package com.example.korol.onechatapp.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,11 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.example.korol.onechatapp.R;
 import com.example.korol.onechatapp.logic.common.IDialog;
 import com.example.korol.onechatapp.logic.common.ISender;
 import com.example.korol.onechatapp.logic.common.MessageSender;
-import com.example.korol.onechatapp.logic.common.adapters.DialogRecyclerAdapter;
 import com.example.korol.onechatapp.logic.vk.getMethods.VkGetDialog;
+import com.example.korol.onechatapp.ui.adapters.DialogRecyclerAdapter;
 
 public class ConversationActivity extends AppCompatActivity {
 
