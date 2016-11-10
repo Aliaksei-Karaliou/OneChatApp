@@ -14,6 +14,7 @@ import com.example.korol.onechatapp.logic.common.IMessage;
 import com.example.korol.onechatapp.logic.common.ISender;
 import com.example.korol.onechatapp.logic.utils.exceptions.AccessTokenException;
 import com.example.korol.onechatapp.logic.vk.VkInfo;
+import com.example.korol.onechatapp.logic.vk.VkLongPoll;
 import com.example.korol.onechatapp.logic.vk.getMethods.VkGetStartScreen;
 import com.example.korol.onechatapp.ui.adapters.StartScreenMessagesAdapter;
 
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
         if (VkInfo.isAuthorized()) {
             VkInfo.userSetAuth(this);
             try {
+                final VkLongPoll vkLongPoll = VkLongPoll.initialize();
+                vkLongPoll.start();
                 messages = VkGetStartScreen.getStartScreen();
                 final RecyclerView messagesRecyclerView = (RecyclerView) findViewById(R.id.activity_main_recycler_view_main_messages);
                 final LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);

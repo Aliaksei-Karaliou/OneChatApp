@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class OperationMemoryCache implements Cache<Long, Bitmap> {
 
-    private static Map<Long, Bitmap> cache;
+    private static Map<Long, Bitmap> cache = new HashMap<>();
 
     @Override
     public void put(Long id, Bitmap bitmap) {
@@ -30,14 +30,5 @@ public class OperationMemoryCache implements Cache<Long, Bitmap> {
     @Override
     public boolean contains(Long id) {
         return cache.containsKey(id);
-    }
-
-    public static boolean createCache() {
-        if (cache != null)
-            return false;
-        else {
-            cache = new HashMap<>();
-            return true;
-        }
     }
 }
