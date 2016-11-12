@@ -6,4 +6,9 @@
     <string name="activity_conversation_send_button_text">Отправить</string>
     <string name="message_chat_invite">%s был приглашён в чат</string>
     <string name="message_chat_kick">%s был удалён из чата</string>
+    <string name="user_menu_item_clear_history">Очистить историю</string>
+    <string name="confirm_title">Подтверждение</string>
+    <string name="clear_history_confirmation_message">Вы действительно хотите удалить все сообщения в этом диалоге? Отменить это действие будет невозможно.</string>
+    <string name="answer_no">Нет</string>
+    <string name="answer_yes">Да</string>
 </resources>

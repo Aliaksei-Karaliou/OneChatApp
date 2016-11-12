@@ -8,6 +8,10 @@
     <string name="activity_conversation_send_button_text">Send</string>
     <string name="message_chat_invite">%s was invited to this chat</string>
     <string name="message_chat_kick">%s was kicked from this chat</string>
-    <string name="acivity_auth_vk">Acivity_auth_vk</string>
+    <string name="acivity_auth_vk" translatable="false">Acivity_auth_vk</string>
     <string name="user_menu_item_clear_history">Clear history</string>
+    <string name="clear_history_confirmation_message">Are you sure you want to delete all mesages in this chat? Thi action can\'t be undone.</string>
+    <string name="confirm_title">Please confirm</string>
+    <string name="answer_yes">Yes</string>
+    <string name="answer_no">No</string>
 </resources>

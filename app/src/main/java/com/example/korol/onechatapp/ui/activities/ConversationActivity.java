@@ -20,7 +20,6 @@ import com.example.korol.onechatapp.logic.common.IDialog;
 import com.example.korol.onechatapp.logic.common.IMessage;
 import com.example.korol.onechatapp.logic.common.ISender;
 import com.example.korol.onechatapp.logic.common.MessageSender;
-import com.example.korol.onechatapp.logic.utils.exceptions.AccessTokenException;
 import com.example.korol.onechatapp.logic.vk.VkRequester;
 import com.example.korol.onechatapp.logic.vk.getMethods.VkGetDialog;
 import com.example.korol.onechatapp.ui.adapters.DialogRecyclerAdapter;
@@ -84,9 +83,9 @@ public class ConversationActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.user_menu_item_clear_history) {
             new AlertDialog.Builder(this)
-                    .setTitle("Please confirm")
-                    .setMessage("Are you sure you want to delete all mesages in this chat? Thi action can't be undone.")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    .setTitle(R.string.confirm_title)
+                    .setMessage(R.string.clear_history_confirmation_message)
+                    .setPositiveButton(R.string.answer_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             try {
@@ -98,7 +97,7 @@ public class ConversationActivity extends AppCompatActivity {
                             }
                         }
                     })
-                    .setNegativeButton("No", null)
+                    .setNegativeButton(R.string.answer_no, null)
                     .show();
             return true;
         }
