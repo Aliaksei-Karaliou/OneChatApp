@@ -46,7 +46,7 @@ public class VkDialogJsonParser extends AsyncOperation<String, List<IMessage>> {
             }
             for (int i = 0; i < allMessages.length(); i++) {
                 JSONObject jsonMessageObject = allMessages.getJSONObject(i);
-                VkMessage.Builder builder = new VkMessage.Builder().setText(jsonMessageObject.getString("body")).setSender(VkIdToUserStorage.getUser(jsonMessageObject.getLong("from_id"))).setDate(new Date(jsonMessageObject.getLong("date") * 1000));
+                VkMessage.Builder builder = new VkMessage.Builder().setText(jsonMessageObject.getString("body")).setSender(VkIdToUserStorage.getUser(jsonMessageObject.getLong("from_id"))).setDate(new Date(jsonMessageObject.getLong("date") * 1000)).setId(jsonMessageObject.getLong("id"));
                 if (senderType == SenderType.CHAT) {
                     if (jsonMessageObject.has("action")) {
                         if (jsonMessageObject.getString("action") == "chat_invite_user") {

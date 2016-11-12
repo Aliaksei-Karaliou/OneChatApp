@@ -1,22 +1,29 @@
 package com.example.korol.onechatapp.ui.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.korol.onechatapp.R;
 import com.example.korol.onechatapp.logic.common.IDialog;
 import com.example.korol.onechatapp.logic.common.ISender;
 import com.example.korol.onechatapp.logic.common.MessageSender;
+import com.example.korol.onechatapp.logic.vk.VkRequester;
 import com.example.korol.onechatapp.logic.vk.getMethods.VkGetDialog;
 import com.example.korol.onechatapp.ui.adapters.DialogRecyclerAdapter;
+
+import java.util.concurrent.ExecutionException;
 
 public class ConversationActivity extends AppCompatActivity {
 
@@ -47,14 +54,31 @@ public class ConversationActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.user_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.authorization_menu)
-            startActivity(new Intent(this, AuthActivity.class));
+        if (item.getItemId() == R.id.user_menu_item_clear_history) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Please confirm")
+                    .setMessage("Are you sure you want to delete all mesages in this chat? Thi action can't be undone.")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            try {
+                                final String peer_id = new VkRequester("messages.deleteDialog", new Pair<String, String>("peer_id", Long.toString(sender.getId()))).execute(null);
+                                if (!"{\"response\":1}".equals(peer_id))
+                                    Toast.makeText(ConversationActivity.this, "Unknown error", Toast.LENGTH_SHORT).show();
+                            } catch (ExecutionException | InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+        }
         return super.onOptionsItemSelected(item);
     }
 

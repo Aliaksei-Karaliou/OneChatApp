@@ -2,7 +2,6 @@ package com.example.korol.onechatapp.logic.utils.imageLoader;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.annotation.Nullable;
 
 import com.example.korol.onechatapp.logic.utils.asyncOperation.AsyncOperation;
 
@@ -20,7 +19,6 @@ public class ImageLoader {
             return operationMemoryCache.get(idHash);
 
         final AsyncOperation<String, Bitmap> asyncOperation = new AsyncOperation<String, Bitmap>() {
-            @Nullable
             @Override
             protected Bitmap doInBackground(String s) {
                 try {

@@ -8,9 +8,18 @@ import java.util.Date;
 public class VkMessage implements IMessage {
     private ISender sender;
 
+    private long id;
+
+    private VkMessage(long id, ISender sender, String text, Date date, boolean isRead) {
+        this.sender = sender;
+        this.text = text;
+        this.date = date;
+        this.isRead = isRead;
+    }
+
     @Override
-    public ISender getSender() {
-        return sender;
+    public long getId() {
+        return id;
     }
 
     private String text;
@@ -30,11 +39,9 @@ public class VkMessage implements IMessage {
         return date;
     }
 
-    private VkMessage(ISender sender, String text, Date date, boolean isRead) {
-        this.sender = sender;
-        this.text = text;
-        this.date = date;
-        this.isRead = isRead;
+    @Override
+    public ISender getSender() {
+        return sender;
     }
 
     private VkMessage() {
@@ -53,10 +60,16 @@ public class VkMessage implements IMessage {
 
     public static class Builder {
 
+        private long id;
         private Date date;
         private String text;
         private ISender sender;
         private boolean read;
+
+        public Builder setId(long id) {
+            this.id = id;
+            return this;
+        }
 
         public Builder setRead(boolean read) {
             this.read = read;
@@ -82,7 +95,7 @@ public class VkMessage implements IMessage {
         }
 
         public VkMessage build() {
-            return new VkMessage(sender, text, date, read);
+            return new VkMessage(id, sender, text, date, read);
         }
     }
 }

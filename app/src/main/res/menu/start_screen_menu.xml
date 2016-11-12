@@ -2,6 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 <item
-    android:id="@+id/authorization_menu"
+    android:id="@+id/start_screen_menu_ite_authorization"
     android:title="@string/authorization_menu"/>
 </menu>

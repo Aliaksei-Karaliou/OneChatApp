@@ -72,6 +72,6 @@ public class StartScreenMessagesAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     public interface OnMessageClick {
-        public void onClick(ISender sender);
+        void onClick(ISender sender);
     }
 }

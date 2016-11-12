@@ -18,7 +18,7 @@ public class VkGetStartScreen {
 
     public static List<IMessage> getStartScreen(int offset) throws AccessTokenException {
         //final VkRequester requester = new VkRequester("messages.getDialogs", new Pair<String, String>("count", "200"));
-        final VkRequester requester = new VkRequester("messages.getDialogs", new Pair<String, String>("preview_length", "30"), new Pair<String, String>("offset", "0"));
+        final VkRequester requester = new VkRequester("messages.getDialogs", new Pair<String, String>("preview_length", "30"), new Pair<String, String>("offset", Integer.toString(offset)));
         try {
             String response = requester.execute(null);
             if (response.contains("error"))
