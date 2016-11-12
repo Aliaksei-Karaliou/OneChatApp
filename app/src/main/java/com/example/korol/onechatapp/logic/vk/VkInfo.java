@@ -25,7 +25,7 @@ public class VkInfo {
         return 5504374;
     }
 
-    public static long getUserId() {
+    public static int getUserId() {
         return userId;
     }
 
@@ -33,7 +33,7 @@ public class VkInfo {
         VkInfo.userId = userId;
     }
 
-    private static long userId = -1;
+    private static int userId = -1;
 
     public static String getAccessToken() {
         return accessToken;
@@ -48,13 +48,14 @@ public class VkInfo {
     public static void userSetAuth(Activity activity) {
         SharedPreferences.Editor editor = activity.getPreferences(Context.MODE_PRIVATE).edit();
         editor.putString(ACCESS_TOKEN, VkInfo.getAccessToken());
-        editor.putLong(USER_ID, userId);
+        editor.putInt(USER_ID, VkInfo.getUserId());
         editor.apply();
     }
 
     public static void userGetAuth(Activity activity) {
         SharedPreferences preferences = activity.getPreferences(Context.MODE_PRIVATE);
-        VkInfo.setUserId(preferences.getInt(USER_ID, -1));
+        final int anInt = preferences.getInt(USER_ID, -1);
+        VkInfo.setUserId(anInt);
         VkInfo.setAccessToken(preferences.getString(ACCESS_TOKEN, null));
         if (VkInfo.getUserId() > 0) {
             authorized = true;

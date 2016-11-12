@@ -8,6 +8,4 @@ public interface IUser extends ISender {
     String getLastName();
 
     void setLastName(String lastName);
-
-    IUser getMe();
 }

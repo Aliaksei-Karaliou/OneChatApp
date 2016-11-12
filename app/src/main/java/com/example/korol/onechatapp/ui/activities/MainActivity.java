@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         if (NetworkConnectionChecker.check(this)) {
             isOnline = true;
             VkInfo.userGetAuth(this);
+            StringBuilder builder = new StringBuilder();
         }
     }
 

@@ -70,6 +70,11 @@ public final class VkGroup implements IGroup {
         this.photoUrl = in.readString();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof VkGroup && ((VkGroup) obj).id==id;
+    }
+
     public static final Creator<VkGroup> CREATOR = new Creator<VkGroup>() {
         @Override
         public VkGroup createFromParcel(Parcel source) {

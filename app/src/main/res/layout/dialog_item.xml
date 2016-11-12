@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:padding="5dp"
               android:orientation="horizontal">
 
     <ImageView
-        android:id="@+id/dialog_item_avatar"
+        android:id="@+id/dialog_item_left_avatar"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:contentDescription="@string/dialog_item_avatar"/>
+
 
     <TextView
         android:id="@+id/dialog_item_message"
@@ -18,7 +20,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:text="Some message"
-        android:textSize="15sp"/>
+        android:textSize="15sp"
+        android:layout_toEndOf="@+id/dialog_item_left_avatar"/>
 
-</LinearLayout>
+</RelativeLayout>

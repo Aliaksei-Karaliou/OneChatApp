@@ -144,6 +144,11 @@ public class VkChat implements IChat {
         this.photoUrl = in.readString();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof VkChat && ((VkChat)obj).id == id;
+    }
+
     public static final Creator<VkChat> CREATOR = new Creator<VkChat>() {
         @Override
         public VkChat createFromParcel(Parcel source) {

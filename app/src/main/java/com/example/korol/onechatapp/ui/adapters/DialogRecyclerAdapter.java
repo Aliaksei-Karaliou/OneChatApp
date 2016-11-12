@@ -38,7 +38,7 @@ public class DialogRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         final IMessage currentMessage = messages.get(position);
         final ImageLoader imageLoader = new ImageLoader();
 
-        viewHolder.avatarImageView.setImageBitmap(imageLoader.getBitmapFromUrl(currentMessage.getSender().getPhotoUrl()));
+        viewHolder.avatarLeftImageView.setImageBitmap(imageLoader.getBitmapFromUrl(currentMessage.getSender().getPhotoUrl()));
         viewHolder.messageTextView.setText(currentMessage.getText());
 
     }
@@ -50,12 +50,12 @@ public class DialogRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private class DialogRecyclerViewHolder extends RecyclerView.ViewHolder {
 
-        private final ImageView avatarImageView;
+        private final ImageView avatarLeftImageView;
         private final TextView messageTextView;
 
         public DialogRecyclerViewHolder(View itemView) {
             super(itemView);
-            avatarImageView = ((ImageView) itemView.findViewById(R.id.dialog_item_avatar));
+            avatarLeftImageView = ((ImageView) itemView.findViewById(R.id.dialog_item_left_avatar));
             messageTextView = ((TextView) itemView.findViewById(R.id.dialog_item_message));
         }
     }

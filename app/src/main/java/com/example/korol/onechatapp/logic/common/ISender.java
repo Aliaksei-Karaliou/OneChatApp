@@ -18,4 +18,6 @@ public interface ISender extends Parcelable {
     SocialNetwork getSocialNetwork();
 
     SenderType getSenderType();
+
+
 }
