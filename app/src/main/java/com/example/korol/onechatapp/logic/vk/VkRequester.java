@@ -32,7 +32,7 @@ public class VkRequester extends AsyncOperation<Void, String> {
     }
 
     private String getJSON() throws IOException {
-        String stringUrl = String.format(Locale.getDefault(), "https://api.vk.com/method/%s?%s&access_token=%s&v=%.2f", methodName, stringParams, VkInfo.getAccessToken(), VkInfo.getVkApiVersion());
+        String stringUrl = String.format(Locale.US, "https://api.vk.com/method/%s?%s&access_token=%s&v=%.2f", methodName, stringParams, VkInfo.getAccessToken(), VkInfo.getVkApiVersion());
 
         URL url = new URL(stringUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();

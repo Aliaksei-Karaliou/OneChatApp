@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 /*final VkLongPoll vkLongPoll = VkLongPoll.initialize();
                 vkLongPoll.start();*/
                 if (messages == null)
-                    messages = VkGetStartScreen.getStartScreen();
+                    messages = VkGetStartScreen.getStartScreen(this);
                 StartScreen startScreen = new StartScreen(messages);
                 final RecyclerView messagesRecyclerView = (RecyclerView) findViewById(R.id.activity_main_recycler_view_main_messages);
                 final LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(new Intent(MainActivity.this, ConversationActivity.class).putExtra("Sender", sender));
                     }
                 });
-                //  adapter.notifyDataSetChanged();
                 messagesRecyclerView.setAdapter(adapter);
                 messagesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                     private int lastVisibleItemPosition;
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                         lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition();
                         if (dy > 0 && lastVisibleItemPosition + 1 == totalItemCount) {
                             try {
-                                final List<IMessage> loadedMessages = VkGetStartScreen.getStartScreen(messages.size());
+                                final List<IMessage> loadedMessages = VkGetStartScreen.getStartScreen(MainActivity.this, messages.size());
                                 messages.addAll(loadedMessages);
                             } catch (AccessTokenException e) {
                                 e.printStackTrace();

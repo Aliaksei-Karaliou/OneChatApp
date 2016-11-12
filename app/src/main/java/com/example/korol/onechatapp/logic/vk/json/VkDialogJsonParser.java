@@ -60,7 +60,7 @@ public class VkDialogJsonParser extends AsyncOperation<String, List<IMessage>> {
                             builder.setText(String.format(Locale.getDefault(), context.getString(R.string.message_chat_invite), actioning.getName()));
                         } else if (jsonMessageObject.getString("action").equals( "chat_kick_user")) {
                             final IUser actioning = VkIdToUserStorage.getUser(jsonMessageObject.getLong("action_mid"));
-                            builder.setText(String.format(Locale.getDefault(), "%s was removed from this chat", actioning.getName()));
+                            builder.setText(String.format(Locale.getDefault(), context.getString(R.string.message_chat_kick), actioning.getName()));
                         }
                     }
                 }

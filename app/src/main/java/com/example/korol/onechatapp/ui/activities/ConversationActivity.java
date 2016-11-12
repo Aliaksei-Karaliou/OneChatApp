@@ -61,11 +61,10 @@ public class ConversationActivity extends AppCompatActivity {
                 totalItemCount = layoutManager.getItemCount();
                 lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition();
                 if (dy > 0 && lastVisibleItemPosition + 1 == totalItemCount) {
-                        final List<IMessage> loadedMessages = VkGetDialog.getMessageList(ConversationActivity.this, sender, dialog.getMessages().size());
-                        dialog.add(loadedMessages);
+                    final List<IMessage> loadedMessages = VkGetDialog.getMessageList(ConversationActivity.this, sender, dialog.getMessages().size());
+                    dialog.add(loadedMessages);
                 }
                 recyclerView.getAdapter().notifyDataSetChanged();
-              //  getSupportActionBar().setTitle(lastVisibleItemPosition + " " + totalItemCount);
             }
         });
 

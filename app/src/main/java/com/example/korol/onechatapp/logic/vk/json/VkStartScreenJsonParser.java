@@ -1,5 +1,8 @@
 package com.example.korol.onechatapp.logic.vk.json;
 
+import android.content.Context;
+
+import com.example.korol.onechatapp.R;
 import com.example.korol.onechatapp.logic.common.IMessage;
 import com.example.korol.onechatapp.logic.common.IUser;
 import com.example.korol.onechatapp.logic.utils.asyncOperation.AsyncOperation;
@@ -18,6 +21,12 @@ import java.util.List;
 import java.util.Locale;
 
 public class VkStartScreenJsonParser extends AsyncOperation<String, List<IMessage>> {
+
+    public VkStartScreenJsonParser(Context context) {
+        this.context = context;
+    }
+
+    private Context context;
 
     @Override
     protected List<IMessage> doInBackground(String json) {
@@ -51,10 +60,10 @@ public class VkStartScreenJsonParser extends AsyncOperation<String, List<IMessag
                     if (oneObject.has("action")) {
                         if (oneObject.getString("action").equals("chat_invite_user")) {
                             final IUser actioning = VkIdToUserStorage.getUser(oneObject.getLong("action_mid"));
-                            builder.setText(String.format(Locale.getDefault(), "%s was invited to this chat", actioning.getName()));
+                            builder.setText(String.format(Locale.getDefault(), context.getString(R.string.message_chat_invite), actioning.getName()));
                         } else if (oneObject.getString("action").equals("chat_kick_user")) {
                             final IUser actioning = VkIdToUserStorage.getUser(oneObject.getLong("action_mid"));
-                            builder.setText(String.format(Locale.getDefault(), "%s was removed from this chat", actioning.getName()));
+                            builder.setText(String.format(Locale.getDefault(), context.getString(R.string.message_chat_kick), actioning.getName()));
                         }
                     }
                 }
