@@ -37,4 +37,9 @@ public class VkDialog implements IDialog {
         list.add(message);
     }
 
+    @Override
+    public void add(List<IMessage> messages) {
+        list.addAll(messages);
+    }
+
 }

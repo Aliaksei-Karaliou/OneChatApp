@@ -17,12 +17,15 @@ import android.widget.Toast;
 
 import com.example.korol.onechatapp.R;
 import com.example.korol.onechatapp.logic.common.IDialog;
+import com.example.korol.onechatapp.logic.common.IMessage;
 import com.example.korol.onechatapp.logic.common.ISender;
 import com.example.korol.onechatapp.logic.common.MessageSender;
+import com.example.korol.onechatapp.logic.utils.exceptions.AccessTokenException;
 import com.example.korol.onechatapp.logic.vk.VkRequester;
 import com.example.korol.onechatapp.logic.vk.getMethods.VkGetDialog;
 import com.example.korol.onechatapp.ui.adapters.DialogRecyclerAdapter;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class ConversationActivity extends AppCompatActivity {
@@ -38,17 +41,38 @@ public class ConversationActivity extends AppCompatActivity {
         sender = intent.getParcelableExtra("Sender");
 
         getSupportActionBar().setTitle(sender.getName());
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        IDialog dialog = VkGetDialog.getDialog(this, sender);
+        final IDialog dialog = VkGetDialog.getDialog(this, sender);
         DialogRecyclerAdapter adapter = new DialogRecyclerAdapter(dialog);
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.activity_conversation_message_recycler_view);
         recyclerView.setAdapter(adapter);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         layoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            private int lastVisibleItemPosition;
+            private boolean end = false;
+            int totalItemCount;
+
+            @Override
+            public void onScrolled(final RecyclerView recyclerView, int dx, final int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                totalItemCount = layoutManager.getItemCount();
+                lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition();
+                if (dy > 0 && lastVisibleItemPosition + 1 == totalItemCount) {
+                        final List<IMessage> loadedMessages = VkGetDialog.getMessageList(ConversationActivity.this, sender, dialog.getMessages().size());
+                        dialog.add(loadedMessages);
+                }
+                recyclerView.getAdapter().notifyDataSetChanged();
+              //  getSupportActionBar().setTitle(lastVisibleItemPosition + " " + totalItemCount);
+            }
+        });
+
 
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -77,6 +101,11 @@ public class ConversationActivity extends AppCompatActivity {
                     })
                     .setNegativeButton("No", null)
                     .show();
+            return true;
+        }
+        else if (item.getItemId()==android.R.id.home){
+            onBackPressed();
+            return  true;
         }
         return super.onOptionsItemSelected(item);
     }

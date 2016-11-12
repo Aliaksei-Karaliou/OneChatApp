@@ -51,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 /*final VkLongPoll vkLongPoll = VkLongPoll.initialize();
                 vkLongPoll.start();*/
-                messages = VkGetStartScreen.getStartScreen();
+                if (messages == null)
+                    messages = VkGetStartScreen.getStartScreen();
                 StartScreen startScreen = new StartScreen(messages);
                 final RecyclerView messagesRecyclerView = (RecyclerView) findViewById(R.id.activity_main_recycler_view_main_messages);
                 final LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(new Intent(MainActivity.this, ConversationActivity.class).putExtra("Sender", sender));
                     }
                 });
-                adapter.notifyDataSetChanged();
+                //  adapter.notifyDataSetChanged();
                 messagesRecyclerView.setAdapter(adapter);
                 messagesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                     private int lastVisibleItemPosition;

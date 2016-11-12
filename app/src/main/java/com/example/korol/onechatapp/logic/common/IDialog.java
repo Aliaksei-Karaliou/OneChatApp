@@ -10,4 +10,6 @@ public interface IDialog{
 
     void add(IMessage message);
 
+    void add(List<IMessage> messages);
+
 }
