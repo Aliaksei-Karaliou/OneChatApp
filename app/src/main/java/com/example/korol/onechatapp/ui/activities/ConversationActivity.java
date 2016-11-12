@@ -36,7 +36,6 @@ public class ConversationActivity extends AppCompatActivity {
 
         final Intent intent = getIntent();
         sender = intent.getParcelableExtra("Sender");
-        assert (sender != null);
 
         getSupportActionBar().setTitle(sender.getName());
 

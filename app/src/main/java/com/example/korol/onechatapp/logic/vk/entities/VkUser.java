@@ -5,9 +5,16 @@ import android.os.Parcel;
 import com.example.korol.onechatapp.logic.common.IUser;
 import com.example.korol.onechatapp.logic.common.enums.SenderType;
 import com.example.korol.onechatapp.logic.common.enums.SocialNetwork;
+import com.example.korol.onechatapp.logic.vk.VkInfo;
+import com.example.korol.onechatapp.logic.vk.storages.VkIdToUserStorage;
 
 public class VkUser implements IUser {
+
     private long id;
+    private static IUser me = null;
+    private String firstName = "";
+    private String lastName = "";
+    private String photoUrl;
 
     public VkUser(int id, String firstName, String lastName, String photoUrl) {
         this.id = id;
@@ -28,8 +35,6 @@ public class VkUser implements IUser {
         } else return "";
     }
 
-    private String firstName = "";
-
     @Override
     public String getFirstName() {
         return firstName;
@@ -39,8 +44,6 @@ public class VkUser implements IUser {
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
-
-    private String lastName = "";
 
     @Override
     public String getLastName() {
@@ -52,7 +55,12 @@ public class VkUser implements IUser {
         this.lastName = lastName;
     }
 
-    private String photoUrl;
+    @Override
+    public IUser getMe() {
+        if (me == null)
+            me = VkIdToUserStorage.getUser(VkInfo.getUserId());
+        return me;
+    }
 
     @Override
     public String getPhotoUrl() {

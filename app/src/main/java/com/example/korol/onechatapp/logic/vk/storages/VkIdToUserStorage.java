@@ -44,7 +44,7 @@ public abstract class VkIdToUserStorage {
             for (long id : requestId)
                 if (!idToUserStorage.containsKey(id) && id > 0)
                     builder.append(id).append(",");
-            String params = builder.substring(0, builder.length() - 1);
+            String params = builder.toString();
             List<IUser> userList = null;
             try {
                 userList = new VkBasicUserJsonParser().execute(params);

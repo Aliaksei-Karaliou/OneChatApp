@@ -8,6 +8,7 @@ import com.example.korol.onechatapp.logic.common.IUser;
 import com.example.korol.onechatapp.logic.common.enums.SenderType;
 import com.example.korol.onechatapp.logic.utils.asyncOperation.AsyncOperation;
 import com.example.korol.onechatapp.logic.vk.entities.VkMessage;
+import com.example.korol.onechatapp.logic.vk.storages.VkIdToGroupStorage;
 import com.example.korol.onechatapp.logic.vk.storages.VkIdToUserStorage;
 
 import org.json.JSONArray;
@@ -46,13 +47,18 @@ public class VkDialogJsonParser extends AsyncOperation<String, List<IMessage>> {
             }
             for (int i = 0; i < allMessages.length(); i++) {
                 JSONObject jsonMessageObject = allMessages.getJSONObject(i);
-                VkMessage.Builder builder = new VkMessage.Builder().setText(jsonMessageObject.getString("body")).setSender(VkIdToUserStorage.getUser(jsonMessageObject.getLong("from_id"))).setDate(new Date(jsonMessageObject.getLong("date") * 1000)).setId(jsonMessageObject.getLong("id"));
+                VkMessage.Builder builder = new VkMessage.Builder().setText(jsonMessageObject.getString("body")).setDate(new Date(jsonMessageObject.getLong("date") * 1000)).setId(jsonMessageObject.getLong("id"));
+                if (jsonMessageObject.getLong("from_id") > 0)
+                    builder = builder.setSender(VkIdToUserStorage.getUser(jsonMessageObject.getLong("from_id")));
+                else
+                    builder.setSender(VkIdToGroupStorage.getGroup(jsonMessageObject.getLong("from_id")));
+                new StringBuilder();
                 if (senderType == SenderType.CHAT) {
                     if (jsonMessageObject.has("action")) {
-                        if (jsonMessageObject.getString("action") == "chat_invite_user") {
+                        if (jsonMessageObject.getString("action").equals("chat_invite_user")) {
                             final IUser actioning = VkIdToUserStorage.getUser(jsonMessageObject.getLong("action_mid"));
                             builder.setText(String.format(Locale.getDefault(), context.getString(R.string.message_chat_invite), actioning.getName()));
-                        } else if (jsonMessageObject.getString("action") == "chat_kick_user") {
+                        } else if (jsonMessageObject.getString("action").equals( "chat_kick_user")) {
                             final IUser actioning = VkIdToUserStorage.getUser(jsonMessageObject.getLong("action_mid"));
                             builder.setText(String.format(Locale.getDefault(), "%s was removed from this chat", actioning.getName()));
                         }
