@@ -24,6 +24,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static boolean isOnline = false;
+    private RecyclerView messagesRecyclerView;
+    private List<IMessage> messages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,22 +35,45 @@ public class MainActivity extends AppCompatActivity {
             isOnline = true;
             VkInfo.userGetAuth(this);
         }
+        this.messagesRecyclerView = (RecyclerView) findViewById(R.id.activity_main_recycler_view_main_messages);
+        final RecyclerView messagesRecyclerView = this.messagesRecyclerView;
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        messagesRecyclerView.setLayoutManager(layoutManager);
+        messagesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            private int lastVisibleItemPosition;
+            int totalItemCount;
+
+            @Override
+            public void onScrolled(final RecyclerView recyclerView, int dx, final int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                totalItemCount = layoutManager.getItemCount();
+                lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition();
+                if (dy > 0 && lastVisibleItemPosition + 1 == totalItemCount) {
+                    try {
+                        final List<IMessage> loadedMessages = VkGetStartScreen.getStartScreen(MainActivity.this, messages.size());
+                        assert loadedMessages != null;
+                        messages.addAll(loadedMessages);
+                    } catch (AccessTokenException e) {
+                        e.printStackTrace();
+                    }
+                }
+                recyclerView.getAdapter().notifyDataSetChanged();
+                assert getSupportActionBar() != null;
+                getSupportActionBar().setTitle(lastVisibleItemPosition + " " + totalItemCount);
+            }
+        });
     }
 
     @Override
     protected void onResume() {
-        super.onStart();
+        super.onResume();
         if (!isOnline)
             Toast.makeText(this, "Offline", Toast.LENGTH_SHORT).show();
         else if (VkInfo.isAuthorized()) {
             VkInfo.userSetAuth(this);
             try {
-                /*final VkLongPoll vkLongPoll = VkLongPoll.initialize();
-                vkLongPoll.start();*/
-                final List<IMessage> messages = VkGetStartScreen.getStartScreen(this);
-                final RecyclerView messagesRecyclerView = (RecyclerView) findViewById(R.id.activity_main_recycler_view_main_messages);
-                final LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-                messagesRecyclerView.setLayoutManager(layoutManager);
+                this.messages = VkGetStartScreen.getStartScreen(this);
+
                 final StartScreenMessagesAdapter adapter = new StartScreenMessagesAdapter(messages);
                 adapter.onItemClick(new StartScreenMessagesAdapter.OnMessageClick() {
                     @Override
@@ -57,29 +82,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 messagesRecyclerView.setAdapter(adapter);
-                messagesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                    private int lastVisibleItemPosition;
-                    int totalItemCount;
-
-                    @Override
-                    public void onScrolled(final RecyclerView recyclerView, int dx, final int dy) {
-                        super.onScrolled(recyclerView, dx, dy);
-                        totalItemCount = layoutManager.getItemCount();
-                        lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition();
-                        if (dy > 0 && lastVisibleItemPosition + 1 == totalItemCount) {
-                            try {
-                                final List<IMessage> loadedMessages = VkGetStartScreen.getStartScreen(MainActivity.this, messages.size());
-                                assert loadedMessages != null;
-                                messages.addAll(loadedMessages);
-                            } catch (AccessTokenException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        recyclerView.getAdapter().notifyDataSetChanged();
-                        assert getSupportActionBar() != null;
-                        getSupportActionBar().setTitle(lastVisibleItemPosition + " " + totalItemCount);
-                    }
-                });
             } catch (AccessTokenException e) {
                 e.printStackTrace();
             }
