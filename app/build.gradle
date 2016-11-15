@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "24.0.3"
     defaultConfig {
-        applicationId "com.example.korol.onechatapp"
+        applicationId "com.github.AliakseiKaraliou.onechatapp"
         minSdkVersion 17
         targetSdkVersion 25
         versionCode 1

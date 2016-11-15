@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context="com.example.korol.onechatapp.ui.activities.VkAuthActivity">
+    tools:context="com.github.AliakseiKaraliou.onechatapp.ui.activities.VkAuthActivity">
     <WebView
         android:id="@+id/vk_auth_web_view"
         android:layout_width="match_parent"
