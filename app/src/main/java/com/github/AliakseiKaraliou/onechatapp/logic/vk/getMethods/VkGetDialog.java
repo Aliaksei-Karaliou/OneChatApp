@@ -11,9 +11,7 @@ import com.github.AliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.AliakseiKaraliou.onechatapp.logic.vk.entities.VkDialog;
 import com.github.AliakseiKaraliou.onechatapp.logic.vk.json.VkDialogJsonParser;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class VkGetDialog {
 
@@ -22,14 +20,11 @@ public class VkGetDialog {
     }
 
     public static List<IMessage> getMessageList(Context context, @NonNull ISender sender, int offset) {
-        List<IMessage> list = new ArrayList<>();
-        try {
-            String responce = new VkRequester("messages.getHistory", new Pair<String, String>("peer_id", Long.toString(sender.getId())), new Pair<String, String>("offset", Integer.toString(offset))).execute(null);
-            list = new VkDialogJsonParser(context, sender.getSenderType()).execute(responce);
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return list;
+        String responce = new VkRequester("messages.getHistory", new Pair<String, String>("peer_id", Long.toString(sender.getId())), new Pair<String, String>("offset", Integer.toString(offset))).execute(null);
+        if (!responce.contains("Error"))
+            return new VkDialogJsonParser(context, sender.getSenderType()).execute(responce);
+        else
+            return null;
     }
 
     public static List<IMessage> getMessageList(Context context, @NonNull ISender sender) {

@@ -18,11 +18,7 @@ public abstract class VkIdToUserStorage {
             return idToUserStorage.get(id);
         else {
             IUser user = null;
-            try {
-                user = new VkBasicUserJsonParser().execute(id.toString()).get(0);
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
+            user = new VkBasicUserJsonParser().execute(id.toString()).get(0);
             idToUserStorage.put(id, user);
             return user;
         }
@@ -46,11 +42,7 @@ public abstract class VkIdToUserStorage {
                     builder.append(id).append(",");
             String params = builder.toString();
             List<IUser> userList = null;
-            try {
-                userList = new VkBasicUserJsonParser().execute(params);
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
+            userList = new VkBasicUserJsonParser().execute(params);
             for (IUser user : userList) {
                 idToUserStorage.put(user.getId(), user);
             }

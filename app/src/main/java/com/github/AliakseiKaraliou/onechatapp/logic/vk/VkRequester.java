@@ -20,6 +20,7 @@ public class VkRequester extends AsyncOperation<Void, String> {
 
     private String stringParams = "";
 
+    @SafeVarargs
     public VkRequester(String methodName, Pair<String, String>... params) {
         this.methodName = methodName;
         this.params = params;

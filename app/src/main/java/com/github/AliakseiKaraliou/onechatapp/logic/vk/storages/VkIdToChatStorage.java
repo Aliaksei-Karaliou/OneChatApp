@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 public class VkIdToChatStorage {
 
@@ -51,18 +50,13 @@ public class VkIdToChatStorage {
                     builder.append(id - 2000000000).append(",");
             String params = builder.substring(0, builder.length() - 1);
             final String chat_ids;
-            try {
-                chat_ids = new VkRequester("messages.getChat", new Pair<String, String>("chat_ids", params)).execute(null);
-                final Map<Long, VkChat> requestResult = new VkBasicChatJsonParser().execute(chat_ids);
-                for (Long requestId : requestResult.keySet()) {
-                    VkChat chat = requestResult.get(requestId);
-                    storage.put(requestId, chat);
-                    result.put(requestId, chat);
+            chat_ids = new VkRequester("messages.getChat", new Pair<String, String>("chat_ids", params)).execute(null);
+            final Map<Long, VkChat> requestResult = new VkBasicChatJsonParser().execute(chat_ids);
+            for (Long requestId : requestResult.keySet()) {
+                VkChat chat = requestResult.get(requestId);
+                storage.put(requestId, chat);
+                result.put(requestId, chat);
                 }
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-
         }
         return result;
     }

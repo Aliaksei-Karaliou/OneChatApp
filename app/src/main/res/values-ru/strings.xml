@@ -11,4 +11,5 @@
     <string name="clear_history_confirmation_message">Вы действительно хотите удалить все сообщения в этом диалоге? Отменить это действие будет невозможно.</string>
     <string name="answer_no">Нет</string>
     <string name="answer_yes">Да</string>
+    <string name="start_screen_menu_refresh">Обновить</string>
 </resources>

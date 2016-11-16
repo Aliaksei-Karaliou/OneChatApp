@@ -2,6 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 <item
-    android:id="@+id/start_screen_menu_ite_authorization"
+    android:id="@+id/start_screen_menu_item_authorization"
     android:title="@string/authorization_menu"/>
+
+    <item
+        android:id="@+id/start_screen_menu_item_refresh"
+        android:title="@string/start_screen_menu_refresh"/>
 </menu>

@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
             VkInfo.userSetAuth(this);
             try {
                 this.messages = VkGetStartScreen.getStartScreen(this);
-
                 final StartScreenMessagesAdapter adapter = new StartScreenMessagesAdapter(messages);
                 adapter.onItemClick(new StartScreenMessagesAdapter.OnMessageClick() {
                     @Override
@@ -97,8 +96,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.start_screen_menu_ite_authorization)
+        if (item.getItemId() == R.id.start_screen_menu_item_authorization)
             startActivity(new Intent(this, AuthActivity.class));
+        else if (item.getItemId() == R.id.start_screen_menu_item_refresh)
+            super.onResume();
         return super.onOptionsItemSelected(item);
     }
     //Broadcast Receiver

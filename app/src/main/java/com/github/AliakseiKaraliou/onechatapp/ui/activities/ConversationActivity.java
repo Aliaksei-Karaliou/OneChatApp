@@ -52,7 +52,6 @@ public class ConversationActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             private int lastVisibleItemPosition;
-            private boolean end = false;
             int totalItemCount;
 
             @Override
@@ -67,8 +66,6 @@ public class ConversationActivity extends AppCompatActivity {
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
         });
-
-
 
     }
 
@@ -89,13 +86,9 @@ public class ConversationActivity extends AppCompatActivity {
                     .setPositiveButton(R.string.answer_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            try {
-                                final String peer_id = new VkRequester("messages.deleteDialog", new Pair<String, String>("peer_id", Long.toString(sender.getId()))).execute(null);
-                                if (!"{\"response\":1}".equals(peer_id))
-                                    Toast.makeText(ConversationActivity.this, "Unknown error", Toast.LENGTH_SHORT).show();
-                            } catch (ExecutionException | InterruptedException e) {
-                                e.printStackTrace();
-                            }
+                            final String peer_id = new VkRequester("messages.deleteDialog", new Pair<>("peer_id", Long.toString(sender.getId()))).execute(null);
+                            if (!"{\"response\":1}".equals(peer_id))
+                                Toast.makeText(ConversationActivity.this, "Unknown error", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .setNegativeButton(R.string.answer_no, null)

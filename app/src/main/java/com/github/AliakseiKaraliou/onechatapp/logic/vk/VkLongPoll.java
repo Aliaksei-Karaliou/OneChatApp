@@ -38,7 +38,7 @@ public final class VkLongPoll {
             String server = jsonObject.getString("server");
             long ts = jsonObject.getLong("ts");
             return new VkLongPoll(key, server, ts);
-        } catch (ExecutionException | InterruptedException | JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;
@@ -56,7 +56,7 @@ public final class VkLongPoll {
                         JSONArray array = json.getJSONArray("updates");
                         final StringBuilder builder = new StringBuilder();
                     }
-                } catch (ExecutionException | InterruptedException | JSONException e) {
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }

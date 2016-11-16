@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 public class VkIdToGroupStorage {
 
@@ -29,16 +28,12 @@ public class VkIdToGroupStorage {
             final StringBuilder builder = new StringBuilder();
             for (Long requireId : requireIds)
                 builder.append(-requireId + ",");
-            try {
-                final String json = new VkRequester("groups.getById", new Pair<String, String>("group_ids", builder.toString())).execute(null);
-                final Map<Long, VkGroup> requireResult = new VkBasicGroupJsonParser().execute(json);
-                for (Long requireId : requireIds) {
-                    final VkGroup group = requireResult.get(-requireId);
-                    storage.put(requireId, group);
-                    result.put(requireId, group);
-                }
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
+            final String json = new VkRequester("groups.getById", new Pair<String, String>("group_ids", builder.toString())).execute(null);
+            final Map<Long, VkGroup> requireResult = new VkBasicGroupJsonParser().execute(json);
+            for (Long requireId : requireIds) {
+                final VkGroup group = requireResult.get(-requireId);
+                storage.put(requireId, group);
+                result.put(requireId, group);
             }
         }
         return result;
