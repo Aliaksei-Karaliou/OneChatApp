@@ -2,11 +2,10 @@ package com.github.AliakseiKaraliou.onechatapp.logic.vk.json;
 
 import android.content.Context;
 
-import com.github.AliakseiKaraliou.onechatapp.R;
 import com.github.AliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.IUser;
 import com.github.AliakseiKaraliou.onechatapp.logic.common.enums.SenderType;
 import com.github.AliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOperation;
+import com.github.AliakseiKaraliou.onechatapp.logic.vk.VkChatAction;
 import com.github.AliakseiKaraliou.onechatapp.logic.vk.entities.VkMessage;
 import com.github.AliakseiKaraliou.onechatapp.logic.vk.storages.VkIdToGroupStorage;
 import com.github.AliakseiKaraliou.onechatapp.logic.vk.storages.VkIdToUserStorage;
@@ -18,7 +17,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class VkDialogJsonParser extends AsyncOperation<String, List<IMessage>> {
 
@@ -53,17 +51,8 @@ public class VkDialogJsonParser extends AsyncOperation<String, List<IMessage>> {
                 else
                     builder.setSender(VkIdToGroupStorage.getGroup(jsonMessageObject.getLong("from_id")));
                 new StringBuilder();
-                if (senderType == SenderType.CHAT) {
-                    if (jsonMessageObject.has("action")) {
-                        if (jsonMessageObject.getString("action").equals("chat_invite_user")) {
-                            final IUser actioning = VkIdToUserStorage.getUser(jsonMessageObject.getLong("action_mid"));
-                            builder.setText(String.format(Locale.getDefault(), context.getString(R.string.message_chat_invite), actioning.getName()));
-                        } else if (jsonMessageObject.getString("action").equals( "chat_kick_user")) {
-                            final IUser actioning = VkIdToUserStorage.getUser(jsonMessageObject.getLong("action_mid"));
-                            builder.setText(String.format(Locale.getDefault(), context.getString(R.string.message_chat_kick), actioning.getName()));
-                        }
-                    }
-                }
+                if (senderType == SenderType.CHAT && jsonMessageObject.has("action"))
+                    builder.setText(VkChatAction.convert(context, jsonMessageObject));
                 list.add(builder.build());
             }
             return list;
