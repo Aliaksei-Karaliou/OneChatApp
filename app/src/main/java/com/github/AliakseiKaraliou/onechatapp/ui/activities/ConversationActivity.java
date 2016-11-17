@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,11 +27,11 @@ import com.github.AliakseiKaraliou.onechatapp.logic.vk.getMethods.VkGetDialog;
 import com.github.AliakseiKaraliou.onechatapp.ui.adapters.DialogRecyclerAdapter;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class ConversationActivity extends AppCompatActivity {
 
-    ISender sender;
+    private ISender sender;
+    private EditText messageEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,27 @@ public class ConversationActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(sender.getName());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        this.messageEditText = (EditText) findViewById(R.id.activity_conversation_new_message_text);
+        this.messageEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (messageEditText.getText().length() > 0)
+                    findViewById(R.id.activity_conversation_send_button).setEnabled(true);
+                else
+                    findViewById(R.id.activity_conversation_send_button).setEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         final IDialog dialog = VkGetDialog.getDialog(this, sender);
         DialogRecyclerAdapter adapter = new DialogRecyclerAdapter(dialog);
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.activity_conversation_message_recycler_view);
@@ -51,22 +74,18 @@ public class ConversationActivity extends AppCompatActivity {
         layoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            private int lastVisibleItemPosition;
-            int totalItemCount;
-
             @Override
-            public void onScrolled(final RecyclerView recyclerView, int dx, final int dy) {
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                totalItemCount = layoutManager.getItemCount();
-                lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition();
-                if (dy > 0 && lastVisibleItemPosition + 1 == totalItemCount) {
-                    final List<IMessage> loadedMessages = VkGetDialog.getMessageList(ConversationActivity.this, sender, dialog.getMessages().size());
-                    dialog.add(loadedMessages);
+                final int totalItemCount = layoutManager.getItemCount();
+                final int lastCompletelyVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition();
+                if (lastCompletelyVisibleItemPosition + 1 == totalItemCount && dy < 0) {
+                    final List<IMessage> messageList = VkGetDialog.getMessageList(ConversationActivity.this, sender, dialog.getMessages().size());
+                    dialog.add(messageList);
+                    recyclerView.getAdapter().notifyDataSetChanged();
                 }
-                recyclerView.getAdapter().notifyDataSetChanged();
             }
         });
-
     }
 
 
@@ -103,7 +122,6 @@ public class ConversationActivity extends AppCompatActivity {
     }
 
     public void sendButtonOnClick(View view) {
-        final EditText messageEditText = (EditText) findViewById(R.id.activity_conversation_new_message_text);
         final String message = messageEditText.getText().toString();
         if (MessageSender.getInstance(sender.getSocialNetwork(), sender.getSenderType()).send(sender, message))
             messageEditText.setText("");

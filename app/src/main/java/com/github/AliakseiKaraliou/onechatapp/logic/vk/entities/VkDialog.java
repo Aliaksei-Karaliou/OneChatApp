@@ -24,7 +24,7 @@ public class VkDialog implements IDialog {
 
     @Override
     public List<IMessage> getMessages() {
-        return new ArrayList<IMessage>(list);
+        return list;
     }
 
     @Override

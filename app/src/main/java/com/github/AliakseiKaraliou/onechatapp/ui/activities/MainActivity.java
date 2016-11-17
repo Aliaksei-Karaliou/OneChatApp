@@ -40,26 +40,23 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         messagesRecyclerView.setLayoutManager(layoutManager);
         messagesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            private int lastVisibleItemPosition;
-            int totalItemCount;
-
             @Override
             public void onScrolled(final RecyclerView recyclerView, int dx, final int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                totalItemCount = layoutManager.getItemCount();
-                lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition();
+                int totalItemCount = layoutManager.getItemCount();
+                int lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition();
                 if (dy > 0 && lastVisibleItemPosition + 1 == totalItemCount) {
                     try {
                         final List<IMessage> loadedMessages = VkGetStartScreen.getStartScreen(MainActivity.this, messages.size());
                         assert loadedMessages != null;
                         messages.addAll(loadedMessages);
+                        recyclerView.getAdapter().notifyDataSetChanged();
                     } catch (AccessTokenException e) {
                         e.printStackTrace();
+                        Toast.makeText(MainActivity.this, R.string.error_access_token, Toast.LENGTH_SHORT).show();
                     }
                 }
-                recyclerView.getAdapter().notifyDataSetChanged();
                 assert getSupportActionBar() != null;
-                getSupportActionBar().setTitle(lastVisibleItemPosition + " " + totalItemCount);
             }
         });
     }
@@ -83,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 messagesRecyclerView.setAdapter(adapter);
             } catch (AccessTokenException e) {
                 e.printStackTrace();
+                Toast.makeText(this, R.string.error_access_token, Toast.LENGTH_SHORT).show();
             }
         }
     }

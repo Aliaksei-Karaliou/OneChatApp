@@ -33,7 +33,6 @@ public abstract class AsyncOperation<Param, Result> {
 
     public final void startLoading(final Param param){
         final AssyncOperationCallableImplementation callableImplementation = new AssyncOperationCallableImplementation(param);
-
         this.future = executor.submit(callableImplementation);
     }
 

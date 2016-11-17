@@ -24,9 +24,9 @@
             android:name="com.github.AliakseiKaraliou.onechatapp.ui.activities.AuthActivity"
             android:noHistory="true"/>
         <activity android:name="com.github.AliakseiKaraliou.onechatapp.ui.activities.VkAuthActivity"/>
-        <activity android:name="com.github.AliakseiKaraliou.onechatapp.ui.activities.ConversationActivity"/>
-        <service android:name="com.github.AliakseiKaraliou.onechatapp.services.ReceivingService"/>
-        <receiver android:name="com.github.AliakseiKaraliou.onechatapp.services.broadcastReceiver.MessageReceiver"/>
+        <activity
+            android:name="com.github.AliakseiKaraliou.onechatapp.ui.activities.ConversationActivity"
+            android:windowSoftInputMode="stateHidden"/>
     </application>
 
 </manifest>
