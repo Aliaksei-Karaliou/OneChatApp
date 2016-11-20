@@ -3,7 +3,7 @@ package com.github.AliakseiKaraliou.onechatapp.logic.vk.entities;
 import android.os.Parcel;
 
 import com.github.AliakseiKaraliou.onechatapp.logic.common.IUser;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.enums.SenderType;
+import com.github.AliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
 import com.github.AliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 
 public class VkUser implements IUser {
@@ -70,8 +70,8 @@ public class VkUser implements IUser {
     }
 
     @Override
-    public SenderType getSenderType() {
-        return SenderType.USER;
+    public ReceiverType getReceiverType() {
+        return ReceiverType.USER;
     }
 
     @Override

@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.github.AliakseiKaraliou.onechatapp.R;
 import com.github.AliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.ISender;
+import com.github.AliakseiKaraliou.onechatapp.logic.common.IReciever;
 import com.github.AliakseiKaraliou.onechatapp.logic.utils.exceptions.AccessTokenException;
 import com.github.AliakseiKaraliou.onechatapp.logic.utils.network.NetworkConnectionChecker;
 import com.github.AliakseiKaraliou.onechatapp.logic.vk.VkInfo;
@@ -73,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
                 final StartScreenMessagesAdapter adapter = new StartScreenMessagesAdapter(messages);
                 adapter.onItemClick(new StartScreenMessagesAdapter.OnMessageClick() {
                     @Override
-                    public void onClick(ISender sender) {
-                        startActivity(new Intent(MainActivity.this, ConversationActivity.class).putExtra("Sender", sender));
+                    public void onClick(IReciever reciever) {
+                        startActivity(new Intent(MainActivity.this, ConversationActivity.class).putExtra("Reciever", reciever));
                     }
                 });
                 messagesRecyclerView.setAdapter(adapter);

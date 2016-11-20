@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.github.AliakseiKaraliou.onechatapp.R;
 import com.github.AliakseiKaraliou.onechatapp.logic.common.IDialog;
 import com.github.AliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.ISender;
+import com.github.AliakseiKaraliou.onechatapp.logic.common.IReciever;
 import com.github.AliakseiKaraliou.onechatapp.logic.common.MessageSender;
 import com.github.AliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.AliakseiKaraliou.onechatapp.logic.vk.getMethods.VkGetDialog;
@@ -30,7 +30,7 @@ import java.util.List;
 
 public class ConversationActivity extends AppCompatActivity {
 
-    private ISender sender;
+    private IReciever reciever;
     private EditText messageEditText;
 
     @Override
@@ -39,10 +39,10 @@ public class ConversationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_conversation);
 
         final Intent intent = getIntent();
-        sender = intent.getParcelableExtra("Sender");
+        reciever = intent.getParcelableExtra("Reciever");
 
         assert getSupportActionBar()!=null;
-        getSupportActionBar().setTitle(sender.getName());
+        getSupportActionBar().setTitle(reciever.getName());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         this.messageEditText = (EditText) findViewById(R.id.activity_conversation_new_message_text);
@@ -66,7 +66,7 @@ public class ConversationActivity extends AppCompatActivity {
             }
         });
 
-        final IDialog dialog = VkGetDialog.getDialog(this, sender);
+        final IDialog dialog = VkGetDialog.getDialog(this, reciever);
         DialogRecyclerAdapter adapter = new DialogRecyclerAdapter(dialog);
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.activity_conversation_message_recycler_view);
         recyclerView.setAdapter(adapter);
@@ -80,7 +80,7 @@ public class ConversationActivity extends AppCompatActivity {
                 final int totalItemCount = layoutManager.getItemCount();
                 final int lastCompletelyVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition();
                 if (lastCompletelyVisibleItemPosition + 1 == totalItemCount && dy < 0) {
-                    final List<IMessage> messageList = VkGetDialog.getMessageList(ConversationActivity.this, sender, dialog.getMessages().size());
+                    final List<IMessage> messageList = VkGetDialog.getMessageList(ConversationActivity.this, reciever, dialog.getMessages().size());
                     dialog.add(messageList);
                     recyclerView.getAdapter().notifyDataSetChanged();
                 }
@@ -105,7 +105,7 @@ public class ConversationActivity extends AppCompatActivity {
                     .setPositiveButton(R.string.answer_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            final String peer_id = new VkRequester("messages.deleteDialog", new Pair<>("peer_id", Long.toString(sender.getId()))).execute(null);
+                            final String peer_id = new VkRequester("messages.deleteDialog", new Pair<>("peer_id", Long.toString(reciever.getId()))).execute(null);
                             if (!"{\"response\":1}".equals(peer_id))
                                 Toast.makeText(ConversationActivity.this, "Unknown error", Toast.LENGTH_SHORT).show();
                         }
@@ -123,7 +123,7 @@ public class ConversationActivity extends AppCompatActivity {
 
     public void sendButtonOnClick(View view) {
         final String message = messageEditText.getText().toString();
-        if (MessageSender.getInstance(sender.getSocialNetwork(), sender.getSenderType()).send(sender, message))
+        if (MessageSender.getInstance(reciever.getSocialNetwork(), reciever.getReceiverType()).send(reciever, message))
             messageEditText.setText("");
     }
 }

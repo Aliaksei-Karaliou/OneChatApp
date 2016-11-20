@@ -2,7 +2,7 @@ package com.github.AliakseiKaraliou.onechatapp.logic.common;
 
 import java.util.List;
 
-public interface IChat extends ISender {
+public interface IChat extends IReciever {
     void setName(String name);
 
     List<IUser> getUserList();

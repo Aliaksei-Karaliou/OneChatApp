@@ -1,28 +1,33 @@
 package com.github.AliakseiKaraliou.onechatapp.logic.vk.entities;
 
+import com.github.AliakseiKaraliou.onechatapp.logic.common.IChat;
 import com.github.AliakseiKaraliou.onechatapp.logic.common.IMessage;
+import com.github.AliakseiKaraliou.onechatapp.logic.common.IReciever;
 import com.github.AliakseiKaraliou.onechatapp.logic.common.ISender;
 
 import java.util.Date;
 
 public class VkMessage implements IMessage {
+
     private ISender sender;
-
     private long id;
+    private String text;
+    private Date date;
+    private IChat chat;
 
-    private VkMessage(long id, ISender sender, String text, Date date, boolean isRead) {
+    private VkMessage(long id, ISender sender, String text, Date date, boolean isRead, IChat chat) {
+        this.id = id;
         this.sender = sender;
         this.text = text;
         this.date = date;
         this.isRead = isRead;
+        this.chat = chat;
     }
 
     @Override
     public long getId() {
         return id;
     }
-
-    private String text;
 
     @Override
     public String getText() {
@@ -31,8 +36,6 @@ public class VkMessage implements IMessage {
         else
             return "Some group";
     }
-
-    private Date date;
 
     @Override
     public Date getDate() {
@@ -44,9 +47,6 @@ public class VkMessage implements IMessage {
         return sender;
     }
 
-    private VkMessage() {
-    }
-
     public boolean isRead() {
         return isRead;
     }
@@ -54,6 +54,14 @@ public class VkMessage implements IMessage {
     public IMessage read() {
         isRead = true;
         return this;
+    }
+
+    @Override
+    public IReciever getReciever() {
+        if (chat != null)
+            return chat;
+        else
+            return sender;
     }
 
     private boolean isRead = false;
@@ -65,6 +73,12 @@ public class VkMessage implements IMessage {
         private String text;
         private ISender sender;
         private boolean read;
+        private IChat chat;
+
+
+        public void setChat(IChat chat) {
+            this.chat = chat;
+        }
 
         public Builder setId(long id) {
             this.id = id;
@@ -95,7 +109,7 @@ public class VkMessage implements IMessage {
         }
 
         public VkMessage build() {
-            return new VkMessage(id, sender, text, date, read);
+            return new VkMessage(id, sender, text, date, read, chat);
         }
     }
 }

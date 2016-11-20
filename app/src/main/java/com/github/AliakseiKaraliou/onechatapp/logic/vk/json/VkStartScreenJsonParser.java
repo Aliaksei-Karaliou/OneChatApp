@@ -52,12 +52,12 @@ public class VkStartScreenJsonParser extends AsyncOperation<String, List<IMessag
             for (int i = 0; i < allMessages.length(); i++) {
                 JSONObject jsonMessageObject = allMessages.getJSONObject(i).getJSONObject("message");
                 VkMessage.Builder builder = new VkMessage.Builder().setText(jsonMessageObject.getString("body")).setDate(new Date(jsonMessageObject.getLong("date") * 1000)).setRead(jsonMessageObject.getInt("read_state") != 0).setId(jsonMessageObject.getLong("id"));
-                if (jsonMessageObject.getLong("user_id") > 0 && !jsonMessageObject.has("chat_id"))
+                if (jsonMessageObject.getLong("user_id") > 0)
                     builder.setSender(VkIdToUserStorage.getUser(jsonMessageObject.getLong("user_id")));
-                else if (jsonMessageObject.getLong("user_id") < 0)
+                else
                     builder.setSender(VkIdToGroupStorage.getGroup(jsonMessageObject.getLong("user_id")));
-                else {
-                    builder.setSender(VkIdToChatStorage.getChat(jsonMessageObject.getLong("chat_id") + 2000000000));
+                if (jsonMessageObject.has("chat_id")) {
+                    builder.setChat(VkIdToChatStorage.getChat(jsonMessageObject.getLong("chat_id") + 2000000000));
                     if (jsonMessageObject.has("action"))
                         builder.setText(VkChatAction.convert(context, jsonMessageObject));
                 }

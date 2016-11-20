@@ -9,7 +9,9 @@ import android.widget.TextView;
 
 import com.github.AliakseiKaraliou.onechatapp.R;
 import com.github.AliakseiKaraliou.onechatapp.logic.common.IMessage;
+import com.github.AliakseiKaraliou.onechatapp.logic.common.IReciever;
 import com.github.AliakseiKaraliou.onechatapp.logic.common.ISender;
+import com.github.AliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
 import com.github.AliakseiKaraliou.onechatapp.logic.utils.imageLoader.ImageLoader;
 
 import java.util.List;
@@ -30,26 +32,49 @@ public class StartScreenMessagesAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.start_screen_message_item, parent, false);
-        return new StartMessagesRecyclerViewHolder(view);
+        final ReceiverType receiverType = ReceiverType.values()[viewType];
+        if (receiverType == ReceiverType.USER || receiverType == ReceiverType.GROUP) {
+            final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.start_screen_message_user_group_item, parent, false);
+            return new UserGroupViewHolder(view);
+        } else {
+            final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.start_screen_message_chat_item, parent, false);
+            return new ChatViewHolder(view);
+        }
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final StartMessagesRecyclerViewHolder viewHolder = ((StartMessagesRecyclerViewHolder) holder);
+
         final IMessage currentMessage = messageList.get(position);
         final ImageLoader loader = new ImageLoader();
+        final int viewType = getItemViewType(position);
+        final ReceiverType receiverType = ReceiverType.values()[viewType];
 
+        if (receiverType == ReceiverType.USER || receiverType == ReceiverType.GROUP) {
+            final UserGroupViewHolder viewHolder = (UserGroupViewHolder) holder;
+            viewHolder.avatarImageView.setImageBitmap(loader.getBitmapFromUrl(currentMessage.getSender().getPhotoUrl()));
+            viewHolder.messageTextView.setText(currentMessage.getText());
+            viewHolder.nameTextView.setText(currentMessage.getSender().getName());
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onMessageClick.onClick(currentMessage.getReciever());
+                }
+            });
+        } else {
+            final ChatViewHolder viewHolder = (ChatViewHolder) holder;
+            viewHolder.avatarImageView.setImageBitmap(loader.getBitmapFromUrl(currentMessage.getReciever().getPhotoUrl()));
+            viewHolder.messageTextView.setText(currentMessage.getText());
+            viewHolder.nameTextView.setText(currentMessage.getReciever().getName());
+            viewHolder.userPhotoImageView.setImageBitmap(loader.getBitmapFromUrl(currentMessage.getSender().getPhotoUrl()));
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onMessageClick.onClick(currentMessage.getReciever());
+                }
+            });
 
-        viewHolder.avatarImageView.setImageBitmap(loader.getBitmapFromUrl(currentMessage.getSender().getPhotoUrl()));
-        viewHolder.messageTextView.setText(currentMessage.getText());
-        viewHolder.nameTextView.setText(currentMessage.getSender().getName());
-        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onMessageClick.onClick(currentMessage.getSender());
-            }
-        });
+        }
     }
 
     @Override
@@ -57,13 +82,13 @@ public class StartScreenMessagesAdapter extends RecyclerView.Adapter<RecyclerVie
         return messageList.size();
     }
 
-    private class StartMessagesRecyclerViewHolder extends RecyclerView.ViewHolder {
+    private class UserGroupViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView nameTextView;
         private final TextView messageTextView;
         private final ImageView avatarImageView;
 
-        public StartMessagesRecyclerViewHolder(View itemView) {
+        public UserGroupViewHolder(View itemView) {
             super(itemView);
             nameTextView = ((TextView) itemView.findViewById(R.id.start_screen_message_name));
             messageTextView = ((TextView) itemView.findViewById(R.id.start_screen_message_message));
@@ -71,7 +96,29 @@ public class StartScreenMessagesAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
-    public interface OnMessageClick {
-        void onClick(ISender sender);
+    private class ChatViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView nameTextView;
+        private final TextView messageTextView;
+        private final ImageView avatarImageView;
+        private final ImageView userPhotoImageView;
+
+        public ChatViewHolder(View itemView) {
+            super(itemView);
+            nameTextView = ((TextView) itemView.findViewById(R.id.start_screen_message_name));
+            messageTextView = ((TextView) itemView.findViewById(R.id.start_screen_message_message));
+            avatarImageView = ((ImageView) itemView.findViewById(R.id.start_screen_message_avatar));
+            userPhotoImageView = ((ImageView) itemView.findViewById(R.id.start_screen_chat_message_user_photo));
+        }
     }
+
+    public interface OnMessageClick {
+        void onClick(IReciever reciever);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return messageList.get(position).getReciever().getReceiverType().ordinal();
+    }
+
 }

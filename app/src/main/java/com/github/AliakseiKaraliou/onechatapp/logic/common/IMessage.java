@@ -15,5 +15,7 @@ public interface IMessage extends Cloneable {
     boolean isRead();
 
     IMessage read();
+
+    IReciever getReciever();
 }
 

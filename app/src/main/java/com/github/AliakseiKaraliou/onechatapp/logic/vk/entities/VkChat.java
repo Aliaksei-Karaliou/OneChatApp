@@ -5,7 +5,7 @@ import android.os.Parcel;
 import com.github.AliakseiKaraliou.onechatapp.logic.common.IChat;
 import com.github.AliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.AliakseiKaraliou.onechatapp.logic.common.IUser;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.enums.SenderType;
+import com.github.AliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
 import com.github.AliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 
 import java.util.ArrayList;
@@ -71,8 +71,8 @@ public class VkChat implements IChat {
     }
 
     @Override
-    public SenderType getSenderType() {
-        return SenderType.CHAT;
+    public ReceiverType getReceiverType() {
+        return ReceiverType.CHAT;
     }
 
     @Override
