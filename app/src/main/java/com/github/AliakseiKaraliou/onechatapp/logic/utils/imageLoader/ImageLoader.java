@@ -37,7 +37,8 @@ public class ImageLoader {
             }
         };
         try {
-            return asyncOperation.execute(url);
+            //return asyncOperation.execute(url);
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,6 +1,9 @@
 package com.github.AliakseiKaraliou.onechatapp.logic.utils.asyncOperation;
 
+import android.support.annotation.Nullable;
+
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -11,11 +14,6 @@ public abstract class AsyncOperation<Param, Result> {
     private static ExecutorService executor = Executors.newCachedThreadPool();
 
     protected abstract Result doInBackground(Param param);
-
-    public final Result execute(final Param param) {
-        startLoading(param);
-        return getResult();
-    }
 
     private class AssyncOperationCallableImplementation implements Callable<Result> {
 
@@ -31,19 +29,24 @@ public abstract class AsyncOperation<Param, Result> {
         }
     }
 
-    public final void startLoading(final Param param){
+    public final AsyncOperation<Param, Result> startLoading(final Param param) {
         final AssyncOperationCallableImplementation callableImplementation = new AssyncOperationCallableImplementation(param);
         this.future = executor.submit(callableImplementation);
+        return this;
     }
 
+    @Nullable
     public final Result getResult() {
         try {
             return future.get();
-        }
-        catch (Exception e){
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public final boolean isLoadingFinished(){
+        return future.isDone();
     }
 
 }

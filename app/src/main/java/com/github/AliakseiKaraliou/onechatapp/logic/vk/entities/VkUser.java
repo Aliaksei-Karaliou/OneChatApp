@@ -9,7 +9,7 @@ import com.github.AliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 public class VkUser implements IUser {
     private long id;
 
-    public VkUser(int id, String firstName, String lastName, String photoUrl) {
+    public VkUser(long id, String firstName, String lastName, String photoUrl) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
