@@ -1,11 +1,9 @@
-package com.github.AliakseiKaraliou.onechatapp.logic.common;
+package com.github.aliakseiKaraliou.onechatapp.logic.common;
 
-import android.os.Parcelable;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 
-import com.github.AliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
-
-public interface IReciever extends Parcelable{
+public interface IReciever {
     long getId();
 
     String getName();

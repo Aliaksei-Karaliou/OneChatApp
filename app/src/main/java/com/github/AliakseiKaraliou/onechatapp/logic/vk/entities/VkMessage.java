@@ -1,9 +1,9 @@
-package com.github.AliakseiKaraliou.onechatapp.logic.vk.entities;
+package com.github.aliakseiKaraliou.onechatapp.logic.vk.entities;
 
-import com.github.AliakseiKaraliou.onechatapp.logic.common.IChat;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.IReciever;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.ISender;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.ISender;
 
 import java.util.Date;
 
@@ -105,6 +105,11 @@ public class VkMessage implements IMessage {
 
         public Builder setDate(Date date) {
             this.date = date;
+            return this;
+        }
+
+        public Builder setDate(long timeStamp) {
+            this.date = new Date(timeStamp * 1000);
             return this;
         }
 

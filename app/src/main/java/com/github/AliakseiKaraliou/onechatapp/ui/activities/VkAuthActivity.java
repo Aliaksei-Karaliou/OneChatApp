@@ -1,13 +1,13 @@
-package com.github.AliakseiKaraliou.onechatapp.ui.activities;
+package com.github.aliakseiKaraliou.onechatapp.ui.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.github.AliakseiKaraliou.onechatapp.R;
-import com.github.AliakseiKaraliou.onechatapp.logic.vk.VkAuth;
-import com.github.AliakseiKaraliou.onechatapp.logic.vk.VkInfo;
+import com.github.aliakseiKaraliou.onechatapp.R;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkAuth;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
 
 public class VkAuthActivity extends AppCompatActivity {
 
@@ -30,7 +30,7 @@ public class VkAuthActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 String webViewUrl = webView.getUrl();
                 if (webViewUrl.contains("access_token")) {
-                    VkInfo.setUrl(webViewUrl);
+                    VkAuth.parseUrl(webViewUrl);
                     finish();
                 }
                 super.onPageFinished(view, url);

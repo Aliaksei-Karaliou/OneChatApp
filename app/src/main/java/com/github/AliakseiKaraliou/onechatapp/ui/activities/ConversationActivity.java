@@ -1,4 +1,4 @@
-package com.github.AliakseiKaraliou.onechatapp.ui.activities;
+package com.github.aliakseiKaraliou.onechatapp.ui.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -15,10 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import com.github.AliakseiKaraliou.onechatapp.R;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.IDialog;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.IReciever;
-import com.github.AliakseiKaraliou.onechatapp.ui.adapters.DialogRecyclerAdapter;
+import com.github.aliakseiKaraliou.onechatapp.R;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IDialog;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
+import com.github.aliakseiKaraliou.onechatapp.ui.recyclerView.adapters.DialogRecyclerAdapter;
 
 public class ConversationActivity extends AppCompatActivity {
 

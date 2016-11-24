@@ -1,9 +1,8 @@
-package com.github.AliakseiKaraliou.onechatapp.logic.vk.entities;
+package com.github.aliakseiKaraliou.onechatapp.logic.vk.entities;
 
-import com.github.AliakseiKaraliou.onechatapp.logic.common.IDialog;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.IReciever;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.ISender;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IDialog;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
 
 import java.util.ArrayList;
 import java.util.List;

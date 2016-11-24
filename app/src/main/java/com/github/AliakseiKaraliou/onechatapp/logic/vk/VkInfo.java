@@ -1,4 +1,4 @@
-package com.github.AliakseiKaraliou.onechatapp.logic.vk;
+package com.github.aliakseiKaraliou.onechatapp.logic.vk;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,13 +9,7 @@ public class VkInfo {
     private static final String ACCESS_TOKEN = "Access Token";
     private static final String USER_ID = "User Id";
 
-    public static void setUrl(String url) {
-        String[] values = url.split("#")[1].split("&");
-        accessToken = values[0].split("=")[1];
-        userId = Integer.parseInt(values[2].split("=")[1]);
-        if (userId > 0 && accessToken != null)
-            authorized = true;
-    }
+
 
     public static double getVkApiVersion() {
         return 5.60;
@@ -25,21 +19,23 @@ public class VkInfo {
         return 5504374;
     }
 
-    public static int getUserId() {
+    public static long getUserId() {
         return userId;
     }
 
-    public static void setUserId(int userId) {
+    //Available only in this package
+    static void setUserId(long userId) {
         VkInfo.userId = userId;
     }
 
-    private static int userId = -1;
+    private static long userId = -1;
 
     public static String getAccessToken() {
         return accessToken;
     }
 
-    public static void setAccessToken(String accessToken) {
+    //Available only in this package
+    static void setAccessToken(String accessToken) {
         VkInfo.accessToken = accessToken;
     }
 
@@ -48,31 +44,18 @@ public class VkInfo {
     public static void userSetAuth(Activity activity) {
         SharedPreferences.Editor editor = activity.getPreferences(Context.MODE_PRIVATE).edit();
         editor.putString(ACCESS_TOKEN, VkInfo.getAccessToken());
-        editor.putInt(USER_ID, VkInfo.getUserId());
+        editor.putLong(USER_ID, VkInfo.getUserId());
         editor.apply();
     }
 
     public static void userGetAuth(Activity activity) {
         SharedPreferences preferences = activity.getPreferences(Context.MODE_PRIVATE);
-        final int anInt = preferences.getInt(USER_ID, -1);
-        VkInfo.setUserId(anInt);
+        final long id = preferences.getLong(USER_ID, -1);
+        VkInfo.setUserId(id);
         VkInfo.setAccessToken(preferences.getString(ACCESS_TOKEN, null));
-        if (VkInfo.getUserId() > 0) {
-            authorized = true;
-        }
     }
 
     public static boolean isUserAuthorized() {
         return userId > 0 && accessToken != null;
     }
-
-    public static boolean isAuthorized() {
-        return authorized;
-    }
-
-    private static void setAuthorized(boolean authorized) {
-        VkInfo.authorized = authorized;
-    }
-
-    private static boolean authorized;
 }

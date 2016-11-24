@@ -1,4 +1,4 @@
-package com.github.AliakseiKaraliou.onechatapp;
+package com.github.aliakseiKaraliou.onechatapp;
 
 public class Application extends android.app.Application {
     @Override

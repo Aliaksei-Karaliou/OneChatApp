@@ -1,4 +1,4 @@
-package com.github.AliakseiKaraliou.onechatapp.logic.vk;
+package com.github.aliakseiKaraliou.onechatapp.logic.vk;
 
 import android.util.Pair;
 

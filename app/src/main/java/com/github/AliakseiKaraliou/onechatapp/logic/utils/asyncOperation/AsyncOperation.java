@@ -1,4 +1,4 @@
-package com.github.AliakseiKaraliou.onechatapp.logic.utils.asyncOperation;
+package com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation;
 
 import android.support.annotation.Nullable;
 

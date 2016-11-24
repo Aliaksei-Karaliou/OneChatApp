@@ -1,4 +1,4 @@
-package com.github.AliakseiKaraliou.onechatapp.logic.common.enums;
+package com.github.aliakseiKaraliou.onechatapp.logic.common.enums;
 
 public enum SocialNetwork {
     Vk,

@@ -1,4 +1,4 @@
-package com.github.AliakseiKaraliou.onechatapp.logic.db;
+package com.github.aliakseiKaraliou.onechatapp.logic.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

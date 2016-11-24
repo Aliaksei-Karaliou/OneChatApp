@@ -1,4 +1,4 @@
-package com.github.AliakseiKaraliou.onechatapp.logic.vk;
+package com.github.aliakseiKaraliou.onechatapp.logic.vk;
 
 import android.support.annotation.Nullable;
 
@@ -13,6 +13,15 @@ public class VkIdConverter {
     public Long chatToPeer(long id) {
         if (id > 0 && id < chatPeerOffset)
             return id + chatPeerOffset;
+        else {
+            return null;
+        }
+    }
+
+    @Nullable
+    public Long groupToPeer(long id) {
+        if (id > 0)
+            return -id;
         else {
             return null;
         }

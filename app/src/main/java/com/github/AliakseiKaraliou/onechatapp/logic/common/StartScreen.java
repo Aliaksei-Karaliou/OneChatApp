@@ -1,6 +1,6 @@
-package com.github.AliakseiKaraliou.onechatapp.logic.common;
+package com.github.aliakseiKaraliou.onechatapp.logic.common;
 
-import com.github.AliakseiKaraliou.onechatapp.logic.db.annotations.DbTableName;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbTableName;
 
 import java.util.ArrayList;
 import java.util.List;

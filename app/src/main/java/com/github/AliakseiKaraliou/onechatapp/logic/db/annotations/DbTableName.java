@@ -1,4 +1,4 @@
-package com.github.AliakseiKaraliou.onechatapp.logic.db.annotations;
+package com.github.aliakseiKaraliou.onechatapp.logic.db.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

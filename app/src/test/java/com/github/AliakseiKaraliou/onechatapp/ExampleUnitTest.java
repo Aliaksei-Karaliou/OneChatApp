@@ -1,4 +1,4 @@
-package com.github.AliakseiKaraliou.onechatapp;
+package com.github.aliakseiKaraliou.onechatapp;
 
 import org.junit.Test;
 
