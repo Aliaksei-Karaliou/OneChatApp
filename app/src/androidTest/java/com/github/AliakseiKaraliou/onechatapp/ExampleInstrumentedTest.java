@@ -1,4 +1,4 @@
-package com.github.AliakseiKaraliou.onechatapp;
+package com.github.aliakseiKaraliou.onechatapp;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

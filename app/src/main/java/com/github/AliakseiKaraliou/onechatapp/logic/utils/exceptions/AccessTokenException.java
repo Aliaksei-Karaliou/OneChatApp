@@ -1,4 +1,4 @@
-package com.github.AliakseiKaraliou.onechatapp.logic.utils.exceptions;
+package com.github.aliakseiKaraliou.onechatapp.logic.utils.exceptions;
 
 public class AccessTokenException extends Exception {
     public AccessTokenException() {

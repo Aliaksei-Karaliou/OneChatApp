@@ -1,16 +1,16 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers;
 
-import android.support.v4.util.LongSparseArray;
+        import android.support.v4.util.LongSparseArray;
 
-import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.IParser;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkIdConverter;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.entities.VkChat;
+        import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
+        import com.github.aliakseiKaraliou.onechatapp.logic.common.IParser;
+        import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
+        import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkIdConverter;
+        import com.github.aliakseiKaraliou.onechatapp.logic.vk.entities.VkChat;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+        import org.json.JSONArray;
+        import org.json.JSONException;
+        import org.json.JSONObject;
 
 public class VkChatDataParser implements IParser<String, LongSparseArray<IChat>> {
 

@@ -1,4 +1,4 @@
-package com.github.AliakseiKaraliou.onechatapp.logic.common;
+package com.github.aliakseiKaraliou.onechatapp.logic.common;
 
 import java.util.Date;
 

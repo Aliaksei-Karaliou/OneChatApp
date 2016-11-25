@@ -9,13 +9,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
+import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.ImageLoaderManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.network.NetworkConnectionChecker;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogsListManager;
-import com.github.aliakseiKaraliou.onechatapp.ui.recyclerView.adapters.DialogListAdapter;
+import com.github.aliakseiKaraliou.onechatapp.ui.adapters.DialogListAdapter;
 
 import java.util.List;
 
@@ -30,13 +33,16 @@ public class DialogsListActivity extends AppCompatActivity {
             VkInfo.userGetAuth(this);
         }
 
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.activity_dialogs_progressbar);
+        progressBar.setVisibility(View.INVISIBLE);
+
         String token=VkInfo.getAccessToken();
         if (VkInfo.isUserAuthorized()) {
 
             final VkDialogsListManager vkDialogsListManager = new VkDialogsListManager();
             vkDialogsListManager.startLoading(0);
 
-            final RecyclerView messagesRecyclerView = (RecyclerView) findViewById(R.id.activity_main_recycler_view_main_messages);
+            final RecyclerView messagesRecyclerView = (RecyclerView) findViewById(R.id.activity_dialogs_list_messages);
             final LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             messagesRecyclerView.setLayoutManager(layoutManager);
             messagesRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
@@ -46,16 +52,33 @@ public class DialogsListActivity extends AppCompatActivity {
             vkDialogsListManager.startLoading(20);
 
             final DialogListAdapter adapter = new DialogListAdapter(messages);
+            final ImageLoaderManager manager = new ImageLoaderManager();
             messagesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
+
                     int lastVisibleItem=layoutManager.findLastVisibleItemPosition();
                     int totalItem=layoutManager.getItemCount();
-                    if (lastVisibleItem+1==totalItem && dy<0){
+
+                    if (lastVisibleItem + 1 == totalItem && dy > 0) {
+
                         List<IMessage> result=vkDialogsListManager.getResult();
+
+                        //preload images
+                        for (IMessage iMessage : result) {
+                            manager.startLoading(iMessage.getReciever().getPhotoUrl());
+                            manager.getResult();
+                            if (!iMessage.getReciever().equals(iMessage.getSender())) {
+                                manager.startLoading(iMessage.getSender().getPhotoUrl());
+                                manager.getResult();
+                            }
+                        }
+
                         messages.addAll(result);
                         adapter.notifyDataSetChanged();
+
+
                         vkDialogsListManager.startLoading(totalItem);
                     }
                 }

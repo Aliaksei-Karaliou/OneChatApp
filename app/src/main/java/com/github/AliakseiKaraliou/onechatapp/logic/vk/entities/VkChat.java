@@ -1,12 +1,10 @@
-package com.github.AliakseiKaraliou.onechatapp.logic.vk.entities;
+package com.github.aliakseiKaraliou.onechatapp.logic.vk.entities;
 
-import android.os.Parcel;
-
-import com.github.AliakseiKaraliou.onechatapp.logic.common.IChat;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.IUser;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +19,7 @@ public class VkChat implements IChat {
     private String name = "";
     private String photoUrl = null;
 
-    public VkChat(int id, String name, String photoUrl, List<IUser> userList) {
+    public VkChat(long id, String name, String photoUrl, List<IUser> userList) {
         if (id < 2000000000)
             this.id = id + 2000000000;
         else
@@ -34,14 +32,7 @@ public class VkChat implements IChat {
     }
 
     public VkChat(long id, String name, String photoUrl) {
-        if (id < 2000000000)
-            this.id = id + 2000000000;
-        else
-            this.id = id;
-        this.name = name;
-        this.photoUrl = photoUrl;
-        this.userList = new ArrayList<>();
-        this.messageList = new ArrayList<>();
+        this(id, name, photoUrl, new ArrayList<IUser>());
     }
 
 
@@ -67,7 +58,7 @@ public class VkChat implements IChat {
 
     @Override
     public SocialNetwork getSocialNetwork() {
-        return SocialNetwork.Vk;
+        return SocialNetwork.VK;
     }
 
     @Override
@@ -119,45 +110,4 @@ public class VkChat implements IChat {
     public void addMessages(List<IMessage> messages) {
         messageList.addAll(messages);
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(this.userList);
-        dest.writeList(this.messageList);
-        dest.writeLong(this.id);
-        dest.writeString(this.name);
-        dest.writeString(this.photoUrl);
-    }
-
-    protected VkChat(Parcel in) {
-        this.userList = new ArrayList<>();
-        userList.addAll(in.createTypedArrayList(VkUser.CREATOR));
-        this.messageList = new ArrayList<IMessage>();
-        in.readList(this.messageList, IMessage.class.getClassLoader());
-        this.id = in.readLong();
-        this.name = in.readString();
-        this.photoUrl = in.readString();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof VkChat && ((VkChat)obj).id == id;
-    }
-
-    public static final Creator<VkChat> CREATOR = new Creator<VkChat>() {
-        @Override
-        public VkChat createFromParcel(Parcel source) {
-            return new VkChat(source);
-        }
-
-        @Override
-        public VkChat[] newArray(int size) {
-            return new VkChat[size];
-        }
-    };
 }

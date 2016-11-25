@@ -1,15 +1,13 @@
-package com.github.AliakseiKaraliou.onechatapp.logic.vk.entities;
+package com.github.aliakseiKaraliou.onechatapp.logic.vk.entities;
 
-import android.os.Parcel;
-
-import com.github.AliakseiKaraliou.onechatapp.logic.common.IUser;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
-import com.github.AliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 
 public class VkUser implements IUser {
     private long id;
 
-    public VkUser(int id, String firstName, String lastName, String photoUrl) {
+    public VkUser(long id, String firstName, String lastName, String photoUrl) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -66,43 +64,11 @@ public class VkUser implements IUser {
 
     @Override
     public SocialNetwork getSocialNetwork() {
-        return SocialNetwork.Vk;
+        return SocialNetwork.VK;
     }
 
     @Override
     public ReceiverType getReceiverType() {
         return ReceiverType.USER;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.id);
-        dest.writeString(this.firstName);
-        dest.writeString(this.lastName);
-        dest.writeString(this.photoUrl);
-    }
-
-    protected VkUser(Parcel in) {
-        this.id = in.readLong();
-        this.firstName = in.readString();
-        this.lastName = in.readString();
-        this.photoUrl = in.readString();
-    }
-
-    public static final Creator<VkUser> CREATOR = new Creator<VkUser>() {
-        @Override
-        public VkUser createFromParcel(Parcel source) {
-            return new VkUser(source);
-        }
-
-        @Override
-        public VkUser[] newArray(int size) {
-            return new VkUser[size];
-        }
-    };
 }

@@ -1,11 +1,11 @@
-package com.github.AliakseiKaraliou.onechatapp.ui.activities;
+package com.github.aliakseiKaraliou.onechatapp.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.github.AliakseiKaraliou.onechatapp.R;
+import com.github.aliakseiKaraliou.onechatapp.R;
 
 public class AuthActivity extends AppCompatActivity {
 

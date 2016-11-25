@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.github.AliakseiKaraliou.onechatapp">
+          package="com.github.aliakseiKaraliou.onechatapp">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
 
     <application
-        android:name="com.github.AliakseiKaraliou.onechatapp.Application"
+        android:name="com.github.aliakseiKaraliou.onechatapp.Application"
         android:allowBackup="true"
         android:icon="@mipmap/icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.github.AliakseiKaraliou.onechatapp.ui.activities.MainActivity">
+        <activity android:name="com.github.aliakseiKaraliou.onechatapp.ui.activities.DialogsListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -21,12 +21,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.github.AliakseiKaraliou.onechatapp.ui.activities.AuthActivity"
+            android:name="com.github.aliakseiKaraliou.onechatapp.ui.activities.AuthActivity"
             android:noHistory="true"/>
-        <activity android:name="com.github.AliakseiKaraliou.onechatapp.ui.activities.VkAuthActivity"/>
-        <activity
-            android:name="com.github.AliakseiKaraliou.onechatapp.ui.activities.ConversationActivity"
-            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name="com.github.aliakseiKaraliou.onechatapp.ui.activities.VkAuthActivity"/>
     </application>
 
 </manifest>

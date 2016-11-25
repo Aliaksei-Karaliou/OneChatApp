@@ -1,4 +1,4 @@
-package com.github.AliakseiKaraliou.onechatapp.logic.utils.network;
+package com.github.aliakseiKaraliou.onechatapp.logic.utils.network;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

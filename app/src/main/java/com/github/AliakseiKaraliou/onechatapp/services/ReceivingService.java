@@ -1,4 +1,4 @@
-package com.github.AliakseiKaraliou.onechatapp.services;
+package com.github.aliakseiKaraliou.onechatapp.services;
 
 import android.app.Service;
 import android.content.Intent;

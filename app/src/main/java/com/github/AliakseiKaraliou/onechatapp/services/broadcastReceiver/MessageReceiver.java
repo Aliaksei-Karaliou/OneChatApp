@@ -1,4 +1,4 @@
-package com.github.AliakseiKaraliou.onechatapp.services.broadcastReceiver;
+package com.github.aliakseiKaraliou.onechatapp.services.broadcastReceiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
