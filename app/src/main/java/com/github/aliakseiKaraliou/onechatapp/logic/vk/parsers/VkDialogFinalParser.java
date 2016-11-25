@@ -42,7 +42,7 @@ public class VkDialogFinalParser {
                 boolean isRead = currentObject.getInt(VkConstants.Json.READ_STATE) > 0;
                 builder.setRead(isRead);
 
-                long userId = currentObject.getLong(VkConstants.Json.USER_ID);
+                long userId = currentObject.getLong(VkConstants.Json.FROM_ID);
                 ISender sender = (ISender) array.get(userId);
                 builder.setSender(sender);
 

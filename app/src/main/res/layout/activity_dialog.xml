@@ -3,14 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-
-    android:id="@+id/activity_conversation"
-    android:layout_width="match_parent"
+        android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.github.aliakseiKaraliou.onechatapp.ui.activities.ConversationActivity">
 
     <RelativeLayout
-        android:id="@+id/activity_conversation_new_message_line"
+        android:id="@+id/dialog_new_message_line"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
@@ -19,7 +17,7 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/activity_conversation_send_button"
+            android:id="@+id/dialog_send_button"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
@@ -31,8 +29,8 @@
 
         <EditText
             android:layout_width="match_parent"
-            android:id="@+id/activity_conversation_new_message_text"
-            android:layout_toStartOf="@id/activity_conversation_send_button"
+            android:id="@+id/dialog_new_message_text"
+            android:layout_toStartOf="@id/dialog_send_button"
             android:layout_height="match_parent"
             android:background="@null"
             android:imeOptions="flagNoExtractUi"
@@ -40,16 +38,16 @@
     </RelativeLayout>
 
     <View
-        android:id="@+id/activity_conversation_separator"
+        android:id="@+id/dialog_separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_above="@+id/activity_conversation_new_message_line"
+        android:layout_above="@+id/dialog_new_message_line"
         android:background="@android:color/darker_gray"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/activity_conversation_message_recycler_view"
+        android:id="@+id/dialog_message_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/activity_conversation_separator">
+        android:layout_above="@+id/dialog_separator">
     </android.support.v7.widget.RecyclerView>
 </RelativeLayout>

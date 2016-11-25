@@ -33,7 +33,10 @@ public final class VkConstants {
     }
 
     public final static class Params {
+        public static final String ACCESS_TOKEN = "access_token";
         public static final String OFFSET = "offset";
+        public static final String USER_ID = "user_id";
+        public static final String AUTHORIZE_URL = "https://oauth.vk.com/authorize?client_id=%d&display=mobile&redirect_uri=https://oauth.vk.com/blank.html&scope=offline,%s&response_type=token&v=%f&revoke=1";
     }
 
     public final static class Extra {

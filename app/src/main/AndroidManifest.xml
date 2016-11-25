@@ -23,8 +23,9 @@
             android:name=".ui.activities.AuthActivity"
             android:noHistory="true"/>
         <activity android:name=".ui.activities.VkAuthActivity"/>
-        <activity android:name=".ui.activities.DialogActivity">
-        </activity>
+        <activity
+            android:name=".ui.activities.DialogActivity"
+            android:windowSoftInputMode="stateHidden"/>
     </application>
 
 </manifest>

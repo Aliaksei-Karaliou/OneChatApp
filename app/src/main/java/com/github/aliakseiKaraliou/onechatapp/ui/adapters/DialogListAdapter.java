@@ -94,9 +94,9 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public UserGroupViewHolder(View itemView) {
             super(itemView);
-            nameTextView = ((TextView) itemView.findViewById(R.id.dialog_list_name));
-            messageTextView = ((TextView) itemView.findViewById(R.id.dialog_list_message));
-            avatarImageView = ((ImageView) itemView.findViewById(R.id.dialog_list_avatar));
+            nameTextView = ((TextView) itemView.findViewById(R.id.dialog_list_item_name));
+            messageTextView = ((TextView) itemView.findViewById(R.id.dialog_list_item_message));
+            avatarImageView = ((ImageView) itemView.findViewById(R.id.dialog_list_item_primary_photo));
         }
     }
 
@@ -109,10 +109,10 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public ChatViewHolder(View itemView) {
             super(itemView);
-            nameTextView = ((TextView) itemView.findViewById(R.id.dialog_list_name));
-            messageTextView = ((TextView) itemView.findViewById(R.id.dialog_list_message));
-            avatarImageView = ((ImageView) itemView.findViewById(R.id.dialog_list_avatar));
-            userPhotoImageView = ((ImageView) itemView.findViewById(R.id.dialog_list_photo));
+            nameTextView = ((TextView) itemView.findViewById(R.id.dialog_list_item_name));
+            messageTextView = ((TextView) itemView.findViewById(R.id.dialog_list_item_message));
+            avatarImageView = ((ImageView) itemView.findViewById(R.id.dialog_list_item_primary_photo));
+            userPhotoImageView = ((ImageView) itemView.findViewById(R.id.dialog_list_secondary_photo));
         }
     }
 

@@ -11,8 +11,6 @@ import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogFinalParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogStartParser;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogsListFinalParser;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogsListStartParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkReceiverDataParser;
 
 import java.io.IOException;
@@ -29,10 +27,17 @@ public final class VkDialogManager {
                 protected List<IMessage> doInBackground(Integer integer) {
                     try {
                         Pair<String, String> peerId = new Pair<String, String>("peer_id", Long.toString(reciever.getId()));
-                        final String s = new VkRequester().doRequest(VkConstants.Method.MESSAGES_GETHISTORY, peerId);
-                        final Set<Long> parse = new VkDialogStartParser().parse(s);
+                        final String json;
+                        if (offset > 0) {
+                            Pair<String, String> offsetPair = new Pair<String, String>("offset", Integer.toString(offset));
+                            json = new VkRequester().doRequest(VkConstants.Method.MESSAGES_GETHISTORY, peerId, offsetPair);
+                        } else {
+                            json = new VkRequester().doRequest(VkConstants.Method.MESSAGES_GETHISTORY, peerId);
+                        }
+
+                        final Set<Long> parse = new VkDialogStartParser().parse(json);
                         final LongSparseArray<IReciever> longSparseArray = new VkReceiverDataParser().parse(parse);
-                        final List<IMessage> messages = new VkDialogFinalParser().parse(s, longSparseArray);
+                        final List<IMessage> messages = new VkDialogFinalParser().parse(json, longSparseArray);
                         return messages;
                     } catch (IOException e) {
                         e.printStackTrace();

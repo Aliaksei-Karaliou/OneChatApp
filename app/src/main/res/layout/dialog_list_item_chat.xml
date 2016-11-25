@@ -6,7 +6,7 @@
              android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/dialog_list_avatar"
+        android:id="@+id/dialog_list_item_primary_photo"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="center_vertical"
@@ -23,7 +23,7 @@
         >
 
         <TextView
-            android:id="@+id/dialog_list_name"
+            android:id="@+id/dialog_list_item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
@@ -38,14 +38,14 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/dialog_list_photo"
+                android:id="@+id/dialog_list_secondary_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 tools:src="@mipmap/icon"/>
 
             <TextView
-                android:id="@+id/dialog_list_message"
+                android:id="@+id/dialog_list_item_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lines="1"
