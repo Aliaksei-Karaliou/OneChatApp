@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import java.util.HashSet;
 import java.util.Set;
 
-public class VkMessageListStartParser implements IParser<String, Set<Long>> {
+public class VkDialogsListStartParser implements IParser<String, Set<Long>> {
     @Nullable
     @Override
     public Set<Long> parse(String jsonString) {

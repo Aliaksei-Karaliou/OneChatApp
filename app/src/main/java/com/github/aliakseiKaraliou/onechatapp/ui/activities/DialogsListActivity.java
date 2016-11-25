@@ -9,13 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ProgressBar;
 
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.ImageLoaderManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.network.NetworkConnectionChecker;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogsListManager;
 import com.github.aliakseiKaraliou.onechatapp.ui.adapters.DialogListAdapter;
@@ -33,9 +32,6 @@ public class DialogsListActivity extends AppCompatActivity {
             VkInfo.userGetAuth(this);
         }
 
-        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.activity_dialogs_progressbar);
-        progressBar.setVisibility(View.INVISIBLE);
-
         String token=VkInfo.getAccessToken();
         if (VkInfo.isUserAuthorized()) {
 
@@ -48,10 +44,20 @@ public class DialogsListActivity extends AppCompatActivity {
             messagesRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
             final List<IMessage> messages = vkDialogsListManager.getResult();
-
             vkDialogsListManager.startLoading(20);
 
             final DialogListAdapter adapter = new DialogListAdapter(messages);
+            messagesRecyclerView.setAdapter(adapter);
+
+            adapter.onItemClick(new DialogListAdapter.OnMessageClick() {
+                @Override
+                public void onClick(long peerId) {
+                    final Intent intent = new Intent(DialogsListActivity.this, DialogActivity.class);
+                    intent.putExtra(VkConstants.Extra.PEER_ID, peerId);
+                    startActivity(intent);
+                }
+            });
+
             final ImageLoaderManager manager = new ImageLoaderManager();
             messagesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -83,8 +89,6 @@ public class DialogsListActivity extends AppCompatActivity {
                     }
                 }
             });
-            messagesRecyclerView.setAdapter(adapter);
-
         }
     }
 

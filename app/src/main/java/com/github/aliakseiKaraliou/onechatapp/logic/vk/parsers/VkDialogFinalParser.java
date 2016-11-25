@@ -17,7 +17,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VkMessageListFinalParser {
+public class VkDialogFinalParser {
 
     public List<IMessage> parse(String json, LongSparseArray<IReciever> array) {
         try {
@@ -26,7 +26,7 @@ public class VkMessageListFinalParser {
             JSONObject currentObject;
             final VkIdConverter vkIdConverter = new VkIdConverter();
             for (int i = 0; i < items.length(); i++) {
-                currentObject = items.getJSONObject(i).getJSONObject(VkConstants.Json.MESSAGE);
+                currentObject = items.getJSONObject(i);
 
                 VkMessage.Builder builder = new VkMessage.Builder();
 
@@ -42,14 +42,8 @@ public class VkMessageListFinalParser {
                 boolean isRead = currentObject.getInt(VkConstants.Json.READ_STATE) > 0;
                 builder.setRead(isRead);
 
-
                 long userId = currentObject.getLong(VkConstants.Json.USER_ID);
-                ISender sender = null;
-                if (userId > 0) {
-                    sender = (ISender) array.get(userId);
-                } else {
-                    sender = (ISender) array.get(userId);
-                }
+                ISender sender = (ISender) array.get(userId);
                 builder.setSender(sender);
 
                 if (currentObject.has(VkConstants.Json.CHAT_ID)) {

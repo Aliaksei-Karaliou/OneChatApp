@@ -10,6 +10,7 @@ public final class VkConstants {
         public static final String GROUP_ID = "group_ids";
         public static final String FIRST_NAME = "first_name";
         public static final String FIELDS = "fields";
+        public static final String FROM_ID = "from_id";
         public static final String ID = "id";
         public static final String ITEMS = "items";
         public static final String LAST_NAME = "last_name";
@@ -27,10 +28,15 @@ public final class VkConstants {
         public static final String GROUPS_GETBYID = "groups.getById";
         public static final String MESSAGES_GETDIALOGS = "messages.getDialogs";
         public static final String MESSAGES_GETCHAT = "messages.getChat";
+        public static final String MESSAGES_GETHISTORY = "messages.getHistory";
         public static final String USERS_GET = "users.get";
     }
 
     public final static class Params {
         public static final String OFFSET = "offset";
+    }
+
+    public final static class Extra {
+        public static final String PEER_ID = "peer id";
     }
 }

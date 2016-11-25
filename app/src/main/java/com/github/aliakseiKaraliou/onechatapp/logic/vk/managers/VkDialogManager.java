@@ -8,8 +8,9 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOperation;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogFinalParser;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogStartParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogsListFinalParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogsListStartParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkReceiverDataParser;
@@ -18,35 +19,25 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-public class VkDialogsListManager {
-
+public final class VkDialogManager {
     private AsyncOperation<Integer, List<IMessage>> asyncOperation;
 
-    public void startLoading(final int offset) {
+    public void startLoading(final IReciever reciever, final int offset) {
         if (asyncOperation == null) {
             asyncOperation = new AsyncOperation<Integer, List<IMessage>>() {
                 @Override
-                protected List<IMessage> doInBackground(Integer offset) {
-                    List<IMessage> messageList = null;
+                protected List<IMessage> doInBackground(Integer integer) {
                     try {
-                        final String jsonString;
-                        if (offset > 0) {
-                            Pair<String, String> offsetPair = new Pair<String, String>(VkConstants.Params.OFFSET, offset.toString());
-                            jsonString = new VkRequester().doRequest(VkConstants.Method.MESSAGES_GETDIALOGS, offsetPair);
-                        } else {
-                            jsonString = new VkRequester().doRequest(VkConstants.Method.MESSAGES_GETDIALOGS);
-                        }
-
-                        Set<Long> idSet = new VkDialogsListStartParser().parse(jsonString);
-                        final LongSparseArray<IReciever> parse = new VkReceiverDataParser().parse(idSet);
-                        assert parse != null;
-                        VkReceiverStorage.putAll(parse);
-                        messageList = new VkDialogsListFinalParser().parse(jsonString, parse);
-                        return messageList;
+                        Pair<String, String> peerId = new Pair<String, String>("peer_id", Long.toString(reciever.getId()));
+                        final String s = new VkRequester().doRequest(VkConstants.Method.MESSAGES_GETHISTORY, peerId);
+                        final Set<Long> parse = new VkDialogStartParser().parse(s);
+                        final LongSparseArray<IReciever> longSparseArray = new VkReceiverDataParser().parse(parse);
+                        final List<IMessage> messages = new VkDialogFinalParser().parse(s, longSparseArray);
+                        return messages;
                     } catch (IOException e) {
                         e.printStackTrace();
+                        return null;
                     }
-                    return null;
                 }
             }.startLoading(offset);
         }
