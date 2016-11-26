@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class DateFriendlyFormat {
+public final class DateFriendlyFormat {
     private static final int MILLISECONDS_IN_A_DAY = 24 * 60 * 60 * 1000;
     private static final String TODAY_DATE_FORMAT = "HH:mm";
     private static final String DAY_MONTH_DATE_FORMAT = "dd MMM";

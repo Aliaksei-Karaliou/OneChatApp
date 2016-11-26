@@ -12,7 +12,8 @@ import android.view.MenuItem;
 
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.ImageLoaderManager;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.Message;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.network.NetworkConnectionChecker;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
@@ -43,8 +44,15 @@ public class DialogsListActivity extends AppCompatActivity {
             messagesRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
             final List<IMessage> messages = vkDialogsListManager.getResult();
-            // final List<MessageItem> convert = MessageItem.convert(messages);
             vkDialogsListManager.startLoading(DialogsListActivity.this, 20);
+
+            ORM<Message> orm = new ORM<Message>(this, "Message.db", Message.class);
+            orm.createTable();
+            final List<Message> convert = Message.convert(messages);
+            for (Message message : convert) {
+                orm.put(message);
+            }
+
 
             final DialogListAdapter adapter = new DialogListAdapter(this, messages);
             messagesRecyclerView.setAdapter(adapter);
@@ -58,7 +66,6 @@ public class DialogsListActivity extends AppCompatActivity {
                 }
             });
 
-            final ImageLoaderManager manager = new ImageLoaderManager();
             messagesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -72,17 +79,7 @@ public class DialogsListActivity extends AppCompatActivity {
                         List<IMessage> result=vkDialogsListManager.getResult();
                         vkDialogsListManager.startLoading(DialogsListActivity.this, totalItem);
 
-                        //preload images
                         assert messages != null && result != null;
-                        for (IMessage iMessage : result) {
-                            manager.startLoading(iMessage.getReciever().getPhotoUrl());
-                            manager.getResult();
-                            if (!iMessage.getReciever().equals(iMessage.getSender())) {
-                                manager.startLoading(iMessage.getSender().getPhotoUrl());
-                                manager.getResult();
-                            }
-                        }
-
                         messages.addAll(result);
                         adapter.notifyDataSetChanged();
                     }
