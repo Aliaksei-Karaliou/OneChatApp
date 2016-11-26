@@ -1,5 +1,6 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk.managers;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.util.LongSparseArray;
 import android.util.Pair;
@@ -22,7 +23,7 @@ public class VkDialogsListManager {
 
     private AsyncOperation<Integer, List<IMessage>> asyncOperation;
 
-    public void startLoading(final int offset) {
+    public void startLoading(final Context context, final int offset) {
         if (asyncOperation == null) {
             asyncOperation = new AsyncOperation<Integer, List<IMessage>>() {
                 @Override
@@ -41,7 +42,7 @@ public class VkDialogsListManager {
                         final LongSparseArray<IReciever> parse = new VkReceiverDataParser().parse(idSet);
                         assert parse != null;
                         VkReceiverStorage.putAll(parse);
-                        messageList = new VkDialogsListFinalParser().parse(jsonString, parse);
+                        messageList = new VkDialogsListFinalParser().parse(context, jsonString, parse);
                         return messageList;
                     } catch (IOException e) {
                         e.printStackTrace();

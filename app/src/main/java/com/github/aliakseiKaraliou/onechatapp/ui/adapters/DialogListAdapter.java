@@ -1,5 +1,6 @@
 package com.github.aliakseiKaraliou.onechatapp.ui.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,23 +11,24 @@ import android.widget.TextView;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.utils.DateFriendlyFormat;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.ImageLoaderManager;
 
 import java.util.List;
 
 public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    public void onItemClick(OnMessageClick onMessageClick) {
-        this.onMessageClick = onMessageClick;
-    }
-
     private OnMessageClick onMessageClick;
-
-    public DialogListAdapter(List<IMessage> messageList) {
-        this.messageList = messageList;
-    }
-
     private List<IMessage> messageList;
+    private final DateFriendlyFormat dateFriendlyFormat;
+    private Context context;
+
+    public DialogListAdapter(Context context, List<IMessage> messageList) {
+        this.messageList = messageList;
+        this.context = context;
+        dateFriendlyFormat = new DateFriendlyFormat();
+
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -49,10 +51,16 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         final ReceiverType receiverType = ReceiverType.values()[viewType];
 
         if (receiverType == ReceiverType.USER || receiverType == ReceiverType.GROUP) {
+
             loaderManager.startLoading(currentMessage.getSender().getPhotoUrl());
+
             final UserGroupViewHolder viewHolder = (UserGroupViewHolder) holder;
+
             viewHolder.messageTextView.setText(currentMessage.getText());
             viewHolder.nameTextView.setText(currentMessage.getSender().getName());
+            viewHolder.dateTextView.setText(dateFriendlyFormat.convert(context, currentMessage.getDate()));
+
+
             if (onMessageClick != null) {
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -61,14 +69,23 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     }
                 });
             }
+
             viewHolder.avatarImageView.setImageBitmap(loaderManager.getResult());
+
+
         } else {
+
             loaderManager.startLoading(currentMessage.getSender().getPhotoUrl());
+
             final ChatViewHolder viewHolder = (ChatViewHolder) holder;
+
             viewHolder.messageTextView.setText(currentMessage.getText());
             viewHolder.userPhotoImageView.setImageBitmap(loaderManager.getResult());
+
             loaderManager.startLoading(currentMessage.getReciever().getPhotoUrl());
             viewHolder.nameTextView.setText(currentMessage.getReciever().getName());
+            viewHolder.dateTextView.setText(dateFriendlyFormat.convert(context, currentMessage.getDate()));
+
             if (onMessageClick != null) {
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -77,6 +94,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     }
                 });
             }
+
             viewHolder.avatarImageView.setImageBitmap(loaderManager.getResult());
         }
     }
@@ -86,17 +104,23 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return messageList.size();
     }
 
+    public void onItemClick(OnMessageClick onMessageClick) {
+        this.onMessageClick = onMessageClick;
+    }
+
     private class UserGroupViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView nameTextView;
         private final TextView messageTextView;
         private final ImageView avatarImageView;
+        private final TextView dateTextView;
 
         public UserGroupViewHolder(View itemView) {
             super(itemView);
             nameTextView = ((TextView) itemView.findViewById(R.id.dialog_list_item_name));
             messageTextView = ((TextView) itemView.findViewById(R.id.dialog_list_item_message));
             avatarImageView = ((ImageView) itemView.findViewById(R.id.dialog_list_item_primary_photo));
+            dateTextView = ((TextView) itemView.findViewById(R.id.dialog_list_date));
         }
     }
 
@@ -106,6 +130,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         private final TextView messageTextView;
         private final ImageView avatarImageView;
         private final ImageView userPhotoImageView;
+        private final TextView dateTextView;
 
         public ChatViewHolder(View itemView) {
             super(itemView);
@@ -113,6 +138,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             messageTextView = ((TextView) itemView.findViewById(R.id.dialog_list_item_message));
             avatarImageView = ((ImageView) itemView.findViewById(R.id.dialog_list_item_primary_photo));
             userPhotoImageView = ((ImageView) itemView.findViewById(R.id.dialog_list_secondary_photo));
+            dateTextView = ((TextView) itemView.findViewById(R.id.dialog_list_date));
         }
     }
 

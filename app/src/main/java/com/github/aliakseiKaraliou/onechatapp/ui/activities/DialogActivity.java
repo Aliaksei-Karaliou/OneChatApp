@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -53,15 +54,16 @@ public class DialogActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         final VkDialogManager manager = new VkDialogManager();
-        manager.startLoading(reciever, 0);
+        manager.startLoading(this, reciever, 0);
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.dialog_message_recycler_view);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         linearLayoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         final List<IMessage> result = manager.getResult();
-        manager.startLoading(reciever, 20);
+        manager.startLoading(this, reciever, 20);
 
         final DialogAdapter adapter = new DialogAdapter(result);
         recyclerView.setAdapter(adapter);
@@ -73,7 +75,7 @@ public class DialogActivity extends AppCompatActivity {
                 final int itemCount = linearLayoutManager.getItemCount();
                 if (lastCompletelyVisibleItemPosition + 1 == itemCount && dy < 0) {
                     final List<IMessage> messageList = manager.getResult();
-                    manager.startLoading(reciever, itemCount);
+                    manager.startLoading(DialogActivity.this, reciever, itemCount);
                     if (messageList != null && result != null) {
                         result.addAll(messageList);
                         adapter.notifyDataSetChanged();

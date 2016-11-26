@@ -12,7 +12,8 @@ public class VkReceiverStorage {
     }
 
     public static IReciever get(long id) {
-        return storage.get(id);
+        final IReciever reciever = storage.get(id);
+        return reciever;
     }
 
     public static void putAll(LongSparseArray<IReciever> array) {

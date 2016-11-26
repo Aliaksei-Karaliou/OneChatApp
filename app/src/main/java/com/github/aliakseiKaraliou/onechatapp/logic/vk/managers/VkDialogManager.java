@@ -1,5 +1,6 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk.managers;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.util.LongSparseArray;
 import android.util.Pair;
@@ -8,6 +9,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOperation;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogFinalParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogStartParser;
@@ -20,7 +22,7 @@ import java.util.Set;
 public final class VkDialogManager {
     private AsyncOperation<Integer, List<IMessage>> asyncOperation;
 
-    public void startLoading(final IReciever reciever, final int offset) {
+    public void startLoading(final Context context, final IReciever reciever, final int offset) {
         if (asyncOperation == null) {
             asyncOperation = new AsyncOperation<Integer, List<IMessage>>() {
                 @Override
@@ -37,7 +39,8 @@ public final class VkDialogManager {
 
                         final Set<Long> parse = new VkDialogStartParser().parse(json);
                         final LongSparseArray<IReciever> longSparseArray = new VkReceiverDataParser().parse(parse);
-                        return new VkDialogFinalParser().parse(json, longSparseArray);
+                        VkReceiverStorage.putAll(longSparseArray);
+                        return new VkDialogFinalParser().parse(context, json, longSparseArray);
                     } catch (IOException e) {
                         e.printStackTrace();
                         return null;

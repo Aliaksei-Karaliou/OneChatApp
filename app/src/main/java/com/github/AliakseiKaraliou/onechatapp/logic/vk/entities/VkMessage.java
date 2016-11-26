@@ -1,19 +1,24 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk.entities;
 
+import android.support.annotation.Nullable;
+
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.ISender;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbType;
 
 import java.util.Date;
 
 public class VkMessage implements IMessage {
 
     private ISender sender;
+    @DbType(type = DbType.Type.INTEGER)
     private long id;
     private String text;
     private Date date;
     private IChat chat;
+    private boolean isRead = false;
 
     private VkMessage(long id, ISender sender, String text, Date date, boolean isRead, IChat chat) {
         this.id = id;
@@ -43,6 +48,11 @@ public class VkMessage implements IMessage {
     }
 
     @Override
+    public long getUnixDate() {
+        return date.getTime() / 1000;
+    }
+
+    @Override
     public ISender getSender() {
         return sender;
     }
@@ -64,7 +74,11 @@ public class VkMessage implements IMessage {
             return sender;
     }
 
-    private boolean isRead = false;
+    @Override
+    @Nullable
+    public IChat getChat() {
+        return chat;
+    }
 
     public static class Builder {
 

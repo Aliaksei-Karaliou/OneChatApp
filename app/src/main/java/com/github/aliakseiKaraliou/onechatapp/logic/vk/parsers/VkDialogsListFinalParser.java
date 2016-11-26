@@ -1,11 +1,13 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers;
 
+import android.content.Context;
 import android.support.v4.util.LongSparseArray;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.ISender;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkChatAction;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkIdConverter;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.entities.VkMessage;
@@ -19,7 +21,7 @@ import java.util.List;
 
 public class VkDialogsListFinalParser {
 
-    public List<IMessage> parse(String json, LongSparseArray<IReciever> array) {
+    public List<IMessage> parse(Context context, String json, LongSparseArray<IReciever> array) {
         try {
             List<IMessage> result = new ArrayList<>();
             JSONArray items = new JSONObject(json).getJSONObject(VkConstants.Json.RESPONSE).getJSONArray(VkConstants.Json.ITEMS);
@@ -53,6 +55,9 @@ public class VkDialogsListFinalParser {
                     if (peerID != null) {
                         IChat chat = (IChat) array.get(peerID);
                         builder.setChat(chat);
+                    }
+                    if (currentObject.has(VkConstants.Json.ACTION)) {
+                        builder.setText(new VkChatAction().convert(context, currentObject));
                     }
                 }
 

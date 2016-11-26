@@ -22,20 +22,36 @@
         android:orientation="vertical"
         >
 
-        <TextView
-            android:id="@+id/dialog_list_item_name"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:lines="1"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            tools:text="Name"
-            />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/dialog_list_item_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="60dp"
+                android:lines="1"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                tools:text="Name"
+                />
+
+            <TextView
+                android:id="@+id/dialog_list_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:textSize="12sp"
+                tools:text="12:33"
+                />
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
 
             <ImageView
                 android:id="@+id/dialog_list_secondary_photo"
@@ -49,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lines="1"
-                android:textColor="@android:color/black"
+
                 android:textSize="14sp"
                 tools:text="Message"
                 />

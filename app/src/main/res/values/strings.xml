@@ -16,4 +16,6 @@
     <string name="answer_no">No</string>
     <string name="start_screen_menu_refresh">Refresh</string>
     <string name="operation_failed">Operation failed</string>
+    <string name="yesterday">yesterday</string>
+    <string name="write_a_message">Write a message...</string>
 </resources>

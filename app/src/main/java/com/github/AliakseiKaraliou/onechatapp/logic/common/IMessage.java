@@ -1,8 +1,13 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.common;
 
+import android.support.annotation.Nullable;
+
+import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbType;
+
 import java.util.Date;
 
 public interface IMessage extends Cloneable {
+
 
     long getId();
 
@@ -12,10 +17,15 @@ public interface IMessage extends Cloneable {
 
     Date getDate();
 
+    long getUnixDate();
+
     boolean isRead();
 
     IMessage read();
 
     IReciever getReciever();
+
+    @Nullable
+    IChat getChat();
 }
 

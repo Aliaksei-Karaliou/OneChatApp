@@ -28,6 +28,9 @@ public class VkDialogsListStartParser implements IParser<String, Set<Long>> {
                     set.add(vkIdConverter.chatToPeer(currentObject.getLong(VkConstants.Json.CHAT_ID)));
                 }
                 set.add(currentObject.getLong(VkConstants.Json.USER_ID));
+                if (currentObject.has(VkConstants.Json.ACTION_MID)) {
+                    set.add(currentObject.getLong(VkConstants.Json.ACTION_MID));
+                }
             }
             return set;
         } catch (JSONException e) {

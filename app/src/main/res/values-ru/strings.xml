@@ -12,6 +12,7 @@
     <string name="answer_no">Нет</string>
     <string name="answer_yes">Да</string>
     <string name="start_screen_menu_refresh">Обновить</string>
-    <string name="error_voice_input">Извините, но ваше устройство не поодерживает голосовой ввод</string>
     <string name="operation_failed">Операция невозможна</string>
+    <string name="yesterday">вчера</string>
+    <string name="write_a_message">Напишите сообщение...</string>
 </resources>

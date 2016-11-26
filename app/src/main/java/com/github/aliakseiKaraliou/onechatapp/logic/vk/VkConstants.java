@@ -3,6 +3,8 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk;
 public final class VkConstants {
 
     public final static class Json {
+        public static final String ACTION = "action";
+        public static final String ACTION_MID = "action_mid";
         public static final String BODY = "body";
         public static final String CHAT_ID = "chat_id";
         public static final String CHAT_IDS = "chat_ids";

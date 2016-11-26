@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.github.aliakseiKaraliou.onechatapp.ui.activities.ConversationActivity">
+    tools:context="com.github.aliakseiKaraliou.onechatapp.ui.activities.DialogActivity">
 
     <RelativeLayout
         android:id="@+id/dialog_new_message_line"
@@ -24,7 +24,6 @@
             android:background="?attr/selectableItemBackground"
             android:onClick="sendButtonOnClick"
             android:saveEnabled="false"
-            android:text="@string/activity_conversation_send_button_text"
             app:srcCompat="@drawable/ic_send_button"/>
 
         <EditText
@@ -34,7 +33,8 @@
             android:layout_height="match_parent"
             android:background="@null"
             android:imeOptions="flagNoExtractUi"
-            android:inputType="textMultiLine"/>
+            android:inputType="textMultiLine"
+            android:hint="@string/write_a_message"/>
     </RelativeLayout>
 
     <View

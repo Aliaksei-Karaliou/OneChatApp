@@ -28,15 +28,14 @@ public class DialogsListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialogs_list);
         if (NetworkConnectionChecker.check(this)) {
-            boolean isOnline = true;
+            // boolean isOnline = true;
             VkInfo.userGetAuth(this);
         }
 
-        String token=VkInfo.getAccessToken();
         if (VkInfo.isUserAuthorized()) {
 
             final VkDialogsListManager vkDialogsListManager = new VkDialogsListManager();
-            vkDialogsListManager.startLoading(0);
+            vkDialogsListManager.startLoading(DialogsListActivity.this, 0);
 
             final RecyclerView messagesRecyclerView = (RecyclerView) findViewById(R.id.activity_dialogs_list_messages);
             final LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -44,9 +43,10 @@ public class DialogsListActivity extends AppCompatActivity {
             messagesRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
             final List<IMessage> messages = vkDialogsListManager.getResult();
-            vkDialogsListManager.startLoading(20);
+            // final List<MessageItem> convert = MessageItem.convert(messages);
+            vkDialogsListManager.startLoading(DialogsListActivity.this, 20);
 
-            final DialogListAdapter adapter = new DialogListAdapter(messages);
+            final DialogListAdapter adapter = new DialogListAdapter(this, messages);
             messagesRecyclerView.setAdapter(adapter);
 
             adapter.onItemClick(new DialogListAdapter.OnMessageClick() {
@@ -70,8 +70,10 @@ public class DialogsListActivity extends AppCompatActivity {
                     if (lastVisibleItem + 1 == totalItem && dy > 0) {
 
                         List<IMessage> result=vkDialogsListManager.getResult();
+                        vkDialogsListManager.startLoading(DialogsListActivity.this, totalItem);
 
                         //preload images
+                        assert messages != null && result != null;
                         for (IMessage iMessage : result) {
                             manager.startLoading(iMessage.getReciever().getPhotoUrl());
                             manager.getResult();
@@ -83,9 +85,6 @@ public class DialogsListActivity extends AppCompatActivity {
 
                         messages.addAll(result);
                         adapter.notifyDataSetChanged();
-
-
-                        vkDialogsListManager.startLoading(totalItem);
                     }
                 }
             });
@@ -95,7 +94,6 @@ public class DialogsListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        String token=VkInfo.getAccessToken();
         VkInfo.userSetAuth(this);
     }
 
