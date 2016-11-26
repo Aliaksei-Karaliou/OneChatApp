@@ -26,10 +26,10 @@ public final class VkDialogManager {
                 @Override
                 protected List<IMessage> doInBackground(Integer integer) {
                     try {
-                        Pair<String, String> peerId = new Pair<String, String>("peer_id", Long.toString(reciever.getId()));
+                        Pair<String, String> peerId = new Pair<>("peer_id", Long.toString(reciever.getId()));
                         final String json;
                         if (offset > 0) {
-                            Pair<String, String> offsetPair = new Pair<String, String>("offset", Integer.toString(offset));
+                            Pair<String, String> offsetPair = new Pair<>("offset", Integer.toString(offset));
                             json = new VkRequester().doRequest(VkConstants.Method.MESSAGES_GETHISTORY, peerId, offsetPair);
                         } else {
                             json = new VkRequester().doRequest(VkConstants.Method.MESSAGES_GETHISTORY, peerId);
@@ -37,8 +37,7 @@ public final class VkDialogManager {
 
                         final Set<Long> parse = new VkDialogStartParser().parse(json);
                         final LongSparseArray<IReciever> longSparseArray = new VkReceiverDataParser().parse(parse);
-                        final List<IMessage> messages = new VkDialogFinalParser().parse(json, longSparseArray);
-                        return messages;
+                        return new VkDialogFinalParser().parse(json, longSparseArray);
                     } catch (IOException e) {
                         e.printStackTrace();
                         return null;

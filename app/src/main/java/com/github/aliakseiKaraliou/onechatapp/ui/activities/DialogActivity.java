@@ -7,18 +7,20 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.ClearHistoryManager;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.SendManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogManager;
 import com.github.aliakseiKaraliou.onechatapp.ui.adapters.DialogAdapter;
 
@@ -27,11 +29,14 @@ import java.util.List;
 public class DialogActivity extends AppCompatActivity {
 
     IReciever reciever;
+    EditText messageTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog);
+
+        messageTextView = (EditText) findViewById(R.id.dialog_new_message_text);
 
         Intent intent = getIntent();
         Long peerId = intent.getLongExtra(VkConstants.Extra.PEER_ID, 0);
@@ -96,7 +101,10 @@ public class DialogActivity extends AppCompatActivity {
                     .setPositiveButton(R.string.answer_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            //realize deleting
+                            final boolean result = new ClearHistoryManager().clear(reciever);
+                            if (!result) {
+                                Toast.makeText(DialogActivity.this, getString(R.string.operation_failed), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     })
                     .setNegativeButton(R.string.answer_no, null)
@@ -107,5 +115,17 @@ public class DialogActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void sendButtonOnClick(View view) {
+        final String message = messageTextView.getText().toString();
+        if (!message.equals("")) {
+            final boolean success = new SendManager().send(reciever, message);
+            if (!success) {
+                Toast.makeText(this, getString(R.string.operation_failed), Toast.LENGTH_SHORT).show();
+            } else {
+                messageTextView.setText("");
+            }
+        }
     }
 }

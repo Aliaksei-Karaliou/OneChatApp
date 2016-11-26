@@ -26,17 +26,21 @@ public final class VkConstants {
 
     public final static class Method {
         public static final String GROUPS_GETBYID = "groups.getById";
+        public static final String MESSAGES_DELETEDIALOG = "messages.deleteDialog";
         public static final String MESSAGES_GETDIALOGS = "messages.getDialogs";
         public static final String MESSAGES_GETCHAT = "messages.getChat";
         public static final String MESSAGES_GETHISTORY = "messages.getHistory";
+        public static final String MESSAGES_SEND = "messages.send";
         public static final String USERS_GET = "users.get";
     }
 
     public final static class Params {
         public static final String ACCESS_TOKEN = "access_token";
-        public static final String OFFSET = "offset";
-        public static final String USER_ID = "user_id";
         public static final String AUTHORIZE_URL = "https://oauth.vk.com/authorize?client_id=%d&display=mobile&redirect_uri=https://oauth.vk.com/blank.html&scope=offline,%s&response_type=token&v=%f&revoke=1";
+        public static final String MESSAGE = "message";
+        public static final String OFFSET = "offset";
+        public static final String PEER_ID = "peer_id";
+        public static final String USER_ID = "user_id";
     }
 
     public final static class Extra {

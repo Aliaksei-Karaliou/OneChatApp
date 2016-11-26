@@ -15,5 +15,5 @@
     <string name="answer_yes">Yes</string>
     <string name="answer_no">No</string>
     <string name="start_screen_menu_refresh">Refresh</string>
-    <string name="error_voice_input">Sorry. Your device doesn\'t support voice input</string>
+    <string name="operation_failed">Operation failed</string>
 </resources>
