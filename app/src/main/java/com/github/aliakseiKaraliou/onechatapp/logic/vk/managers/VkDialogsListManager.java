@@ -5,8 +5,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.LongSparseArray;
 import android.util.Pair;
 
+import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.SimpleORM;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOperation;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
@@ -16,6 +19,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogsListStar
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkReceiverDataParser;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -40,8 +44,20 @@ public class VkDialogsListManager {
 
                         Set<Long> idSet = new VkDialogsListStartParser().parse(jsonString);
                         final LongSparseArray<IReciever> parse = new VkReceiverDataParser().parse(idSet);
-                        
                         assert parse != null;
+
+                        List<IReciever> recieverList = new ArrayList<IReciever>();
+                        for (int i = 0; i < parse.size(); i++) {
+                            recieverList.add(parse.valueAt(i));
+                        }
+                        final List<DbReceiver> convert = DbReceiver.convert(recieverList);
+                        final SimpleORM<DbReceiver> receiverORM = ((App) context.getApplicationContext()).getReceiverORM();
+                        for (DbReceiver receiver : convert) {
+                            receiverORM.insert(receiver);
+                        }
+
+                        receiverORM.select("firstName =  'Vlad'");
+
                         VkReceiverStorage.putAll(parse);
                         messageList = new VkDialogsListFinalParser().parse(context, jsonString, parse);
                         return messageList;

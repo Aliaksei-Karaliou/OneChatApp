@@ -21,7 +21,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.ClearHistoryManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.SendManager;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.SimpleORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
@@ -68,10 +68,10 @@ public class DialogActivity extends AppCompatActivity {
         final List<IMessage> result = manager.getResult();
         manager.startLoading(this, reciever, 20);
 
-        final ORM<DbMessage> messageORM = ((App) getApplication()).getMessageORM();
+        final SimpleORM<DbMessage> messageORM = ((App) getApplicationContext()).getMessageORM();
         final List<DbMessage> convert = DbMessage.convert(result);
         for (DbMessage dbMessage : convert) {
-            messageORM.put(dbMessage);
+            messageORM.insert(dbMessage);
         }
 
         final DialogAdapter adapter = new DialogAdapter(result);
@@ -87,7 +87,7 @@ public class DialogActivity extends AppCompatActivity {
                     final List<IMessage> messageList = manager.getResult();
                     final List<DbMessage> convert1 = DbMessage.convert(messageList);
                     for (DbMessage dbMessage : convert1) {
-                        messageORM.put(dbMessage);
+                        messageORM.insert(dbMessage);
                     }
 
                     manager.startLoading(DialogActivity.this, reciever, itemCount);

@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.SimpleORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.network.NetworkConnectionChecker;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
@@ -47,10 +47,10 @@ public class DialogsListActivity extends AppCompatActivity {
             final List<IMessage> messages = vkDialogsListManager.getResult();
             vkDialogsListManager.startLoading(DialogsListActivity.this, 20);
 
-            final ORM<DbMessage> orm = ((App) getApplication()).getMessageORM();
+            final SimpleORM<DbMessage> orm = ((App) getApplication()).getMessageORM();
             final List<DbMessage> convert = DbMessage.convert(messages);
             for (DbMessage dbMessage : convert) {
-                orm.put(dbMessage);
+                orm.insert(dbMessage);
             }
 
 
@@ -80,7 +80,7 @@ public class DialogsListActivity extends AppCompatActivity {
 
                         final List<DbMessage> dbMessageList = DbMessage.convert(result);
                         for (DbMessage dbMessage : dbMessageList) {
-                            orm.put(dbMessage);
+                            orm.insert(dbMessage);
                         }
 
 
