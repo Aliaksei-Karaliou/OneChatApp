@@ -10,10 +10,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.Message;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.network.NetworkConnectionChecker;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
@@ -46,11 +47,10 @@ public class DialogsListActivity extends AppCompatActivity {
             final List<IMessage> messages = vkDialogsListManager.getResult();
             vkDialogsListManager.startLoading(DialogsListActivity.this, 20);
 
-            ORM<Message> orm = new ORM<Message>(this, "Message.db", Message.class);
-            orm.createTable();
-            final List<Message> convert = Message.convert(messages);
-            for (Message message : convert) {
-                orm.put(message);
+            final ORM<DbMessage> orm = ((App) getApplication()).getMessageORM();
+            final List<DbMessage> convert = DbMessage.convert(messages);
+            for (DbMessage dbMessage : convert) {
+                orm.put(dbMessage);
             }
 
 
@@ -77,6 +77,13 @@ public class DialogsListActivity extends AppCompatActivity {
                     if (lastVisibleItem + 1 == totalItem && dy > 0) {
 
                         List<IMessage> result=vkDialogsListManager.getResult();
+
+                        final List<DbMessage> dbMessageList = DbMessage.convert(result);
+                        for (DbMessage dbMessage : dbMessageList) {
+                            orm.put(dbMessage);
+                        }
+
+
                         vkDialogsListManager.startLoading(DialogsListActivity.this, totalItem);
 
                         assert messages != null && result != null;

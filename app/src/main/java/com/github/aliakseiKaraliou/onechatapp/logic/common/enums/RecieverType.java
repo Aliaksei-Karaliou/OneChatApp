@@ -1,10 +1,6 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.common.enums;
 
-/**
- * Created by korol on 11/2/2016.
- */
-
-public enum ReceiverType {
+public enum RecieverType {
     USER,
     CHAT,
     GROUP

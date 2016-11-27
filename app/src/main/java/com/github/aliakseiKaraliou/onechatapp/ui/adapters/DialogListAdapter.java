@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.RecieverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.DateFriendlyFormat;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.ImageLoaderManager;
 
@@ -32,8 +32,8 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final ReceiverType receiverType = ReceiverType.values()[viewType];
-        if (receiverType == ReceiverType.USER || receiverType == ReceiverType.GROUP) {
+        final RecieverType recieverType = RecieverType.values()[viewType];
+        if (recieverType == RecieverType.USER || recieverType == RecieverType.GROUP) {
             final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_list_item_user_group, parent, false);
             return new UserGroupViewHolder(view);
         } else {
@@ -48,9 +48,9 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         final IMessage currentMessage = messageList.get(position);
         final ImageLoaderManager loaderManager = new ImageLoaderManager();
         final int viewType = getItemViewType(position);
-        final ReceiverType receiverType = ReceiverType.values()[viewType];
+        final RecieverType recieverType = RecieverType.values()[viewType];
 
-        if (receiverType == ReceiverType.USER || receiverType == ReceiverType.GROUP) {
+        if (recieverType == RecieverType.USER || recieverType == RecieverType.GROUP) {
 
             loaderManager.startLoading(currentMessage.getSender().getPhotoUrl());
 

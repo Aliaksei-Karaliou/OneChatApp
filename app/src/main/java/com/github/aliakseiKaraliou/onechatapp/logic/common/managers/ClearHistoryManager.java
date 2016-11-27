@@ -13,11 +13,11 @@ import java.io.IOException;
 public class ClearHistoryManager {
     public boolean clear(IReciever reciever) {
         if (reciever.getSocialNetwork() == SocialNetwork.VK) {
-            final AsyncOperation<Long, String> asyncOperation = new AsyncOperation<Long, String>() {
+            final AsyncOperation<Long, java.lang.String> asyncOperation = new AsyncOperation<Long, java.lang.String>() {
                 @Override
-                protected String doInBackground(Long peerId) {
+                protected java.lang.String doInBackground(Long peerId) {
                     try {
-                        final Pair<String, String> peerIdPair = new Pair<>(VkConstants.Params.PEER_ID, Long.toString(peerId));
+                        final Pair<java.lang.String, java.lang.String> peerIdPair = new Pair<>(VkConstants.Params.PEER_ID, Long.toString(peerId));
                         return new VkRequester().doRequest(VkConstants.Method.MESSAGES_DELETEDIALOG, peerIdPair);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -26,7 +26,7 @@ public class ClearHistoryManager {
                 }
             };
             asyncOperation.startLoading(reciever.getId());
-            final String result = asyncOperation.getResult();
+            final java.lang.String result = asyncOperation.getResult();
             return result != null && result.equals("{\"response\":1}");
         }
         return false;

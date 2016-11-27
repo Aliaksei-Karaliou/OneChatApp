@@ -15,11 +15,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.ClearHistoryManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.SendManager;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogManager;
@@ -65,6 +68,12 @@ public class DialogActivity extends AppCompatActivity {
         final List<IMessage> result = manager.getResult();
         manager.startLoading(this, reciever, 20);
 
+        final ORM<DbMessage> messageORM = ((App) getApplication()).getMessageORM();
+        final List<DbMessage> convert = DbMessage.convert(result);
+        for (DbMessage dbMessage : convert) {
+            messageORM.put(dbMessage);
+        }
+
         final DialogAdapter adapter = new DialogAdapter(result);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -74,12 +83,19 @@ public class DialogActivity extends AppCompatActivity {
                 final int lastCompletelyVisibleItemPosition = linearLayoutManager.findLastCompletelyVisibleItemPosition();
                 final int itemCount = linearLayoutManager.getItemCount();
                 if (lastCompletelyVisibleItemPosition + 1 == itemCount && dy < 0) {
+
                     final List<IMessage> messageList = manager.getResult();
+                    final List<DbMessage> convert1 = DbMessage.convert(messageList);
+                    for (DbMessage dbMessage : convert1) {
+                        messageORM.put(dbMessage);
+                    }
+
                     manager.startLoading(DialogActivity.this, reciever, itemCount);
                     if (messageList != null && result != null) {
                         result.addAll(messageList);
                         adapter.notifyDataSetChanged();
                     }
+
                 }
 
             }

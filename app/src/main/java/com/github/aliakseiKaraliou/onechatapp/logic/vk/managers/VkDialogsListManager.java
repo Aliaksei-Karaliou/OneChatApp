@@ -40,6 +40,7 @@ public class VkDialogsListManager {
 
                         Set<Long> idSet = new VkDialogsListStartParser().parse(jsonString);
                         final LongSparseArray<IReciever> parse = new VkReceiverDataParser().parse(idSet);
+                        
                         assert parse != null;
                         VkReceiverStorage.putAll(parse);
                         messageList = new VkDialogsListFinalParser().parse(context, jsonString, parse);

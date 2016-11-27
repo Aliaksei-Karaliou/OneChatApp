@@ -1,27 +1,27 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk.entities;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IGroup;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.RecieverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 
 public final class VkGroup implements IGroup {
 
     private long id;
-    private String name;
+    private java.lang.String name;
 
     @Override
-    public String getPhotoUrl() {
+    public java.lang.String getPhotoUrl() {
         return photoUrl;
     }
 
     @Override
-    public void setPhotoUrl(String photoUrl) {
+    public void setPhotoUrl(java.lang.String photoUrl) {
         this.photoUrl = photoUrl;
     }
 
-    private String photoUrl;
+    private java.lang.String photoUrl;
 
-    public VkGroup(long id, String name, String photoUrl) {
+    public VkGroup(long id, java.lang.String name, java.lang.String photoUrl) {
         this.id = id;
         this.name = name;
         this.photoUrl = photoUrl;
@@ -33,7 +33,7 @@ public final class VkGroup implements IGroup {
     }
 
     @Override
-    public String getName() {
+    public java.lang.String getName() {
         return name;
     }
 
@@ -44,8 +44,8 @@ public final class VkGroup implements IGroup {
     }
 
     @Override
-    public ReceiverType getReceiverType() {
-        return ReceiverType.GROUP;
+    public RecieverType getReceiverType() {
+        return RecieverType.GROUP;
     }
 
 }

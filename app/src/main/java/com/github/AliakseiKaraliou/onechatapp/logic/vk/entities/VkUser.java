@@ -1,13 +1,13 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk.entities;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.RecieverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 
 public class VkUser implements IUser {
     private long id;
 
-    public VkUser(long id, String firstName, String lastName, String photoUrl) {
+    public VkUser(long id, java.lang.String firstName, java.lang.String lastName, java.lang.String photoUrl) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -20,45 +20,45 @@ public class VkUser implements IUser {
     }
 
     @Override
-    public String getName() {
+    public java.lang.String getName() {
         if (firstName != null && lastName != null) {
             return firstName + " " + lastName;
         } else return "";
     }
 
-    private String firstName = "";
+    private java.lang.String firstName = "";
 
     @Override
-    public String getFirstName() {
+    public java.lang.String getFirstName() {
         return firstName;
     }
 
     @Override
-    public void setFirstName(String firstName) {
+    public void setFirstName(java.lang.String firstName) {
         this.firstName = firstName;
     }
 
-    private String lastName = "";
+    private java.lang.String lastName = "";
 
     @Override
-    public String getLastName() {
+    public java.lang.String getLastName() {
         return lastName;
     }
 
     @Override
-    public void setLastName(String lastName) {
+    public void setLastName(java.lang.String lastName) {
         this.lastName = lastName;
     }
 
-    private String photoUrl;
+    private java.lang.String photoUrl;
 
     @Override
-    public String getPhotoUrl() {
+    public java.lang.String getPhotoUrl() {
         return photoUrl;
     }
 
     @Override
-    public void setPhotoUrl(String photoUrl) {
+    public void setPhotoUrl(java.lang.String photoUrl) {
         this.photoUrl = photoUrl;
     }
 
@@ -68,7 +68,7 @@ public class VkUser implements IUser {
     }
 
     @Override
-    public ReceiverType getReceiverType() {
-        return ReceiverType.USER;
+    public RecieverType getReceiverType() {
+        return RecieverType.USER;
     }
 }

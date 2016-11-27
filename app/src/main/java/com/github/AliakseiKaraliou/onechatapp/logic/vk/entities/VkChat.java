@@ -3,7 +3,7 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk.entities;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.RecieverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 
 import java.util.ArrayList;
@@ -16,10 +16,10 @@ public class VkChat implements IChat {
     private List<IUser> userList;
     private List<IMessage> messageList;
     private long id = -1;
-    private String name = "";
-    private String photoUrl = null;
+    private java.lang.String name = "";
+    private java.lang.String photoUrl = null;
 
-    public VkChat(long id, String name, String photoUrl, List<IUser> userList) {
+    public VkChat(long id, java.lang.String name, java.lang.String photoUrl, List<IUser> userList) {
         if (id < 2000000000)
             this.id = id + 2000000000;
         else
@@ -31,7 +31,7 @@ public class VkChat implements IChat {
 
     }
 
-    public VkChat(long id, String name, String photoUrl) {
+    public VkChat(long id, java.lang.String name, java.lang.String photoUrl) {
         this(id, name, photoUrl, new ArrayList<IUser>());
     }
 
@@ -42,17 +42,17 @@ public class VkChat implements IChat {
     }
 
     @Override
-    public String getName() {
+    public java.lang.String getName() {
         return name;
     }
 
     @Override
-    public String getPhotoUrl() {
+    public java.lang.String getPhotoUrl() {
         return photoUrl;
     }
 
     @Override
-    public void setPhotoUrl(String photoUrl) {
+    public void setPhotoUrl(java.lang.String photoUrl) {
         this.photoUrl = photoUrl;
     }
 
@@ -62,12 +62,12 @@ public class VkChat implements IChat {
     }
 
     @Override
-    public ReceiverType getReceiverType() {
-        return ReceiverType.CHAT;
+    public RecieverType getReceiverType() {
+        return RecieverType.CHAT;
     }
 
     @Override
-    public void setName(String name) {
+    public void setName(java.lang.String name) {
         this.name = name;
     }
 

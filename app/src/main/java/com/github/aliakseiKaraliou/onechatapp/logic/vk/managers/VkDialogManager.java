@@ -16,6 +16,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogStartPars
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkReceiverDataParser;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +40,10 @@ public final class VkDialogManager {
 
                         final Set<Long> parse = new VkDialogStartParser().parse(json);
                         final LongSparseArray<IReciever> longSparseArray = new VkReceiverDataParser().parse(parse);
+                        List<IReciever> recieverList=new ArrayList<IReciever>();
+                        for (int i=0;i<longSparseArray.size();i++){
+                            final IReciever reciever1 = longSparseArray.valueAt(i);
+                        }
                         VkReceiverStorage.putAll(longSparseArray);
                         return new VkDialogFinalParser().parse(context, json, longSparseArray);
                     } catch (IOException e) {
