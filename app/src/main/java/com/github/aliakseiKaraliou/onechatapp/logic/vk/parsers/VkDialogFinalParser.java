@@ -50,9 +50,9 @@ public class VkDialogFinalParser {
 
                 if (currentObject.has(VkConstants.Json.CHAT_ID)) {
                     long chatId = currentObject.getLong(VkConstants.Json.CHAT_ID);
-                    Long peerID = vkIdConverter.chatToPeer(chatId);
-                    if (peerID != null) {
-                        IChat chat = (IChat) array.get(peerID);
+                    Long peerId = vkIdConverter.chatToPeer(chatId);
+                    if (peerId != null) {
+                        IChat chat = (IChat) array.get(peerId);
                         builder.setChat(chat);
                     }
                 }

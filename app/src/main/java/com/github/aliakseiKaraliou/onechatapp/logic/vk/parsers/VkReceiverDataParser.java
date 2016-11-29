@@ -30,9 +30,11 @@ public class VkReceiverDataParser implements IParser<Set<Long>, LongSparseArray<
         int i = 0;
         for (Long id : ids) {
             if (VkReceiverStorage.get(id) == null) {
+                if (id < 0)
+                    new StringBuilder();
                 if (id > VkIdConverter.getChatPeerOffset()) {
                     chatIdSB.append(converter.peerToChat(id)).append(",");
-                } else if (id > 0) {
+                } else if (id > 0 || id < VkIdConverter.getEmailPeerOffset()) {
                     userIdSB.append(id).append(",");
                 } else {
                     groupIdSB.append(converter.peerToGroup(id)).append(",");
@@ -75,7 +77,7 @@ public class VkReceiverDataParser implements IParser<Set<Long>, LongSparseArray<
                     if (id > VkIdConverter.getChatPeerOffset()) {  //chat
                         assert chatSparseArray != null;
                         reciever = chatSparseArray.get(id);
-                    } else if (id > 0) { //user
+                    } else if (id > 0 || id < VkIdConverter.getEmailPeerOffset()) { //user or email
                         assert userSparseArray != null;
                         reciever = userSparseArray.get(id);
                     } else { //group

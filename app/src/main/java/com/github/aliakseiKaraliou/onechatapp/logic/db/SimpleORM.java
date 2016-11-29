@@ -50,11 +50,11 @@ public class SimpleORM<T extends DbConvert> {
             for (String key : annotatedFields.keySet()) {
                 String value = annotatedFields.get(key);
                 final Field declaredField = clazz.getDeclaredField(key);
-                String primaryKey = "";
+                String parameter = "";
                 if (declaredField.isAnnotationPresent(DbPrimaryKey.class)) {
-                    primaryKey = PRIMARY_KEY;
+                    parameter = PRIMARY_KEY;
                 }
-                builder.append(String.format(Locale.US, CREATE_PARAMETERS, key, value, primaryKey));
+                builder.append(String.format(Locale.US, CREATE_PARAMETERS, key, value, parameter));
             }
             String result = builder.substring(0, builder.length() - 2);
             String request = String.format(Locale.US, CREATE_IF_NOT_EXISTS_QUERY, name, result);

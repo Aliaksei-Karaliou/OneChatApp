@@ -7,7 +7,6 @@ import com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOp
 
 public class ImageLoaderManager extends AsyncOperation<String, Bitmap> {
 
-    private static LruCache diskLruCache;
     private static LruCache<String, Bitmap> cache = new LruCache<>(2 * 1024 * 1024);
 
     @Override

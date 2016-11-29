@@ -29,7 +29,10 @@ public final class VkDialogManager {
                 @Override
                 protected List<IMessage> doInBackground(Integer integer) {
                     try {
-                        Pair<String, String> peerId = new Pair<>("peer_id", Long.toString(reciever.getId()));
+                        String id = Long.toString(reciever.getId());
+                        //TODO to delete
+                        //id="2000000016";
+                        Pair<String, String> peerId = new Pair<>("peer_id", id);
                         final String json;
                         if (offset > 0) {
                             Pair<String, String> offsetPair = new Pair<>("offset", Integer.toString(offset));
@@ -40,10 +43,6 @@ public final class VkDialogManager {
 
                         final Set<Long> parse = new VkDialogStartParser().parse(json);
                         final LongSparseArray<IReciever> longSparseArray = new VkReceiverDataParser().parse(parse);
-                        List<IReciever> recieverList=new ArrayList<IReciever>();
-                        for (int i=0;i<longSparseArray.size();i++){
-                            final IReciever reciever1 = longSparseArray.valueAt(i);
-                        }
                         VkReceiverStorage.putAll(longSparseArray);
                         return new VkDialogFinalParser().parse(context, json, longSparseArray);
                     } catch (IOException e) {

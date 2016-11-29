@@ -33,7 +33,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final RecieverType recieverType = RecieverType.values()[viewType];
-        if (recieverType == RecieverType.USER || recieverType == RecieverType.GROUP) {
+        if (recieverType != RecieverType.CHAT) {
             final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_list_item_user_group, parent, false);
             return new UserGroupViewHolder(view);
         } else {
@@ -50,7 +50,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         final int viewType = getItemViewType(position);
         final RecieverType recieverType = RecieverType.values()[viewType];
 
-        if (recieverType == RecieverType.USER || recieverType == RecieverType.GROUP) {
+        if (recieverType != RecieverType.CHAT) {
 
             loaderManager.startLoading(currentMessage.getSender().getPhotoUrl());
 
