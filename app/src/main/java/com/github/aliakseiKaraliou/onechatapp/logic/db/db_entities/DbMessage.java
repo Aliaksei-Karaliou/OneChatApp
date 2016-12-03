@@ -7,7 +7,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DbMessage implements DbConvert {
+public class DbMessage extends DbEntity<DbMessage> {
     @DbPrimaryKey
     @DbType(type = DbType.Type.INTEGER)
     private long messageId;
@@ -31,8 +31,12 @@ public class DbMessage implements DbConvert {
         this.isOut = isOut ? 1 : 0;
     }
 
+    private DbMessage(){
 
-    public static List<DbMessage> convert(List<IMessage> list) {
+    }
+
+
+    public static List<DbMessage> convertTo(List<IMessage> list) {
         List<DbMessage> result = new ArrayList<>();
         for (IMessage message : list) {
             long messageId = message.getId();
@@ -48,7 +52,7 @@ public class DbMessage implements DbConvert {
     }
 
     @Override
-    public DbConvert convert(String[] values) {
+    public DbMessage convert(List<String> list) {
         return null;
     }
 }

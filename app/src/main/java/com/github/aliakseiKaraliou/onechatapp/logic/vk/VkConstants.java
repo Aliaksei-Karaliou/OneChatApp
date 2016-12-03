@@ -46,7 +46,8 @@ public final class VkConstants {
         public static final String USER_ID = "user_id";
     }
 
-    public final static class Extra {
+    public final static class Other {
+        public static final String CONVERT = "convert";
         public static final String PEER_ID = "peer id";
     }
 }

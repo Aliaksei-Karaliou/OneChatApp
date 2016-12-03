@@ -4,13 +4,13 @@ import android.app.Application;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.db.SimpleORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbReceiver;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbReciever;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.ImageLoaderManager;
 
 public class App extends Application {
 
     private SimpleORM<DbMessage> messageORM;
-    private SimpleORM<DbReceiver> receiverORM;
+    private SimpleORM<DbReciever> receiverORM;
     private ImageLoaderManager imageLoaderManager;
 
     @Override
@@ -21,8 +21,8 @@ public class App extends Application {
         messageORM = new SimpleORM<>(this, "Message", DbMessage.class);
         messageORM.createTableIfNotExists();
 
-        //DbReceiver SimpleORM
-        receiverORM = new SimpleORM<>(this, "Reciever", DbReceiver.class);
+        //DbReciever SimpleORM
+        receiverORM = new SimpleORM<>(this, "Reciever", DbReciever.class);
         receiverORM.createTableIfNotExists();
 
         //imageLoadManager
@@ -33,7 +33,7 @@ public class App extends Application {
         return messageORM;
     }
 
-    public SimpleORM<DbReceiver> getReceiverORM() {
+    public SimpleORM<DbReciever> getReceiverORM() {
         return receiverORM;
     }
 

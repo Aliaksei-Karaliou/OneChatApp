@@ -48,7 +48,7 @@ public class DialogsListActivity extends AppCompatActivity {
             vkDialogsListManager.startLoading(DialogsListActivity.this, 20);
 
             final SimpleORM<DbMessage> orm = ((App) getApplication()).getMessageORM();
-            final List<DbMessage> convert = DbMessage.convert(messages);
+            final List<DbMessage> convert = DbMessage.convertTo(messages);
             for (DbMessage dbMessage : convert) {
                 orm.insert(dbMessage);
             }
@@ -61,7 +61,7 @@ public class DialogsListActivity extends AppCompatActivity {
                 @Override
                 public void onClick(long peerId) {
                     final Intent intent = new Intent(DialogsListActivity.this, DialogActivity.class);
-                    intent.putExtra(VkConstants.Extra.PEER_ID, peerId);
+                    intent.putExtra(VkConstants.Other.PEER_ID, peerId);
                     startActivity(intent);
                 }
             });
@@ -78,7 +78,7 @@ public class DialogsListActivity extends AppCompatActivity {
 
                         List<IMessage> result=vkDialogsListManager.getResult();
 
-                        final List<DbMessage> dbMessageList = DbMessage.convert(result);
+                        final List<DbMessage> dbMessageList = DbMessage.convertTo(result);
                         for (DbMessage dbMessage : dbMessageList) {
                             orm.insert(dbMessage);
                         }

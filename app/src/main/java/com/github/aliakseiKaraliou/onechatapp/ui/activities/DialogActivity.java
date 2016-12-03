@@ -43,7 +43,7 @@ public class DialogActivity extends AppCompatActivity {
         messageTextView = (EditText) findViewById(R.id.dialog_new_message_text);
 
         Intent intent = getIntent();
-        Long peerId = intent.getLongExtra(VkConstants.Extra.PEER_ID, 0);
+        Long peerId = intent.getLongExtra(VkConstants.Other.PEER_ID, 0);
 
         if (peerId != 0) {
             reciever = VkReceiverStorage.get(peerId);
@@ -69,7 +69,7 @@ public class DialogActivity extends AppCompatActivity {
         manager.startLoading(this, reciever, 20);
 
         final SimpleORM<DbMessage> messageORM = ((App) getApplicationContext()).getMessageORM();
-        final List<DbMessage> convert = DbMessage.convert(result);
+        final List<DbMessage> convert = DbMessage.convertTo(result);
         for (DbMessage dbMessage : convert) {
             messageORM.insert(dbMessage);
         }
@@ -85,7 +85,7 @@ public class DialogActivity extends AppCompatActivity {
                 if (lastCompletelyVisibleItemPosition + 1 == itemCount && dy < 0) {
 
                     final List<IMessage> messageList = manager.getResult();
-                    final List<DbMessage> convert1 = DbMessage.convert(messageList);
+                    final List<DbMessage> convert1 = DbMessage.convertTo(messageList);
                     for (DbMessage dbMessage : convert1) {
                         messageORM.insert(dbMessage);
                     }

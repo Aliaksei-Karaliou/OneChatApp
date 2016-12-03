@@ -9,7 +9,7 @@ import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.SimpleORM;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbReceiver;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbReciever;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOperation;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
@@ -50,13 +50,13 @@ public class VkDialogsListManager {
                         for (int i = 0; i < parse.size(); i++) {
                             recieverList.add(parse.valueAt(i));
                         }
-                        final List<DbReceiver> convert = DbReceiver.convert(recieverList);
-                        final SimpleORM<DbReceiver> receiverORM = ((App) context.getApplicationContext()).getReceiverORM();
-                        for (DbReceiver receiver : convert) {
+                        final List<DbReciever> convert = DbReciever.convertTo(recieverList);
+                        final SimpleORM<DbReciever> receiverORM = ((App) context.getApplicationContext()).getReceiverORM();
+                        for (DbReciever receiver : convert) {
                             receiverORM.insert(receiver);
                         }
 
-                        receiverORM.select("firstName =  'Vlad'");
+                        final List<IReciever> recievers = DbReciever.convertFrom(receiverORM.select("firstName =  'Marta'"));
 
                         VkReceiverStorage.putAll(parse);
                         messageList = new VkDialogsListFinalParser().parse(context, jsonString, parse);
