@@ -1,7 +1,7 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk.entities;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IGroup;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.RecieverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.PeerRecieverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 
 public final class VkGroup implements IGroup {
@@ -44,8 +44,8 @@ public final class VkGroup implements IGroup {
     }
 
     @Override
-    public RecieverType getReceiverType() {
-        return RecieverType.GROUP;
+    public PeerRecieverType getPeerReceiverType() {
+        return PeerRecieverType.GROUP;
     }
 
 }

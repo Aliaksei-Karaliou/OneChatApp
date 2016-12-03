@@ -2,7 +2,7 @@ package com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.RecieverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.PeerRecieverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbPrimaryKey;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbType;
 
@@ -40,9 +40,9 @@ public class DbReceiver implements DbConvert {
             final long receiverId = reciever.getId();
             final String photoUrl = reciever.getPhotoUrl();
             final String socialNetwork = reciever.getSocialNetwork().toString();
-            final String receiverType = reciever.getReceiverType().toString();
+            final String receiverType = reciever.getPeerReceiverType().toString();
             java.lang.String firstName = "", secondName = "";
-            if (receiverType.equals(RecieverType.USER.toString())) {
+            if (receiverType.equals(PeerRecieverType.USER.toString())) {
                 final IUser user = (IUser) reciever;
                 firstName = user.getFirstName();
                 secondName = user.getLastName();

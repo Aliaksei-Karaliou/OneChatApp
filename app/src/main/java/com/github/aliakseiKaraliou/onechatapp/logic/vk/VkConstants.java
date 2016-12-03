@@ -18,6 +18,7 @@ public final class VkConstants {
         public static final String LAST_NAME = "last_name";
         public static final String MESSAGE = "message";
         public static final String NAME = "name";
+        public static final String OUT= "out";
         public static final String PHOTO_50 = "photo_50";
         public static final String READ_STATE = "read_state";
         public static final String RESPONSE = "response";

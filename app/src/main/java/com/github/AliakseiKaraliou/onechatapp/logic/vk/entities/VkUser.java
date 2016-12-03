@@ -1,7 +1,7 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk.entities;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.RecieverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.PeerRecieverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 
 public class VkUser implements IUser {
@@ -68,7 +68,7 @@ public class VkUser implements IUser {
     }
 
     @Override
-    public RecieverType getReceiverType() {
-        return RecieverType.USER;
+    public PeerRecieverType getPeerReceiverType() {
+        return PeerRecieverType.USER;
     }
 }

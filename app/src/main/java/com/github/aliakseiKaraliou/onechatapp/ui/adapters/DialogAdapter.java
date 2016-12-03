@@ -1,5 +1,6 @@
 package com.github.aliakseiKaraliou.onechatapp.ui.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.ImageLoaderManager;
@@ -16,8 +18,10 @@ import java.util.List;
 public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<IMessage> messageList;
+    private Context context;
 
-    public DialogAdapter(List<IMessage> messageList) {
+    public DialogAdapter(Context context, List<IMessage> messageList) {
+        this.context = context;
         this.messageList = messageList;
     }
 
@@ -30,7 +34,7 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final IMessage currentMessage = messageList.get(position);
-        final ImageLoaderManager loaderManager = new ImageLoaderManager();
+        final ImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
 
         loaderManager.startLoading(currentMessage.getSender().getPhotoUrl());
 

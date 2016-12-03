@@ -16,7 +16,6 @@ import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogStartPars
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkReceiverDataParser;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 

@@ -6,26 +6,26 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.ISender;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbType;
 
 import java.util.Date;
 
 public class VkMessage implements IMessage {
 
     private ISender sender;
-    @DbType(type = DbType.Type.INTEGER)
     private long id;
     private String text;
     private Date date;
     private IChat chat;
     private boolean isRead = false;
+    private boolean out = false;
 
-    private VkMessage(long id, ISender sender, String text, Date date, boolean isRead, IChat chat) {
+    private VkMessage(long id, ISender sender, String text, Date date, boolean isRead, boolean out, IChat chat) {
         this.id = id;
         this.sender = sender;
         this.text = text;
         this.date = date;
         this.isRead = isRead;
+        this.out = out;
         this.chat = chat;
     }
 
@@ -61,6 +61,11 @@ public class VkMessage implements IMessage {
         return isRead;
     }
 
+    @Override
+    public boolean isOut() {
+        return out;
+    }
+
     public IMessage read() {
         isRead = true;
         return this;
@@ -87,11 +92,18 @@ public class VkMessage implements IMessage {
         private String text;
         private ISender sender;
         private boolean read;
+        private boolean out;
         private IChat chat;
 
+        public Builder setOut(boolean out) {
+            this.out = out;
+            return this;
+        }
 
-        public void setChat(IChat chat) {
+
+        public Builder setChat(IChat chat) {
             this.chat = chat;
+            return this;
         }
 
         public Builder setId(long id) {
@@ -128,7 +140,7 @@ public class VkMessage implements IMessage {
         }
 
         public VkMessage build() {
-            return new VkMessage(id, sender, text, date, read, chat);
+            return new VkMessage(id, sender, text, date, read, out, chat);
         }
     }
 }

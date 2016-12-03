@@ -74,7 +74,7 @@ public class DialogActivity extends AppCompatActivity {
             messageORM.insert(dbMessage);
         }
 
-        final DialogAdapter adapter = new DialogAdapter(result);
+        final DialogAdapter adapter = new DialogAdapter(this, result);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

@@ -3,7 +3,7 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk.entities;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.RecieverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.PeerRecieverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 
 import java.util.ArrayList;
@@ -62,8 +62,8 @@ public class VkChat implements IChat {
     }
 
     @Override
-    public RecieverType getReceiverType() {
-        return RecieverType.CHAT;
+    public PeerRecieverType getPeerReceiverType() {
+        return PeerRecieverType.CHAT;
     }
 
     @Override

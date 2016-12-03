@@ -12,51 +12,36 @@ public class DbMessage implements DbConvert {
     @DbType(type = DbType.Type.INTEGER)
     private long messageId;
     @DbType(type = DbType.Type.INTEGER)
-    private long chatId;
+    private long peerId;
     @DbType(type = DbType.Type.INTEGER)
-    private long senderId;
+    private long fromId;
     @DbType(type = DbType.Type.TEXT)
     private String message;
     @DbType(type = DbType.Type.INTEGER)
     private long unixDate;
+    @DbType(type = DbType.Type.INTEGER)
+    private long isOut;
 
-    private DbMessage(long messageId, long chatId, long senderId, String message, long unixDate) {
+    private DbMessage(long messageId, long peerId, long fromId, String message, long unixDate, boolean isOut) {
         this.messageId = messageId;
-        this.chatId = chatId;
-        this.senderId = senderId;
+        this.peerId = peerId;
+        this.fromId = fromId;
         this.message = message;
         this.unixDate = unixDate;
+        this.isOut = isOut ? 1 : 0;
     }
 
-    public long getMessageId() {
-        return messageId;
-    }
-
-    public long getChatId() {
-        return chatId;
-    }
-
-    public long getSenderId() {
-        return senderId;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public long getUnixDate() {
-        return unixDate;
-    }
 
     public static List<DbMessage> convert(List<IMessage> list) {
         List<DbMessage> result = new ArrayList<>();
         for (IMessage message : list) {
             long messageId = message.getId();
-            long chatId = message.getChat() != null ? message.getChat().getId() : 0;
             long senderId = message.getSender().getId();
+            long chatId = message.getChat() != null ? message.getChat().getId() : senderId;
             String messageText = message.getText();
             long unixDate = message.getUnixDate();
-            DbMessage newDbMessage = new DbMessage(messageId, chatId, senderId, messageText, unixDate);
+            boolean isOut = message.isOut();
+            DbMessage newDbMessage = new DbMessage(messageId, chatId, senderId, messageText, unixDate, isOut);
             result.add(newDbMessage);
         }
         return result;

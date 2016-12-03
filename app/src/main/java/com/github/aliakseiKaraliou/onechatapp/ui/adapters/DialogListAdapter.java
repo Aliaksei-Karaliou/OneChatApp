@@ -8,9 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.RecieverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.PeerRecieverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.DateFriendlyFormat;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.ImageLoaderManager;
 
@@ -32,8 +33,8 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final RecieverType recieverType = RecieverType.values()[viewType];
-        if (recieverType != RecieverType.CHAT) {
+        final PeerRecieverType peerRecieverType = PeerRecieverType.values()[viewType];
+        if (peerRecieverType != PeerRecieverType.CHAT) {
             final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_list_item_user_group, parent, false);
             return new UserGroupViewHolder(view);
         } else {
@@ -46,11 +47,11 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         final IMessage currentMessage = messageList.get(position);
-        final ImageLoaderManager loaderManager = new ImageLoaderManager();
+        final ImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
         final int viewType = getItemViewType(position);
-        final RecieverType recieverType = RecieverType.values()[viewType];
+        final PeerRecieverType peerRecieverType = PeerRecieverType.values()[viewType];
 
-        if (recieverType != RecieverType.CHAT) {
+        if (peerRecieverType != PeerRecieverType.CHAT) {
 
             loaderManager.startLoading(currentMessage.getSender().getPhotoUrl());
 
@@ -148,7 +149,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
-        return messageList.get(position).getReciever().getReceiverType().ordinal();
+        return messageList.get(position).getReciever().getPeerReceiverType().ordinal();
     }
 
 }
