@@ -29,8 +29,6 @@ public final class VkDialogManager {
                 protected List<IMessage> doInBackground(Integer integer) {
                     try {
                         String id = Long.toString(reciever.getId());
-                        //TODO to delete
-                        //id="2000000016";
                         Pair<String, String> peerId = new Pair<>("peer_id", id);
                         final String json;
                         if (offset > 0) {

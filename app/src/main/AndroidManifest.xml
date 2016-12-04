@@ -14,7 +14,6 @@
         <activity android:name=".ui.activities.DialogsListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -24,6 +23,7 @@
         <activity android:name=".ui.activities.VkAuthActivity"/>
         <activity
             android:name=".ui.activities.DialogActivity"
+            android:launchMode="singleTop"
             android:windowSoftInputMode="stateHidden"/>
 
         <service

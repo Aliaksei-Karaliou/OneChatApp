@@ -1,5 +1,6 @@
 package com.github.aliakseiKaraliou.onechatapp.services;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -9,12 +10,14 @@ import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOperation;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollServer;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollUpdate;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkGetLongPollServerParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkLongPollParser;
 import com.github.aliakseiKaraliou.onechatapp.services.notifications.SimpleNotificationManager;
+import com.github.aliakseiKaraliou.onechatapp.ui.activities.DialogActivity;
 
 import java.io.IOException;
 import java.util.List;
@@ -66,7 +69,10 @@ public class ReceivingService extends Service {
                     }
                     if (message != null) {
                         final SimpleNotificationManager notificationManager = ((App) getApplicationContext()).getNotificationManager();
-                        notificationManager.send(message.getReciever().getName(), message.getText(), R.drawable.ic_mail, 1);
+                        Intent intent = new Intent(ReceivingService.this, DialogActivity.class);
+                        intent.putExtra(VkConstants.Other.PEER_ID, message.getReciever().getId());
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(ReceivingService.this, 0, intent, 0);
+                        notificationManager.send(message.getReciever().getName(), message.getText(), R.drawable.ic_vk_social_network_logo, pendingIntent);
                     }
                     longPollServer.setTs(update.getTs());
                 }
