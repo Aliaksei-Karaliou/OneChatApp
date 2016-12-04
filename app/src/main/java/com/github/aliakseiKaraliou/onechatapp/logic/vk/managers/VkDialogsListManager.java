@@ -56,8 +56,6 @@ public class VkDialogsListManager {
                             receiverORM.insert(receiver);
                         }
 
-                        final List<IReciever> recievers = DbReciever.convertFrom(receiverORM.select("firstName =  'Marta'"));
-
                         VkReceiverStorage.putAll(parse);
                         messageList = new VkDialogsListFinalParser().parse(context, jsonString, parse);
                         return messageList;

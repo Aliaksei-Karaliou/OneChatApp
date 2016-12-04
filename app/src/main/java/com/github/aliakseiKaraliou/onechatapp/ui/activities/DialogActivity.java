@@ -25,6 +25,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.db.SimpleORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.entities.VkMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogManager;
 import com.github.aliakseiKaraliou.onechatapp.ui.adapters.DialogAdapter;
 
@@ -143,6 +144,8 @@ public class DialogActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.operation_failed), Toast.LENGTH_SHORT).show();
             } else {
                 messageTextView.setText("");
+                final SimpleORM<DbMessage> messageORM = ((App) getApplicationContext()).getMessageORM();
+
             }
         }
     }

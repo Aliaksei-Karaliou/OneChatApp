@@ -5,6 +5,7 @@ import android.app.Application;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.SimpleORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbReciever;
+import com.github.aliakseiKaraliou.onechatapp.logic.services.LongPoll;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.ImageLoaderManager;
 
 public class App extends Application {

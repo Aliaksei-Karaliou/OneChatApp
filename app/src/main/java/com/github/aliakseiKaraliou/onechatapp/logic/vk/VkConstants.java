@@ -33,6 +33,7 @@ public final class VkConstants {
         public static final String MESSAGES_GETDIALOGS = "messages.getDialogs";
         public static final String MESSAGES_GETCHAT = "messages.getChat";
         public static final String MESSAGES_GETHISTORY = "messages.getHistory";
+        public static final String MESSAGES_GETLONGPOLLSERVER = "messages.getLongPollServer";
         public static final String MESSAGES_SEND = "messages.send";
         public static final String USERS_GET = "users.get";
     }

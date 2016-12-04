@@ -52,6 +52,7 @@ public class DialogsListActivity extends AppCompatActivity {
             for (DbMessage dbMessage : convert) {
                 orm.insert(dbMessage);
             }
+            final List<DbMessage> select = orm.select("message='спасибо'");
 
 
             final DialogListAdapter adapter = new DialogListAdapter(this, messages);

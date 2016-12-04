@@ -98,11 +98,6 @@ public class SimpleORM<T> {
         }
     }
 
-    public enum OrderBy {
-        ASC,
-        DESC
-    }
-
     @SuppressWarnings("unchecked")
     public List<T> select(@NonNull String condition) {
         try {
@@ -128,6 +123,7 @@ public class SimpleORM<T> {
                     buf = new ArrayList<>();
                 }
                 while (cursor.moveToNext());
+                new StringBuilder();
                 return result;
             } else {
                 return new ArrayList<>();
