@@ -5,14 +5,15 @@ import android.app.Application;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.SimpleORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbReciever;
-import com.github.aliakseiKaraliou.onechatapp.logic.services.LongPoll;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.ImageLoaderManager;
+import com.github.aliakseiKaraliou.onechatapp.services.notifications.SimpleNotificationManager;
 
 public class App extends Application {
 
     private SimpleORM<DbMessage> messageORM;
     private SimpleORM<DbReciever> receiverORM;
     private ImageLoaderManager imageLoaderManager;
+    private SimpleNotificationManager notificationManager;
 
     @Override
     public void onCreate() {
@@ -23,11 +24,14 @@ public class App extends Application {
         messageORM.createTableIfNotExists();
 
         //DbReciever SimpleORM
-        receiverORM = new SimpleORM<>(this, "Reciever", DbReciever.class);
+        receiverORM = new SimpleORM<>(this, "Receiver", DbReciever.class);
         receiverORM.createTableIfNotExists();
 
         //imageLoadManager
         imageLoaderManager = new ImageLoaderManager();
+
+        //notificationManager
+        notificationManager=new SimpleNotificationManager(this);
     }
 
     public SimpleORM<DbMessage> getMessageORM() {
@@ -40,6 +44,10 @@ public class App extends Application {
 
     public ImageLoaderManager getImageLoaderManager() {
         return imageLoaderManager;
+    }
+
+    public SimpleNotificationManager getNotificationManager() {
+        return notificationManager;
     }
 
 }
