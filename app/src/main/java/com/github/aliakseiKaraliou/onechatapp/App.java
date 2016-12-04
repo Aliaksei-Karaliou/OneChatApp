@@ -1,11 +1,13 @@
 package com.github.aliakseiKaraliou.onechatapp;
 
 import android.app.Application;
+import android.content.Intent;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.db.SimpleORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbReciever;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.ImageLoaderManager;
+import com.github.aliakseiKaraliou.onechatapp.services.ReceivingService;
 import com.github.aliakseiKaraliou.onechatapp.services.notifications.SimpleNotificationManager;
 
 public class App extends Application {
@@ -18,6 +20,8 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        startService(new Intent(this, ReceivingService.class));
 
         //DbMessage SimpleORM
         messageORM = new SimpleORM<>(this, "Message", DbMessage.class);

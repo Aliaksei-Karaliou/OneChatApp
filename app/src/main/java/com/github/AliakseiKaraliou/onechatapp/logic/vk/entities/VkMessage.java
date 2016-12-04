@@ -18,6 +18,7 @@ public class VkMessage implements IMessage {
     private IChat chat;
     private boolean isRead = false;
     private boolean out = false;
+    private static long MESSAGE_EVENT_ID=4;
 
     private VkMessage(long id, ISender sender, String text, Date date, boolean isRead, boolean out, IChat chat) {
         this.id = id;
@@ -83,6 +84,11 @@ public class VkMessage implements IMessage {
     @Nullable
     public IChat getChat() {
         return chat;
+    }
+
+    @Override
+    public long getEventId() {
+        return MESSAGE_EVENT_ID;
     }
 
     public static class Builder {

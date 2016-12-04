@@ -15,6 +15,7 @@ public final class VkConstants {
         public static final String FROM_ID = "from_id";
         public static final String ID = "id";
         public static final String ITEMS = "items";
+        public static final String KEY = "key";
         public static final String LAST_NAME = "last_name";
         public static final String MESSAGE = "message";
         public static final String NAME = "name";
@@ -22,7 +23,10 @@ public final class VkConstants {
         public static final String PHOTO_50 = "photo_50";
         public static final String READ_STATE = "read_state";
         public static final String RESPONSE = "response";
+        public static final String SERVER = "server";
         public static final String TITLE = "title";
+        public static final String TS = "ts";
+        public static final String UPDATES = "updates";
         public static final String USER_ID = "user_id";
         public static final String USER_IDS = "user_ids";
     }
@@ -50,5 +54,7 @@ public final class VkConstants {
     public final static class Other {
         public static final String CONVERT = "convert";
         public static final String PEER_ID = "peer id";
+        public static final String VK_REQUEST_TEMPLATE = "https://api.vk.com/method/%s?%s&access_token=%s&v=%.2f";
+        public static final String VK_LONG_POLL_REQUEST = "http://%s?act=a_check&key=%s&ts=%d&wait=25&mode=2";
     }
 }
