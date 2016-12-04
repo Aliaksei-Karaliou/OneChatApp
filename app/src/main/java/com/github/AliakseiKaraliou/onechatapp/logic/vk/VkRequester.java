@@ -41,17 +41,22 @@ public class VkRequester {
 
     @Nullable
     public final String doLongPollRequest(VkLongPollServer server) {
-        final String urlString = String.format(Locale.US, VkConstants.Other.VK_LONG_POLL_REQUEST, server.getServer(), server.getKey(), server.getTs());
         try {
-            final URL url = new URL(urlString);
-            final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                final String result = readConnection(connection);
-                connection.disconnect();
-                return result;
+            final String urlString = String.format(Locale.US, VkConstants.Other.VK_LONG_POLL_REQUEST, server.getServer(), server.getKey(), server.getTs());
+            try {
+                final URL url = new URL(urlString);
+                final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    final String result = readConnection(connection);
+                    connection.disconnect();
+                    return result;
+                }
+                return null;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
             }
-            return null;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
