@@ -1,9 +1,9 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.db;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbPrimaryKey;
@@ -31,7 +31,7 @@ public class SimpleORM<T> {
     private static final String CREATE_PARAMETERS = "'%s' %s %s, ";
     private static final String PRIMARY_KEY = "PRIMARY KEY";
     private static final String SELECT_QUERY = "SELECT * FROM '%s' WHERE %s";
-    private static final String SELECT_ORDERBY_QUERY = "SELECT * FROM %s WHERE %s ORDER BY %s %s";
+    //private static final String SELECT_ORDERBY_QUERY = "SELECT * FROM %s WHERE %s ORDER BY %s %s";
 
     private final Map<String, String> annotatedbyDbTypeFields;
 
@@ -131,8 +131,25 @@ public class SimpleORM<T> {
 
         } catch (Exception e) {
             e.printStackTrace();
-            final Throwable cause = e.getCause();
             return new ArrayList<>();
+        }
+    }
+
+    private class DbHelper extends SQLiteOpenHelper {
+
+        public DbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+            super(context, name, factory, version);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase sqLiteDatabase) {
+
+        }
+
+
+        @Override
+        public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+
         }
     }
 }

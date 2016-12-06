@@ -8,7 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-//should be package-locale to have access only from ImageLoaderManager
+//should be package-locale to have access only from LazyImageLoaderManager
 class ImageLoader {
 
     Bitmap loadFromUrl(String url) {

@@ -6,7 +6,7 @@ import android.content.Intent;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.SimpleORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbReciever;
-import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.ImageLoaderManager;
+import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.LazyImageLoaderManager;
 import com.github.aliakseiKaraliou.onechatapp.services.ReceivingService;
 import com.github.aliakseiKaraliou.onechatapp.services.notifications.SimpleNotificationManager;
 
@@ -14,7 +14,7 @@ public class App extends Application {
 
     private SimpleORM<DbMessage> messageORM;
     private SimpleORM<DbReciever> receiverORM;
-    private ImageLoaderManager imageLoaderManager;
+    private LazyImageLoaderManager imageLoaderManager;
     private SimpleNotificationManager notificationManager;
 
     @Override
@@ -32,7 +32,7 @@ public class App extends Application {
         receiverORM.createTableIfNotExists();
 
         //imageLoadManager
-        imageLoaderManager = new ImageLoaderManager();
+        imageLoaderManager = new LazyImageLoaderManager();
 
         //notificationManager
         notificationManager=new SimpleNotificationManager(this);
@@ -46,7 +46,7 @@ public class App extends Application {
         return receiverORM;
     }
 
-    public ImageLoaderManager getImageLoaderManager() {
+    public LazyImageLoaderManager getImageLoaderManager() {
         return imageLoaderManager;
     }
 

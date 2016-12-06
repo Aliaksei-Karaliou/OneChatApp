@@ -1,6 +1,8 @@
 package com.github.aliakseiKaraliou.onechatapp.ui.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +15,7 @@ import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.PeerRecieverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.DateFriendlyFormat;
-import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.ImageLoaderManager;
+import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.LazyImageLoaderManager;
 
 import java.util.List;
 
@@ -23,12 +25,13 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private List<IMessage> messageList;
     private final DateFriendlyFormat dateFriendlyFormat;
     private Context context;
+    private Bitmap defaultBitmap;
 
     public DialogListAdapter(Context context, List<IMessage> messageList) {
         this.messageList = messageList;
         this.context = context;
         dateFriendlyFormat = new DateFriendlyFormat();
-
+        this.defaultBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.camera_50);
     }
 
     @Override
@@ -47,15 +50,15 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         final IMessage currentMessage = messageList.get(position);
-        final ImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
+        final LazyImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
         final int viewType = getItemViewType(position);
         final PeerRecieverType peerRecieverType = PeerRecieverType.values()[viewType];
 
         if (peerRecieverType != PeerRecieverType.CHAT) {
 
-            loaderManager.startLoading(currentMessage.getSender().getPhotoUrl());
-
             final UserGroupViewHolder viewHolder = (UserGroupViewHolder) holder;
+
+            loaderManager.load(context, viewHolder.avatarImageView, currentMessage.getReciever().getPhotoUrl(), defaultBitmap);
 
             viewHolder.messageTextView.setText(currentMessage.getText());
             viewHolder.nameTextView.setText(currentMessage.getSender().getName());
@@ -71,19 +74,16 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 });
             }
 
-            viewHolder.avatarImageView.setImageBitmap(loaderManager.getResult());
-
 
         } else {
 
-            loaderManager.startLoading(currentMessage.getSender().getPhotoUrl());
 
             final ChatViewHolder viewHolder = (ChatViewHolder) holder;
+            loaderManager.load(context, viewHolder.avatarImageView, currentMessage.getReciever().getPhotoUrl(), defaultBitmap);
+            loaderManager.load(context, viewHolder.userPhotoImageView, currentMessage.getSender().getPhotoUrl(), defaultBitmap);
+
 
             viewHolder.messageTextView.setText(currentMessage.getText());
-            viewHolder.userPhotoImageView.setImageBitmap(loaderManager.getResult());
-
-            loaderManager.startLoading(currentMessage.getReciever().getPhotoUrl());
             viewHolder.nameTextView.setText(currentMessage.getReciever().getName());
             viewHolder.dateTextView.setText(dateFriendlyFormat.convert(context, currentMessage.getDate()));
 
@@ -95,8 +95,6 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     }
                 });
             }
-
-            viewHolder.avatarImageView.setImageBitmap(loaderManager.getResult());
         }
     }
 
