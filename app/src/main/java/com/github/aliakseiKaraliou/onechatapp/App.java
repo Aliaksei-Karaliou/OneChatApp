@@ -7,6 +7,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.db.SimpleORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbReciever;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.LazyImageLoaderManager;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
 import com.github.aliakseiKaraliou.onechatapp.services.ReceivingService;
 import com.github.aliakseiKaraliou.onechatapp.services.notifications.SimpleNotificationManager;
 
@@ -21,7 +22,9 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        startService(new Intent(this, ReceivingService.class));
+        if (VkInfo.isUserAuthorized()) {
+            startService(new Intent(this, ReceivingService.class));
+        }
 
         //DbMessage SimpleORM
         messageORM = new SimpleORM<>(this, "Message", DbMessage.class);

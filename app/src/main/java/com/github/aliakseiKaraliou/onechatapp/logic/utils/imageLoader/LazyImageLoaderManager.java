@@ -1,6 +1,5 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.LruCache;
@@ -11,7 +10,7 @@ public class LazyImageLoaderManager {
     private final LruCache<String, Bitmap> cache = new LruCache<>(2 * 1024 * 1024);
     private final ImageLoader loader = new ImageLoader();
 
-    public void load(final Context context, final ImageView imageView, final String url, final Bitmap defaultImage) {
+    public void load(final ImageView imageView, final String url, final Bitmap defaultImage) {
         Bitmap bitmap = cache.get(url);
         if (bitmap == null) {
             final AsyncTask<Void, Void, Bitmap> asyncTask = new AsyncTask<Void, Void, Bitmap>() {
@@ -21,6 +20,7 @@ public class LazyImageLoaderManager {
                 @Override
                 protected void onPreExecute() {
                     imageView.setImageBitmap(defaultImage);
+                    imageView.setTag(url);
                 }
 
                 @Override
@@ -32,8 +32,10 @@ public class LazyImageLoaderManager {
 
                 @Override
                 protected void onPostExecute(Bitmap bitmap) {
-                //    cache.put(url, result);
-                    imageView.setImageBitmap(result);
+                    if (imageView.getTag().equals(url) && bitmap!=null) {
+                        cache.put(url, result);
+                        imageView.setImageBitmap(result);
+                    }
                 }
             };
             try{

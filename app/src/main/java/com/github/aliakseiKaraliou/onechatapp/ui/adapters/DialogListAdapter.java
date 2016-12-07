@@ -58,7 +58,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             final UserGroupViewHolder viewHolder = (UserGroupViewHolder) holder;
 
-            loaderManager.load(context, viewHolder.avatarImageView, currentMessage.getReciever().getPhotoUrl(), defaultBitmap);
+            loaderManager.load(viewHolder.avatarImageView, currentMessage.getReciever().getPhotoUrl(), defaultBitmap);
 
             viewHolder.messageTextView.setText(currentMessage.getText());
             viewHolder.nameTextView.setText(currentMessage.getSender().getName());
@@ -79,8 +79,8 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 
             final ChatViewHolder viewHolder = (ChatViewHolder) holder;
-            loaderManager.load(context, viewHolder.avatarImageView, currentMessage.getReciever().getPhotoUrl(), defaultBitmap);
-            loaderManager.load(context, viewHolder.userPhotoImageView, currentMessage.getSender().getPhotoUrl(), defaultBitmap);
+            loaderManager.load(viewHolder.avatarImageView, currentMessage.getReciever().getPhotoUrl(), defaultBitmap);
+            loaderManager.load(viewHolder.userPhotoImageView, currentMessage.getSender().getPhotoUrl(), defaultBitmap);
 
 
             viewHolder.messageTextView.setText(currentMessage.getText());

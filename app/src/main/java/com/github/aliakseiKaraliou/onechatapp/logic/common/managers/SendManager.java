@@ -19,8 +19,7 @@ public class SendManager {
                     final Pair<String, String> peerIdPair = new Pair<>(VkConstants.Params.PEER_ID, Long.toString(peerId));
                     final Pair<String, String> messagepair = new Pair<>(VkConstants.Params.MESSAGE, message);
                     try {
-                        final String s = new VkRequester().doRequest(VkConstants.Method.MESSAGES_SEND, peerIdPair, messagepair);
-                        return s;
+                        return new VkRequester().doRequest(VkConstants.Method.MESSAGES_SEND, peerIdPair, messagepair);
                     } catch (IOException e) {
                         e.printStackTrace();
                         return null;

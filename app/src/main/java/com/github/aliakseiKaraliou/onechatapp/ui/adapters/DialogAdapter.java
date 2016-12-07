@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
@@ -41,8 +42,14 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final LazyImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
 
         final DialogAdapterViewHolder dialogAdapterViewHolder = (DialogAdapterViewHolder) holder;
-        loaderManager.load(context, dialogAdapterViewHolder.photo, currentMessage.getReciever().getPhotoUrl(), defaultBitmap);
+        loaderManager.load(dialogAdapterViewHolder.photo, currentMessage.getReciever().getPhotoUrl(), defaultBitmap);
         dialogAdapterViewHolder.messageTextView.setText(currentMessage.getText());
+        dialogAdapterViewHolder.photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, currentMessage.getSender().getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

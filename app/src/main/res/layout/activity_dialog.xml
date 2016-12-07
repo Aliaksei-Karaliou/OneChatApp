@@ -3,38 +3,45 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     tools:context="com.github.aliakseiKaraliou.onechatapp.ui.activities.DialogActivity">
 
     <RelativeLayout
         android:id="@+id/dialog_new_message_line"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
-        android:background="?attr/selectableItemBackground"
+        android:layout_marginStart="16dp"
+        android:minHeight="52dp"
         android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/dialog_send_button"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
+            android:layout_width="52dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:background="?attr/selectableItemBackground"
             android:onClick="sendButtonOnClick"
             android:saveEnabled="false"
+            android:gravity="center_vertical"
+            android:minHeight="52dp"
             app:srcCompat="@drawable/ic_send_button"/>
 
         <EditText
             android:layout_width="match_parent"
             android:id="@+id/dialog_new_message_text"
-            android:layout_toStartOf="@id/dialog_send_button"
-            android:layout_height="match_parent"
-            android:background="@null"
+            android:layout_height="wrap_content"
             android:imeOptions="flagNoExtractUi"
             android:inputType="textMultiLine"
-            android:hint="@string/write_a_message"/>
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/dialog_send_button"
+            android:background="@android:color/transparent"
+            android:hint="@string/write_a_message"
+            android:maxLines="4"
+            android:paddingBottom="4dp"/>
     </RelativeLayout>
 
     <View

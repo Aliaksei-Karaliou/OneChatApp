@@ -18,25 +18,34 @@ public class VkRequester {
     @SafeVarargs
     public final String doRequest(String methodName, Pair<String, String>... params) throws IOException {
 
-        StringBuilder paramsBuilder = new StringBuilder();
-        String stringParams = "";
-        if (params.length > 0) {
-            for (Pair<String, String> param : params) {
-                paramsBuilder.append(param.first).append("=").append(param.second.replace(" ", "%20")).append("&");
+        try {
+            StringBuilder paramsBuilder = new StringBuilder();
+            String stringParams = "";
+            if (params.length > 0) {
+                for (Pair<String, String> param : params) {
+                    paramsBuilder.append(param.first).append("=").append(param.second.replace(" ", "%20")).append("&");
+                }
+                stringParams = paramsBuilder.toString().substring(0, paramsBuilder.length() - 1);
             }
-            stringParams = paramsBuilder.toString().substring(0, paramsBuilder.length() - 1);
+
+            String stringUrl = String.format(Locale.US, VkConstants.Other.VK_REQUEST_TEMPLATE, methodName, stringParams, VkInfo.getAccessToken(), VkInfo.getVkApiVersion());
+
+            URL url = new URL(stringUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            final int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                final String result = readConnection(connection);
+                connection.disconnect();
+                return result;
+            } else {
+                throw new IOException();
+            }
         }
-
-        String stringUrl = String.format(Locale.US, VkConstants.Other.VK_REQUEST_TEMPLATE, methodName, stringParams, VkInfo.getAccessToken(), VkInfo.getVkApiVersion());
-
-        URL url = new URL(stringUrl);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-            final String result = readConnection(connection);
-            connection.disconnect();
-            return result;
-        } else
-            throw new IOException();
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Nullable
