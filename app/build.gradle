@@ -22,10 +22,13 @@ android {
 }
 
 ext.versions = [
-    appCompat: '25.0.1',
-    recyclerView: '25.0.1',
-    jUnit: '4.12'
+        appCompat   : '25.0.1',
+        recyclerView: '25.0.1',
+        jUnit       : '4.12'
 ]
+
+
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -36,4 +39,7 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$versions.recyclerView"
 
     testCompile "junit:junit:$versions.jUnit"
+    compile 'com.android.support:support-v4:25.0.1'
+    compile 'com.android.support:support-vector-drawable:25.0.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
 }

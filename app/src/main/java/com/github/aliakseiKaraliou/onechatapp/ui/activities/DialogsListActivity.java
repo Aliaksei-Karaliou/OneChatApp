@@ -25,6 +25,8 @@ import java.util.List;
 
 public class DialogsListActivity extends AppCompatActivity {
 
+    List<IMessage> messages;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,64 +37,7 @@ public class DialogsListActivity extends AppCompatActivity {
         }
 
         if (VkInfo.isUserAuthorized()) {
-
-            final VkDialogsListManager vkDialogsListManager = new VkDialogsListManager();
-            vkDialogsListManager.startLoading(DialogsListActivity.this, 0);
-
-            final RecyclerView messagesRecyclerView = (RecyclerView) findViewById(R.id.activity_dialogs_list_messages);
-            final LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-            messagesRecyclerView.setLayoutManager(layoutManager);
-            messagesRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-
-            final List<IMessage> messages = vkDialogsListManager.getResult();
-            vkDialogsListManager.startLoading(DialogsListActivity.this, 20);
-
-            final SimpleORM<DbMessage> orm = ((App) getApplication()).getMessageORM();
-            final List<DbMessage> convert = DbMessage.convertTo(messages);
-            for (DbMessage dbMessage : convert) {
-                orm.insert(dbMessage);
-            }
-            final List<DbMessage> select = orm.select("message='спасибо'");
-
-
-            final DialogListAdapter adapter = new DialogListAdapter(this, messages);
-            messagesRecyclerView.setAdapter(adapter);
-
-            adapter.onItemClick(new DialogListAdapter.OnMessageClick() {
-                @Override
-                public void onClick(long peerId) {
-                    final Intent intent = new Intent(DialogsListActivity.this, DialogActivity.class);
-                    intent.putExtra(VkConstants.Other.PEER_ID, peerId);
-                    startActivity(intent);
-                }
-            });
-
-            messagesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-
-                    int lastVisibleItem=layoutManager.findLastVisibleItemPosition();
-                    int totalItem=layoutManager.getItemCount();
-
-                    if (lastVisibleItem + 1 == totalItem && dy > 0) {
-
-                        List<IMessage> result=vkDialogsListManager.getResult();
-
-                        final List<DbMessage> dbMessageList = DbMessage.convertTo(result);
-                        for (DbMessage dbMessage : dbMessageList) {
-                            orm.insert(dbMessage);
-                        }
-
-
-                        vkDialogsListManager.startLoading(DialogsListActivity.this, totalItem);
-
-                        assert messages != null && result != null;
-                        messages.addAll(result);
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-            });
+            auth();
         }
     }
 
@@ -100,21 +45,85 @@ public class DialogsListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         VkInfo.userSetAuth(this);
+        if (VkInfo.isUserAuthorized() && messages == null) {
+            auth();
+        }
+    }
+
+    private void auth() {
+        final VkDialogsListManager vkDialogsListManager = new VkDialogsListManager();
+        vkDialogsListManager.startLoading(DialogsListActivity.this, 0);
+
+        final RecyclerView messagesRecyclerView = (RecyclerView) findViewById(R.id.activity_dialogs_list_messages);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        messagesRecyclerView.setLayoutManager(layoutManager);
+        messagesRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
+        messages = vkDialogsListManager.getResult();
+        vkDialogsListManager.startLoading(DialogsListActivity.this, 20);
+
+        final SimpleORM<DbMessage> orm = ((App) getApplication()).getMessageORM();
+        final List<DbMessage> convert = DbMessage.convertTo(messages);
+        for (DbMessage dbMessage : convert) {
+            orm.insert(dbMessage);
+        }
+        final List<DbMessage> select = orm.select("message='спасибо'");
+
+
+        final DialogListAdapter adapter = new DialogListAdapter(this, messages);
+        messagesRecyclerView.setAdapter(adapter);
+
+        adapter.onItemClick(new DialogListAdapter.OnMessageClick() {
+            @Override
+            public void onClick(long peerId) {
+                final Intent intent = new Intent(DialogsListActivity.this, DialogActivity.class);
+                intent.putExtra(VkConstants.Other.PEER_ID, peerId);
+                startActivity(intent);
+            }
+        });
+
+        messagesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                int totalItem = layoutManager.getItemCount();
+
+                if (lastVisibleItem + 1 == totalItem && dy > 0) {
+
+                    List<IMessage> result = vkDialogsListManager.getResult();
+
+                    final List<DbMessage> dbMessageList = DbMessage.convertTo(result);
+                    for (DbMessage dbMessage : dbMessageList) {
+                        orm.insert(dbMessage);
+                    }
+
+
+                    vkDialogsListManager.startLoading(DialogsListActivity.this, totalItem);
+
+                    assert messages != null && result != null;
+                    messages.addAll(result);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.start_screen_menu, menu);
+        inflater.inflate(R.menu.dialog_list_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.start_screen_menu_item_authorization)
+        if (item.getItemId() == R.id.dialog_list_item_authorization) {
             startActivity(new Intent(this, AuthActivity.class));
-        else if (item.getItemId() == R.id.start_screen_menu_item_refresh)
-            super.onResume();
+        } else if (item.getItemId() == R.id.dialog_list_preferences) {
+            startActivity(new Intent(this, PreferencesActivity.class));
+        }
         return super.onOptionsItemSelected(item);
     }
     //Broadcast Receiver

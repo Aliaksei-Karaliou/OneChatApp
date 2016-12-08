@@ -1,6 +1,7 @@
 package com.github.aliakseiKaraliou.onechatapp.ui.activities;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -15,7 +16,11 @@ public class VkAuthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vk_auth);
-        getSupportActionBar().hide();
+
+        final ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar!=null) {
+            supportActionBar.hide();
+        }
         webViewNavigate();
     }
 

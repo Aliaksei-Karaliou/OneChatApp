@@ -25,7 +25,6 @@ import com.github.aliakseiKaraliou.onechatapp.logic.db.SimpleORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.entities.VkMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogManager;
 import com.github.aliakseiKaraliou.onechatapp.ui.adapters.DialogAdapter;
 
@@ -107,7 +106,7 @@ public class DialogActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.user_menu, menu);
+        inflater.inflate(R.menu.dialog_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

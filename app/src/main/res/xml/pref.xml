@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:id="@+id/pref_theme_changed_check_box"
+        android:defaultValue="true"
+        android:key="Light @string/theme_light"
+        android:text=" @string/theme_light"
+        android:title="@string/theme_light"/>
+</PreferenceScreen>

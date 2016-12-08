@@ -32,7 +32,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="60dp"
                 android:lines="1"
-                android:textColor="@android:color/black"
                 android:textSize="16sp"
                 tools:text="Name"
                 />

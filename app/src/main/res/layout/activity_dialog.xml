@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
     tools:context="com.github.aliakseiKaraliou.onechatapp.ui.activities.DialogActivity">
 
     <RelativeLayout
@@ -23,7 +22,6 @@
             android:layout_width="52dp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:background="?attr/selectableItemBackground"
             android:onClick="sendButtonOnClick"
             android:saveEnabled="false"
             android:gravity="center_vertical"
@@ -38,10 +36,10 @@
             android:inputType="textMultiLine"
             android:layout_centerVertical="true"
             android:layout_toStartOf="@+id/dialog_send_button"
-            android:background="@android:color/transparent"
             android:hint="@string/write_a_message"
             android:maxLines="4"
-            android:paddingBottom="4dp"/>
+            android:paddingBottom="4dp"
+            />
     </RelativeLayout>
 
     <View
@@ -55,6 +53,8 @@
         android:id="@+id/dialog_message_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/dialog_separator">
+        android:layout_above="@+id/dialog_separator"
+        android:scrollbars="vertical"
+        >
     </android.support.v7.widget.RecyclerView>
 </RelativeLayout>
