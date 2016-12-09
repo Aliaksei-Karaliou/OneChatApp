@@ -54,6 +54,9 @@ public final class VkConstants {
     public final static class Other {
         public static final String CONVERT = "convert";
         public static final String PEER_ID = "peer id";
+        public static final String PREFERENCES = "preferences";
+        public static final String LIGHT_THEME = "light theme";
+        public static final String THEME_SWITCH_KEY = "Theme key";
         public static final String VK_REQUEST_TEMPLATE = "https://api.vk.com/method/%s?%s&access_token=%s&v=%.2f";
         public static final String VK_LONG_POLL_REQUEST = "http://%s?act=a_check&key=%s&ts=%d&wait=25&mode=2";
     }

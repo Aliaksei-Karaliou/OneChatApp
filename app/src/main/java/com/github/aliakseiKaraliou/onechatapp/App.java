@@ -2,11 +2,13 @@ package com.github.aliakseiKaraliou.onechatapp;
 
 import android.app.Application;
 import android.content.Intent;
+import android.content.SharedPreferences;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.db.SimpleORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbReciever;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.LazyImageLoaderManager;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
 import com.github.aliakseiKaraliou.onechatapp.services.ReceivingService;
 import com.github.aliakseiKaraliou.onechatapp.services.notifications.SimpleNotificationManager;
@@ -17,6 +19,7 @@ public class App extends Application {
     private SimpleORM<DbReciever> receiverORM;
     private LazyImageLoaderManager imageLoaderManager;
     private SimpleNotificationManager notificationManager;
+    private SharedPreferences applicationSharedPreferences;
 
     @Override
     public void onCreate() {
@@ -39,6 +42,9 @@ public class App extends Application {
 
         //notificationManager
         notificationManager=new SimpleNotificationManager(this);
+
+        //applicationSharedPreferences
+        applicationSharedPreferences = getSharedPreferences(VkConstants.Other.PREFERENCES, MODE_PRIVATE);
     }
 
     public SimpleORM<DbMessage> getMessageORM() {
@@ -57,4 +63,7 @@ public class App extends Application {
         return notificationManager;
     }
 
+    public SharedPreferences getApplicationSharedPreferences() {
+        return applicationSharedPreferences;
+    }
 }

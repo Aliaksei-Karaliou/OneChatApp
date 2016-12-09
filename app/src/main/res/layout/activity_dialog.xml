@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.github.aliakseiKaraliou.onechatapp.ui.activities.DialogActivity">
+    tools:context="com.github.aliakseiKaraliou.onechatapp.ui.activities.DialogActivity"
+    tools:ignore="RtlSymmetry">
 
     <RelativeLayout
         android:id="@+id/dialog_new_message_line"
@@ -13,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
-        android:layout_marginStart="16dp"
+        android:paddingStart="16dp"
         android:minHeight="52dp"
         android:orientation="horizontal">
 
@@ -26,9 +27,12 @@
             android:saveEnabled="false"
             android:gravity="center_vertical"
             android:minHeight="52dp"
+            android:background="?selectableItemBackground"
+            android:tint="?attr/editTextColor"
             app:srcCompat="@drawable/ic_send_button"/>
 
         <EditText
+            android:background="?attr/selectableItemBackground"
             android:layout_width="match_parent"
             android:id="@+id/dialog_new_message_text"
             android:layout_height="wrap_content"

@@ -1,0 +1,25 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="16dp"
+    android:orientation="vertical"
+    tools:ignore="RtlSymmetry">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp">
+
+        <Switch
+            android:id="@+id/night_mode_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:text="@string/night_mode"
+            android:textColor="?attr/editTextColor"
+            android:textOff="@string/answer_no"
+            android:textOn="@string/answer_yes"/>
+    </FrameLayout>
+</LinearLayout>

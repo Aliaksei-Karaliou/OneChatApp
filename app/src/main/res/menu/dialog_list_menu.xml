@@ -7,5 +7,5 @@
 
     <item
         android:id="@+id/dialog_list_preferences"
-        android:title="@string/dialog_list_preferences"/>
+        android:title="@string/preferences"/>
 </menu>

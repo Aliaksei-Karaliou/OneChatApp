@@ -11,10 +11,10 @@
     <string name="clear_history_confirmation_message">Вы действительно хотите удалить все сообщения в этом диалоге? Отменить это действие будет невозможно.</string>
     <string name="answer_no">Нет</string>
     <string name="answer_yes">Да</string>
-    <string name="dialog_list_preferences">Обновить</string>
+    <string name="preferences">Обновить</string>
     <string name="operation_failed">Операция невозможна</string>
     <string name="yesterday">вчера</string>
     <string name="write_a_message">Напишите сообщение...</string>
-    <string name="theme_light">Светлая тема</string>
+    <string name="night_mode">Ночной режим</string>
     <string name="title_activity_settings">Настройки</string>
 </resources>

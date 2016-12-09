@@ -122,7 +122,7 @@ public class DialogsListActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.dialog_list_item_authorization) {
             startActivity(new Intent(this, AuthActivity.class));
         } else if (item.getItemId() == R.id.dialog_list_preferences) {
-            startActivity(new Intent(this, PreferencesActivity.class));
+            startActivity(new Intent(this, SettingsActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
