@@ -40,7 +40,8 @@ public final class QueryGenerator {
             }
         }
 
-        final String format = String.format(Locale.US, CREATE_IF_NOT_EXISTS_QUERY, clazz.getAnnotation(DbTableName.class).name(), builder.substring(0, builder.length() - 1), primaryKeyBuilder.substring(0, primaryKeyBuilder.length() - 1));
+        final String name = clazz.getAnnotation(DbTableName.class).name();
+        final String format = String.format(Locale.US, CREATE_IF_NOT_EXISTS_QUERY, name, builder.substring(0, builder.length() - 1), primaryKeyBuilder.substring(0, primaryKeyBuilder.length() - 1));
 
         return format;
     }

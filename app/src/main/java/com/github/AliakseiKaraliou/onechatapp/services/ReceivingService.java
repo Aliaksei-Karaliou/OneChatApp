@@ -70,9 +70,9 @@ public class ReceivingService extends Service {
                     if (message != null) {
                         final SimpleNotificationManager notificationManager = ((App) getApplicationContext()).getNotificationManager();
                         Intent intent = new Intent(ReceivingService.this, DialogActivity.class);
-                        intent.putExtra(Constants.Other.PEER_ID, message.getReciever().getId());
+                        intent.putExtra(Constants.Other.PEER_ID, message.getReceiver().getId());
                         PendingIntent pendingIntent = PendingIntent.getBroadcast(ReceivingService.this, 0, intent, 0);
-                        notificationManager.send(message.getReciever().getName(), message.getText(), R.drawable.ic_vk_social_network_logo, pendingIntent);
+                        notificationManager.send(message.getReceiver().getName(), message.getText(), R.drawable.ic_vk_social_network_logo, pendingIntent);
                     }
                     longPollServer.setTs(update.getTs());
                 }

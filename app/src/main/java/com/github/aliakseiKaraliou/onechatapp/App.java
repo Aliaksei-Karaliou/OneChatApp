@@ -11,6 +11,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.DbHelper;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.ChatModel;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.models.DialogListMessageModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.GroupModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.UserModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.LazyImageLoaderManager;
@@ -43,7 +44,7 @@ public class App extends Application {
         recieverORM = new ORM(new DbHelper(this, Constants.Db.RECEIVERS, 1, UserModel.class ,ChatModel.class, GroupModel.class));
 
         //messageORM
-        messageORM=new ORM(new DbHelper())
+        messageORM = new ORM(new DbHelper(this, Constants.Db.MESSAGES, 1, DialogListMessageModel.class));
 
         //imageLoadManager
         imageLoaderManager = new LazyImageLoaderManager();
@@ -58,9 +59,9 @@ public class App extends Application {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final List<IUser> userList = UserModel.convertFrom(recieverORM.getAll(Constants.Db.USERS, UserModel.getInstance()));
-                final List<IChat> chatList = ChatModel.convertFrom(recieverORM.getAll(Constants.Db.CHATS, ChatModel.getInstance()));
-                final List<IGroup> groupList = GroupModel.convertFrom(recieverORM.getAll(Constants.Db.GROUPS, GroupModel.getInstance()));
+                final List<IUser> userList = UserModel.convertFrom(recieverORM.selectAll(Constants.Db.USERS, UserModel.getInstance()));
+                final List<IChat> chatList = ChatModel.convertFrom(recieverORM.selectAll(Constants.Db.CHATS, ChatModel.getInstance()));
+                final List<IGroup> groupList = GroupModel.convertFrom(recieverORM.selectAll(Constants.Db.GROUPS, GroupModel.getInstance()));
                 VkReceiverStorage.putAll(new ArrayList<IReceiver>(userList));
                 VkReceiverStorage.putAll(new ArrayList<IReceiver>(groupList));
                 VkReceiverStorage.putAll(new ArrayList<IReceiver>(chatList));

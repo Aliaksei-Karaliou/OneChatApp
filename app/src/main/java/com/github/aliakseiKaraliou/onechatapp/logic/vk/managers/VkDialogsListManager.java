@@ -13,6 +13,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.ChatModel;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.models.DialogListMessageModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.GroupModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.UserModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOperation;
@@ -73,6 +74,12 @@ public class VkDialogsListManager {
                         VkReceiverStorage.putAll(parse);
 
                         messageList = new VkDialogsListFinalParser().parse(context, jsonString);
+
+                        final ORM messageORM = ((App) context.getApplicationContext()).getMessageORM();
+                        messageORM.insertAll(Constants.Db.DIALOGS_LIST, DialogListMessageModel.convertTo(messageList));
+                        final List<DialogListMessageModel> dialogListMessageModelList = messageORM.selectAll(Constants.Db.DIALOGS_LIST, DialogListMessageModel.getInstance());
+                        final List<IMessage> messageList1 = DialogListMessageModel.convertFrom(dialogListMessageModelList);
+
                         return messageList;
                     } catch (Exception e) {
                         e.printStackTrace();

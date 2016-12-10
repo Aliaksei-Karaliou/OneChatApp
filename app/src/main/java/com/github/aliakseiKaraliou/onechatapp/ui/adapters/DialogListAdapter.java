@@ -58,7 +58,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             final UserGroupViewHolder viewHolder = (UserGroupViewHolder) holder;
 
-            loaderManager.load(context, viewHolder.avatarImageView, currentMessage.getReciever().getPhotoUrl(), defaultBitmap);
+            loaderManager.load(context, viewHolder.avatarImageView, currentMessage.getReceiver().getPhotoUrl(), defaultBitmap);
 
             viewHolder.messageTextView.setText(currentMessage.getText());
             viewHolder.nameTextView.setText(currentMessage.getSender().getName());
@@ -69,7 +69,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        onMessageClick.onClick(currentMessage.getReciever().getId());
+                        onMessageClick.onClick(currentMessage.getReceiver().getId());
                     }
                 });
             }
@@ -79,19 +79,19 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 
             final ChatViewHolder viewHolder = (ChatViewHolder) holder;
-            loaderManager.load(context, viewHolder.avatarImageView, currentMessage.getReciever().getPhotoUrl(), defaultBitmap);
+            loaderManager.load(context, viewHolder.avatarImageView, currentMessage.getReceiver().getPhotoUrl(), defaultBitmap);
             loaderManager.load(context, viewHolder.userPhotoImageView, currentMessage.getSender().getPhotoUrl(), defaultBitmap);
 
 
             viewHolder.messageTextView.setText(currentMessage.getText());
-            viewHolder.nameTextView.setText(currentMessage.getReciever().getName());
+            viewHolder.nameTextView.setText(currentMessage.getReceiver().getName());
             viewHolder.dateTextView.setText(dateFriendlyFormat.convert(context, currentMessage.getDate()));
 
             if (onMessageClick != null) {
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        onMessageClick.onClick(currentMessage.getReciever().getId());
+                        onMessageClick.onClick(currentMessage.getReceiver().getId());
                     }
                 });
             }
@@ -147,7 +147,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
-        return messageList.get(position).getReciever().getPeerReceiverType().ordinal();
+        return messageList.get(position).getReceiver().getPeerReceiverType().ordinal();
     }
 
 }

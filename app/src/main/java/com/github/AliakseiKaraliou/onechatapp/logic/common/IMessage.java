@@ -22,7 +22,7 @@ public interface IMessage extends Cloneable, IEvent {
 
     IMessage read();
 
-    IReceiver getReciever();
+    IReceiver getReceiver();
 
     @Nullable
     IChat getChat();

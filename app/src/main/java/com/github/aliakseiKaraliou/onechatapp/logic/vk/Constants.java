@@ -54,6 +54,7 @@ public interface Constants {
     interface Db {
         String ALL_MESSAGES = "All messages";
         String CHATS = "Chats";
+        String DIALOGS_LIST = "DialogsList";
         String GROUPS = "Groups";
         String MESSAGES = "Messages";
         String RECEIVERS = "Receivers";

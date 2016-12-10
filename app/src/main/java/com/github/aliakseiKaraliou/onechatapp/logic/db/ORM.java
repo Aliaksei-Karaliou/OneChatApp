@@ -39,7 +39,7 @@ public final class ORM {
         return longList;
     }
 
-    public <T extends AbstractModel> List<T> get(final String tableName, final T object, final SelectCondition<T> condition) {
+    public <T extends AbstractModel> List<T> select(final String tableName, final T object, final SelectCondition<T> condition) {
         final SQLiteDatabase database = helper.getReadableDatabase();
         List<T> modelList = new ArrayList<>();
 
@@ -57,7 +57,7 @@ public final class ORM {
         return modelList;
     }
 
-    public <T extends AbstractModel> List<T> getAll(final String tableName, final T object) {
+    public <T extends AbstractModel> List<T> selectAll(final String tableName, final T object) {
         final SQLiteDatabase database = helper.getReadableDatabase();
         List<T> modelList = new ArrayList<>();
 

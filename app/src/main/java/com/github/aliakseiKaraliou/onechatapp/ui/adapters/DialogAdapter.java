@@ -42,7 +42,7 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final LazyImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
 
         final DialogAdapterViewHolder dialogAdapterViewHolder = (DialogAdapterViewHolder) holder;
-        loaderManager.load(context, dialogAdapterViewHolder.photo, currentMessage.getReciever().getPhotoUrl(), defaultBitmap);
+        loaderManager.load(context, dialogAdapterViewHolder.photo, currentMessage.getReceiver().getPhotoUrl(), defaultBitmap);
         dialogAdapterViewHolder.messageTextView.setText(currentMessage.getText());
         dialogAdapterViewHolder.photo.setOnClickListener(new View.OnClickListener() {
             @Override

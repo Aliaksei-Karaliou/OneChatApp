@@ -72,7 +72,7 @@ public class VkMessage implements IMessage {
     }
 
     @Override
-    public IReceiver getReciever() {
+    public IReceiver getReceiver() {
         if (chat != null)
             return chat;
         else
