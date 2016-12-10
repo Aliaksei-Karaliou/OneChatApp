@@ -2,28 +2,35 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk;
 
 import android.support.v4.util.LongSparseArray;
 
-import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
+
+import java.util.List;
 
 public class VkReceiverStorage {
-    private static LongSparseArray<IReciever> storage = new LongSparseArray<>();
+    private static LongSparseArray<IReceiver> storage = new LongSparseArray<>();
 
-    public static void put(IReciever reciever) {
+    public static void put(IReceiver reciever) {
         storage.put(reciever.getId(), reciever);
     }
 
-    public static IReciever get(long id) {
-        final IReciever reciever = storage.get(id);
-        return reciever;
+    public static IReceiver get(Long id) {
+        return id != null ? storage.get(id) : null;
     }
 
-    public static void putAll(LongSparseArray<IReciever> array) {
+    public static void putAll(LongSparseArray<IReceiver> array) {
         for (int i = 0; i < array.size(); i++) {
             long key = array.keyAt(i);
-            IReciever reciever = storage.get(key);
+            IReceiver reciever = storage.get(key);
             if (reciever == null) {
-                IReciever value = array.valueAt(i);
+                IReceiver value = array.valueAt(i);
                 storage.put(key, value);
             }
+        }
+    }
+
+    public static void putAll(List<IReceiver> receiverList) {
+        for (IReceiver reciever : receiverList) {
+            storage.put(reciever.getId(), reciever);
         }
     }
 }

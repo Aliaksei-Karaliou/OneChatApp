@@ -6,7 +6,7 @@ public interface IDialog{
 
     List<IMessage> getMessages();
 
-    IReciever getReciever();
+    IReceiver getReciever();
 
     void add(IMessage message);
 

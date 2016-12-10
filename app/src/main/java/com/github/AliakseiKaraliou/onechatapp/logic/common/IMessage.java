@@ -2,8 +2,6 @@ package com.github.aliakseiKaraliou.onechatapp.logic.common;
 
 import android.support.annotation.Nullable;
 
-import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbType;
-
 import java.util.Date;
 
 public interface IMessage extends Cloneable, IEvent {
@@ -24,7 +22,7 @@ public interface IMessage extends Cloneable, IEvent {
 
     IMessage read();
 
-    IReciever getReciever();
+    IReceiver getReciever();
 
     @Nullable
     IChat getChat();
