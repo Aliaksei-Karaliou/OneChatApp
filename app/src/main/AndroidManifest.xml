@@ -33,8 +33,6 @@
             android:exported="false">
         </service>
 
-        <activity android:name=".ui.activities.PreferencesActivity">
-        </activity>
         <activity android:name=".ui.activities.SettingsActivity">
         </activity>
     </application>

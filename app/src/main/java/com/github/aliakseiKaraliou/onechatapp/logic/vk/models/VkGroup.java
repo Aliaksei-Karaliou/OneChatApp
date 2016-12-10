@@ -1,4 +1,4 @@
-package com.github.aliakseiKaraliou.onechatapp.logic.vk.entities;
+package com.github.aliakseiKaraliou.onechatapp.logic.vk.models;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IGroup;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.PeerRecieverType;

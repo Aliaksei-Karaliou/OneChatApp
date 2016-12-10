@@ -7,9 +7,9 @@ import android.util.Pair;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IGroup;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IParser;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkIdConverter;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
@@ -17,12 +17,12 @@ import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import java.io.IOException;
 import java.util.Set;
 
-public class VkReceiverDataParser implements IParser<Set<Long>, LongSparseArray<IReciever>> {
+public class VkReceiverDataParser implements IParser<Set<Long>, LongSparseArray<IReceiver>> {
 
 
     @Nullable
     @Override
-    public LongSparseArray<IReciever> parse(Set<Long> ids) {
+    public LongSparseArray<IReceiver> parse(Set<Long> ids) {
         StringBuilder userIdSB = new StringBuilder();
         StringBuilder chatIdSB = new StringBuilder();
         StringBuilder groupIdSB = new StringBuilder();
@@ -49,30 +49,32 @@ public class VkReceiverDataParser implements IParser<Set<Long>, LongSparseArray<
         try {
             if (userIdSB.length() > 0) {
                 final String userIdString = userIdSB.substring(0, userIdSB.length() - 1);
-                Pair<String, String> fields = new Pair<>(VkConstants.Json.FIELDS, VkConstants.Json.PHOTO_50);
-                Pair<String, String> userIds = new Pair<>(VkConstants.Json.USER_IDS, userIdString);
-                String userResponse = new VkRequester().doRequest(VkConstants.Method.USERS_GET, userIds, fields);
+                Pair<String, String> fields = new Pair<>(Constants.Json.FIELDS, Constants.Json.PHOTO_50);
+                Pair<String, String> userIds = new Pair<>(Constants.Json.USER_IDS, userIdString);
+                String userResponse = new VkRequester().doRequest(Constants.Method.USERS_GET, userIds, fields);
                 userSparseArray = new VkUserDataParser().parse(userResponse);
+
             }
 
             if (chatIdSB.length() > 0) {
                 final String chatIdString = chatIdSB.substring(0, chatIdSB.length() - 1);
-                Pair<String, String> chatIds = new Pair<>(VkConstants.Json.CHAT_IDS, chatIdString);
-                String chatResponse = new VkRequester().doRequest(VkConstants.Method.MESSAGES_GETCHAT, chatIds);
+                Pair<String, String> chatIds = new Pair<>(Constants.Json.CHAT_IDS, chatIdString);
+                String chatResponse = new VkRequester().doRequest(Constants.Method.MESSAGES_GETCHAT, chatIds);
                 chatSparseArray = new VkChatDataParser().parse(chatResponse);
+
             }
 
             if (groupIdSB.length() > 0) {
                 final String groupIdString = groupIdSB.substring(0, groupIdSB.length() - 1);
-                Pair<String, String> groupIds = new Pair<>(VkConstants.Json.GROUP_ID, groupIdString);
-                String groupResponse = new VkRequester().doRequest(VkConstants.Method.GROUPS_GETBYID, groupIds);
+                Pair<String, String> groupIds = new Pair<>(Constants.Json.GROUP_ID, groupIdString);
+                String groupResponse = new VkRequester().doRequest(Constants.Method.GROUPS_GETBYID, groupIds);
                 groupSparseArray = new VkGroupDataParser().parse(groupResponse);
             }
 
-            LongSparseArray<IReciever> result = new LongSparseArray<>();
+            LongSparseArray<IReceiver> result = new LongSparseArray<>();
 
             for (Long id : ids) {
-                IReciever reciever = VkReceiverStorage.get(id);
+                IReceiver reciever = VkReceiverStorage.get(id);
                 if (reciever == null) {
                     if (id > VkIdConverter.getChatPeerOffset()) {  //chat
                         assert chatSparseArray != null;

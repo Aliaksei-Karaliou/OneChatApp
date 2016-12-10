@@ -15,15 +15,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.ClearHistoryManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.SendManager;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.SimpleORM;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogManager;
 import com.github.aliakseiKaraliou.onechatapp.ui.adapters.DialogAdapter;
@@ -32,7 +29,7 @@ import java.util.List;
 
 public class DialogActivity extends AppCompatActivity {
 
-    IReciever reciever;
+    IReceiver reciever;
     EditText messageTextView;
 
     @Override
@@ -43,7 +40,7 @@ public class DialogActivity extends AppCompatActivity {
         messageTextView = (EditText) findViewById(R.id.dialog_new_message_text);
 
         Intent intent = getIntent();
-        Long peerId = intent.getLongExtra(VkConstants.Other.PEER_ID, 0);
+        Long peerId = intent.getLongExtra(Constants.Other.PEER_ID, 0);
 
         if (peerId != 0) {
             reciever = VkReceiverStorage.get(peerId);
@@ -68,36 +65,30 @@ public class DialogActivity extends AppCompatActivity {
         final List<IMessage> result = manager.getResult();
         manager.startLoading(this, reciever, 20);
 
-        final SimpleORM<DbMessage> messageORM = ((App) getApplicationContext()).getMessageORM();
-        final List<DbMessage> convert = DbMessage.convertTo(result);
-        for (DbMessage dbMessage : convert) {
-            messageORM.insert(dbMessage);
-        }
-
         final DialogAdapter adapter = new DialogAdapter(this, result);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                final int lastCompletelyVisibleItemPosition = linearLayoutManager.findLastCompletelyVisibleItemPosition();
-                final int itemCount = linearLayoutManager.getItemCount();
-                if (lastCompletelyVisibleItemPosition + 1 == itemCount && dy < 0) {
+                try {
+                    super.onScrolled(recyclerView, dx, dy);
+                    final int lastCompletelyVisibleItemPosition = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+                    final int itemCount = linearLayoutManager.getItemCount();
+                    if (lastCompletelyVisibleItemPosition + 1 == itemCount && dy < 0) {
 
-                    final List<IMessage> messageList = manager.getResult();
-                    final List<DbMessage> convert1 = DbMessage.convertTo(messageList);
-                    for (DbMessage dbMessage : convert1) {
-                        messageORM.insert(dbMessage);
+                        final List<IMessage> messageList = manager.getResult();
+
+                        manager.startLoading(DialogActivity.this, reciever, itemCount);
+                        if (messageList != null && result != null) {
+                            result.addAll(messageList);
+                            adapter.notifyDataSetChanged();
+                        }
+
                     }
-
-                    manager.startLoading(DialogActivity.this, reciever, itemCount);
-                    if (messageList != null && result != null) {
-                        result.addAll(messageList);
-                        adapter.notifyDataSetChanged();
-                    }
-
                 }
-
+                catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -143,8 +134,6 @@ public class DialogActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.operation_failed), Toast.LENGTH_SHORT).show();
             } else {
                 messageTextView.setText("");
-                final SimpleORM<DbMessage> messageORM = ((App) getApplicationContext()).getMessageORM();
-
             }
         }
     }

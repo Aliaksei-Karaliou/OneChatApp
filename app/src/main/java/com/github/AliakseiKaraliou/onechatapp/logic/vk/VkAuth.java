@@ -40,13 +40,13 @@ public class VkAuth {
 
     public String getUrl() {
         //String string = String.format("https://oauth.vk.com/authorize?client_id=%d&display=mobile&redirect_uri=https://oauth.vk.com/blank.html&scope=%s&response_type=token&v=5.57&revoke=1", appId, scopeToString(scope));
-        return String.format(Locale.US, VkConstants.Params.AUTHORIZE_URL, appId, scopeToString(scope), VkInfo.getVkApiVersion());
+        return String.format(Locale.US, Constants.Params.AUTHORIZE_URL, appId, scopeToString(scope), VkInfo.getVkApiVersion());
     }
 
     public static void parseUrl(String url) {
         url = url.replace('#', '?');
         Uri uri = Uri.parse(url);
-        VkInfo.setUserId(Long.parseLong(uri.getQueryParameter(VkConstants.Params.USER_ID)));
-        VkInfo.setAccessToken(uri.getQueryParameter(VkConstants.Params.ACCESS_TOKEN));
+        VkInfo.setUserId(Long.parseLong(uri.getQueryParameter(Constants.Params.USER_ID)));
+        VkInfo.setAccessToken(uri.getQueryParameter(Constants.Params.ACCESS_TOKEN));
     }
 }

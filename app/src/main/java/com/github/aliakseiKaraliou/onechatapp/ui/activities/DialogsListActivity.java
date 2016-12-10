@@ -10,13 +10,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.SimpleORM;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.network.NetworkConnectionChecker;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogsListManager;
 import com.github.aliakseiKaraliou.onechatapp.ui.adapters.DialogListAdapter;
@@ -62,13 +59,6 @@ public class DialogsListActivity extends AppCompatActivity {
         messages = vkDialogsListManager.getResult();
         vkDialogsListManager.startLoading(DialogsListActivity.this, 20);
 
-        final SimpleORM<DbMessage> orm = ((App) getApplication()).getMessageORM();
-        final List<DbMessage> convert = DbMessage.convertTo(messages);
-        for (DbMessage dbMessage : convert) {
-            orm.insert(dbMessage);
-        }
-        final List<DbMessage> select = orm.select("message='спасибо'");
-
 
         final DialogListAdapter adapter = new DialogListAdapter(this, messages);
         messagesRecyclerView.setAdapter(adapter);
@@ -77,7 +67,7 @@ public class DialogsListActivity extends AppCompatActivity {
             @Override
             public void onClick(long peerId) {
                 final Intent intent = new Intent(DialogsListActivity.this, DialogActivity.class);
-                intent.putExtra(VkConstants.Other.PEER_ID, peerId);
+                intent.putExtra(Constants.Other.PEER_ID, peerId);
                 startActivity(intent);
             }
         });
@@ -94,17 +84,14 @@ public class DialogsListActivity extends AppCompatActivity {
 
                     List<IMessage> result = vkDialogsListManager.getResult();
 
-                    final List<DbMessage> dbMessageList = DbMessage.convertTo(result);
-                    for (DbMessage dbMessage : dbMessageList) {
-                        orm.insert(dbMessage);
+                    if (result != null) {
+
+                        vkDialogsListManager.startLoading(DialogsListActivity.this, totalItem);
+
+                        assert messages != null;
+                        messages.addAll(result);
+                        adapter.notifyDataSetChanged();
                     }
-
-
-                    vkDialogsListManager.startLoading(DialogsListActivity.this, totalItem);
-
-                    assert messages != null && result != null;
-                    messages.addAll(result);
-                    adapter.notifyDataSetChanged();
                 }
             }
         });

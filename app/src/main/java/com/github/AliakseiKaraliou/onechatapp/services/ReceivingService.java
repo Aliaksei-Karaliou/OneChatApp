@@ -10,7 +10,7 @@ import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOperation;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollServer;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollUpdate;
@@ -70,7 +70,7 @@ public class ReceivingService extends Service {
                     if (message != null) {
                         final SimpleNotificationManager notificationManager = ((App) getApplicationContext()).getNotificationManager();
                         Intent intent = new Intent(ReceivingService.this, DialogActivity.class);
-                        intent.putExtra(VkConstants.Other.PEER_ID, message.getReciever().getId());
+                        intent.putExtra(Constants.Other.PEER_ID, message.getReciever().getId());
                         PendingIntent pendingIntent = PendingIntent.getBroadcast(ReceivingService.this, 0, intent, 0);
                         notificationManager.send(message.getReciever().getName(), message.getText(), R.drawable.ic_vk_social_network_logo, pendingIntent);
                     }

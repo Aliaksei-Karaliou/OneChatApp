@@ -4,9 +4,9 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers;
 
         import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
         import com.github.aliakseiKaraliou.onechatapp.logic.common.IParser;
-        import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
+        import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
         import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkIdConverter;
-        import com.github.aliakseiKaraliou.onechatapp.logic.vk.entities.VkChat;
+        import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkChat;
 
         import org.json.JSONArray;
         import org.json.JSONException;
@@ -19,15 +19,15 @@ public class VkChatDataParser implements IParser<String, LongSparseArray<IChat>>
     public LongSparseArray<IChat> parse(String chatResponse) {
         try {
             LongSparseArray<IChat> array = new LongSparseArray<>();
-            JSONArray jsonArray = new JSONObject(chatResponse).getJSONArray(VkConstants.Json.RESPONSE);
+            JSONArray jsonArray = new JSONObject(chatResponse).getJSONArray(Constants.Json.RESPONSE);
             VkIdConverter converter = new VkIdConverter();
             for (int i = 0; i < jsonArray.length(); i++) {
                 final JSONObject currentObject = jsonArray.getJSONObject(i);
-                Long id = converter.chatToPeer(currentObject.getLong(VkConstants.Json.ID));
-                String title = currentObject.getString(VkConstants.Json.TITLE);
+                Long id = converter.chatToPeer(currentObject.getLong(Constants.Json.ID));
+                String title = currentObject.getString(Constants.Json.TITLE);
                 String photoUrl;
-                if (currentObject.has(VkConstants.Json.PHOTO_50))
-                    photoUrl = currentObject.getString(VkConstants.Json.PHOTO_50);
+                if (currentObject.has(Constants.Json.PHOTO_50))
+                    photoUrl = currentObject.getString(Constants.Json.PHOTO_50);
                 else {
                     photoUrl=DEFAULT_CHAT_PHOTO_URL;
                 }

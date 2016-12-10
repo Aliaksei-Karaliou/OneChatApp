@@ -1,6 +1,6 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers;
 
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollUpdate;
 
 import org.json.JSONArray;
@@ -14,8 +14,8 @@ public class VkLongPollParser {
     public VkLongPollUpdate parse(String json) {
         try {
             JSONObject jsonObject = new JSONObject(json);
-            long ts = jsonObject.getLong(VkConstants.Json.TS);
-            JSONArray array = jsonObject.getJSONArray(VkConstants.Json.UPDATES);
+            long ts = jsonObject.getLong(Constants.Json.TS);
+            JSONArray array = jsonObject.getJSONArray(Constants.Json.UPDATES);
             final List<List<String>> result = new ArrayList<>();
             List<String> currentResult = new ArrayList<>();
             for (int i = 0; i < array.length(); i++) {

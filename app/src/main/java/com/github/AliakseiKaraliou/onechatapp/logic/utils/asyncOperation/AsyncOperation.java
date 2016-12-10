@@ -11,7 +11,7 @@ import java.util.concurrent.Future;
 public abstract class AsyncOperation<Param, Result> {
 
     private Future<Result> future;
-    private static ExecutorService executor = Executors.newCachedThreadPool();
+    private static ExecutorService executor = Executors.newFixedThreadPool(10);
 
     protected abstract Result doInBackground(Param param);
 

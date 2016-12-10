@@ -6,9 +6,9 @@ import android.support.v4.util.LongSparseArray;
 import android.util.Pair;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOperation;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogFinalParser;
@@ -22,7 +22,7 @@ import java.util.Set;
 public final class VkDialogManager {
     private AsyncOperation<Integer, List<IMessage>> asyncOperation;
 
-    public void startLoading(final Context context, final IReciever reciever, final int offset) {
+    public void startLoading(final Context context, final IReceiver reciever, final int offset) {
         if (asyncOperation == null) {
             asyncOperation = new AsyncOperation<Integer, List<IMessage>>() {
                 @Override
@@ -33,13 +33,13 @@ public final class VkDialogManager {
                         final String json;
                         if (offset > 0) {
                             Pair<String, String> offsetPair = new Pair<>("offset", Integer.toString(offset));
-                            json = new VkRequester().doRequest(VkConstants.Method.MESSAGES_GETHISTORY, peerId, offsetPair);
+                            json = new VkRequester().doRequest(Constants.Method.MESSAGES_GETHISTORY, peerId, offsetPair);
                         } else {
-                            json = new VkRequester().doRequest(VkConstants.Method.MESSAGES_GETHISTORY, peerId);
+                            json = new VkRequester().doRequest(Constants.Method.MESSAGES_GETHISTORY, peerId);
                         }
 
                         final Set<Long> parse = new VkDialogStartParser().parse(json);
-                        final LongSparseArray<IReciever> longSparseArray = new VkReceiverDataParser().parse(parse);
+                        final LongSparseArray<IReceiver> longSparseArray = new VkReceiverDataParser().parse(parse);
                         VkReceiverStorage.putAll(longSparseArray);
                         return new VkDialogFinalParser().parse(context, json, longSparseArray);
                     } catch (IOException e) {

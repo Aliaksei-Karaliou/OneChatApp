@@ -28,7 +28,7 @@ public class VkRequester {
                 stringParams = paramsBuilder.toString().substring(0, paramsBuilder.length() - 1);
             }
 
-            String stringUrl = String.format(Locale.US, VkConstants.Other.VK_REQUEST_TEMPLATE, methodName, stringParams, VkInfo.getAccessToken(), VkInfo.getVkApiVersion());
+            String stringUrl = String.format(Locale.US, Constants.Other.VK_REQUEST_TEMPLATE, methodName, stringParams, VkInfo.getAccessToken(), VkInfo.getVkApiVersion());
 
             URL url = new URL(stringUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -51,7 +51,7 @@ public class VkRequester {
     @Nullable
     public final String doLongPollRequest(VkLongPollServer server) {
         try {
-            final String urlString = String.format(Locale.US, VkConstants.Other.VK_LONG_POLL_REQUEST, server.getServer(), server.getKey(), server.getTs());
+            final String urlString = String.format(Locale.US, Constants.Other.VK_LONG_POLL_REQUEST, server.getServer(), server.getKey(), server.getTs());
             try {
                 final URL url = new URL(urlString);
                 final HttpURLConnection connection = (HttpURLConnection) url.openConnection();

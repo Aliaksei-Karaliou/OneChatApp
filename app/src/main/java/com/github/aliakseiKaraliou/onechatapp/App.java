@@ -4,22 +4,32 @@ import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.github.aliakseiKaraliou.onechatapp.logic.db.SimpleORM;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.db_entities.DbReciever;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IGroup;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.DbHelper;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.models.ChatModel;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.models.GroupModel;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.models.UserModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.LazyImageLoaderManager;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.services.ReceivingService;
 import com.github.aliakseiKaraliou.onechatapp.services.notifications.SimpleNotificationManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class App extends Application {
 
-    private SimpleORM<DbMessage> messageORM;
-    private SimpleORM<DbReciever> receiverORM;
     private LazyImageLoaderManager imageLoaderManager;
     private SimpleNotificationManager notificationManager;
     private SharedPreferences applicationSharedPreferences;
+    private ORM recieverORM;
+    private ORM messageORM;
 
     @Override
     public void onCreate() {
@@ -29,30 +39,41 @@ public class App extends Application {
             startService(new Intent(this, ReceivingService.class));
         }
 
-        //DbMessage SimpleORM
-        messageORM = new SimpleORM<>(this, "Message", DbMessage.class);
-        messageORM.createTableIfNotExists();
+        //recieverORM
+        recieverORM = new ORM(new DbHelper(this, Constants.Db.RECEIVERS, 1, UserModel.class ,ChatModel.class, GroupModel.class));
 
-        //DbReciever SimpleORM
-        receiverORM = new SimpleORM<>(this, "Receiver", DbReciever.class);
-        receiverORM.createTableIfNotExists();
+        //messageORM
+        messageORM=new ORM(new DbHelper())
 
         //imageLoadManager
         imageLoaderManager = new LazyImageLoaderManager();
 
         //notificationManager
-        notificationManager=new SimpleNotificationManager(this);
+        notificationManager = new SimpleNotificationManager(this);
 
         //applicationSharedPreferences
-        applicationSharedPreferences = getSharedPreferences(VkConstants.Other.PREFERENCES, MODE_PRIVATE);
+        applicationSharedPreferences = getSharedPreferences(Constants.Other.PREFERENCES, MODE_PRIVATE);
+
+        //read receivers from db
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final List<IUser> userList = UserModel.convertFrom(recieverORM.getAll(Constants.Db.USERS, UserModel.getInstance()));
+                final List<IChat> chatList = ChatModel.convertFrom(recieverORM.getAll(Constants.Db.CHATS, ChatModel.getInstance()));
+                final List<IGroup> groupList = GroupModel.convertFrom(recieverORM.getAll(Constants.Db.GROUPS, GroupModel.getInstance()));
+                VkReceiverStorage.putAll(new ArrayList<IReceiver>(userList));
+                VkReceiverStorage.putAll(new ArrayList<IReceiver>(groupList));
+                VkReceiverStorage.putAll(new ArrayList<IReceiver>(chatList));
+            }
+        }).run();
     }
 
-    public SimpleORM<DbMessage> getMessageORM() {
+    public ORM getRecieverORM() {
+        return recieverORM;
+    }
+
+    public ORM getMessageORM() {
         return messageORM;
-    }
-
-    public SimpleORM<DbReciever> getReceiverORM() {
-        return receiverORM;
     }
 
     public LazyImageLoaderManager getImageLoaderManager() {

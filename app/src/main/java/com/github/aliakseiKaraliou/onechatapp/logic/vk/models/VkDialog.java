@@ -1,8 +1,8 @@
-package com.github.aliakseiKaraliou.onechatapp.logic.vk.entities;
+package com.github.aliakseiKaraliou.onechatapp.logic.vk.models;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IDialog;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +10,14 @@ import java.util.List;
 public class VkDialog implements IDialog {
 
     private List<IMessage> list;
-    private IReciever reciever;
+    private IReceiver reciever;
 
-    public VkDialog(IReciever reciever) {
+    public VkDialog(IReceiver reciever) {
         this.reciever = reciever;
         list=new ArrayList<>();
     }
 
-    public VkDialog(IReciever reciever, List<IMessage> list) {
+    public VkDialog(IReceiver reciever, List<IMessage> list) {
         this.list = list;
         this.reciever = reciever;
     }
@@ -28,7 +28,7 @@ public class VkDialog implements IDialog {
     }
 
     @Override
-    public IReciever getReciever() {
+    public IReceiver getReciever() {
         return reciever;
     }
 

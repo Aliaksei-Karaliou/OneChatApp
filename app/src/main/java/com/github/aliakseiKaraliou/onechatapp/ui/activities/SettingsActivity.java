@@ -14,6 +14,11 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -24,7 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 final boolean checked = compoundButton.isChecked();
-                getApplicationContext().setTheme(checked ? R.style.DarkTheme : R.style.LightTheme);
+                setTheme(checked ? R.style.DarkTheme : R.style.LightTheme);
                 recreate();
             }
         });

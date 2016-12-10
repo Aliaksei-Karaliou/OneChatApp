@@ -2,24 +2,24 @@ package com.github.aliakseiKaraliou.onechatapp.logic.common.managers;
 
 import android.util.Pair;
 
-import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOperation;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 
 import java.io.IOException;
 
 public class SendManager {
-    public boolean send(IReciever reciever, final String message) {
+    public boolean send(IReceiver reciever, final String message) {
         if (reciever.getSocialNetwork() == SocialNetwork.VK) {
             final AsyncOperation<Long, String> asyncOperation = new AsyncOperation<Long, String>() {
                 @Override
                 protected String doInBackground(Long peerId) {
-                    final Pair<String, String> peerIdPair = new Pair<>(VkConstants.Params.PEER_ID, Long.toString(peerId));
-                    final Pair<String, String> messagepair = new Pair<>(VkConstants.Params.MESSAGE, message);
+                    final Pair<String, String> peerIdPair = new Pair<>(Constants.Params.PEER_ID, Long.toString(peerId));
+                    final Pair<String, String> messagepair = new Pair<>(Constants.Params.MESSAGE, message);
                     try {
-                        return new VkRequester().doRequest(VkConstants.Method.MESSAGES_SEND, peerIdPair, messagepair);
+                        return new VkRequester().doRequest(Constants.Method.MESSAGES_SEND, peerIdPair, messagepair);
                     } catch (IOException e) {
                         e.printStackTrace();
                         return null;

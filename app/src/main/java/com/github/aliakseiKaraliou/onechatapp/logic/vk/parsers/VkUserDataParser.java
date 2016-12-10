@@ -5,8 +5,8 @@ import android.support.v4.util.LongSparseArray;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkConstants;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.entities.VkUser;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,16 +18,16 @@ public class VkUserDataParser implements IParser<String, LongSparseArray<IUser>>
     public LongSparseArray<IUser> parse(String json) {
         LongSparseArray<IUser> userLongSparseArray = new LongSparseArray<>();
         try {
-            JSONArray jsonArray = new JSONObject(json).getJSONArray(VkConstants.Json.RESPONSE);
+            JSONArray jsonArray = new JSONObject(json).getJSONArray(Constants.Json.RESPONSE);
             JSONObject currentObject;
             long id;
             String firstName, lastName, photoUrl;
             for (int i = 0; i < jsonArray.length(); i++) {
                 currentObject = jsonArray.getJSONObject(i);
-                id = currentObject.getLong(VkConstants.Json.ID);
-                firstName = currentObject.getString(VkConstants.Json.FIRST_NAME);
-                lastName = currentObject.getString(VkConstants.Json.LAST_NAME);
-                photoUrl = currentObject.getString(VkConstants.Json.PHOTO_50);
+                id = currentObject.getLong(Constants.Json.ID);
+                firstName = currentObject.getString(Constants.Json.FIRST_NAME);
+                lastName = currentObject.getString(Constants.Json.LAST_NAME);
+                photoUrl = currentObject.getString(Constants.Json.PHOTO_50);
                 IUser user = new VkUser(id, firstName, lastName, photoUrl);
                 userLongSparseArray.put(id, user);
             }

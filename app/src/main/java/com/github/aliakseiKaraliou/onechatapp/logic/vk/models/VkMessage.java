@@ -1,10 +1,10 @@
-package com.github.aliakseiKaraliou.onechatapp.logic.vk.entities;
+package com.github.aliakseiKaraliou.onechatapp.logic.vk.models;
 
 import android.support.annotation.Nullable;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.IReciever;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.ISender;
 
 import java.util.Date;
@@ -72,7 +72,7 @@ public class VkMessage implements IMessage {
     }
 
     @Override
-    public IReciever getReciever() {
+    public IReceiver getReciever() {
         if (chat != null)
             return chat;
         else
