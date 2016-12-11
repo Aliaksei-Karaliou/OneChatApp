@@ -7,12 +7,8 @@
     android:orientation="vertical"
     tools:ignore="RtlSymmetry">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="48dp">
-
         <Switch
+            android:minHeight="48dp"
             android:id="@+id/night_mode_switch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -21,5 +17,16 @@
             android:textColor="?attr/editTextColor"
             android:textOff="@string/answer_no"
             android:textOn="@string/answer_yes"/>
-    </FrameLayout>
+
+    <Button
+        android:id="@+id/setting_send_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:minHeight="48dp"
+        android:text="@string/settings_email"
+        android:textAllCaps="false"
+        android:textColor="?attr/editTextColor"
+        android:onClick="sendEmailToDeveloper"/>
 </LinearLayout>

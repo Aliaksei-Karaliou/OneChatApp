@@ -1,12 +1,16 @@
 package com.github.aliakseiKaraliou.onechatapp.ui.activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import com.github.aliakseiKaraliou.onechatapp.R;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -40,5 +44,11 @@ public class SettingsActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home)
             onBackPressed();
         return super.onOptionsItemSelected(item);
+    }
+
+    public void sendEmailToDeveloper(View view) {
+        final Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                Constants.Other.MAILTO,Constants.Other.DEVELOPER_EMAIL, null));
+        startActivity(emailIntent);
     }
 }

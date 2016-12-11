@@ -64,6 +64,8 @@ public interface Constants {
 
     interface Other {
         String CONVERT = "convert";
+        String DEVELOPER_EMAIL = "alexeykoroliov@gmail.com";
+        String MAILTO = "mailto";
         String PEER_ID = "peer id";
         String PREFERENCES = "preferences";
         String LIGHT_THEME = "light theme";
