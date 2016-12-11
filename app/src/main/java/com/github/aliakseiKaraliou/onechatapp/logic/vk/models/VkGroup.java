@@ -1,5 +1,7 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk.models;
 
+import android.os.Parcel;
+
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IGroup;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.PeerRecieverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
@@ -48,4 +50,34 @@ public final class VkGroup implements IGroup {
         return PeerRecieverType.GROUP;
     }
 
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.photoUrl);
+    }
+
+    protected VkGroup(Parcel in) {
+        this.id = in.readLong();
+        this.name = in.readString();
+        this.photoUrl = in.readString();
+    }
+
+    public static final Creator<VkGroup> CREATOR = new Creator<VkGroup>() {
+        @Override
+        public VkGroup createFromParcel(Parcel source) {
+            return new VkGroup(source);
+        }
+
+        @Override
+        public VkGroup[] newArray(int size) {
+            return new VkGroup[size];
+        }
+    };
 }

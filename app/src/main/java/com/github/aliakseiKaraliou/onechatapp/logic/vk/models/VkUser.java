@@ -1,5 +1,7 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk.models;
 
+import android.os.Parcel;
+
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.PeerRecieverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
@@ -71,4 +73,37 @@ public class VkUser implements IUser {
     public PeerRecieverType getPeerReceiverType() {
         return PeerRecieverType.USER;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.firstName);
+        dest.writeString(this.lastName);
+        dest.writeString(this.photoUrl);
+    }
+
+    protected VkUser(Parcel in) {
+        this.id = in.readLong();
+        this.firstName = in.readString();
+        this.lastName = in.readString();
+        this.photoUrl = in.readString();
+    }
+
+    public static final Creator<VkUser> CREATOR = new Creator<VkUser>() {
+        @Override
+        public VkUser createFromParcel(Parcel source) {
+            return new VkUser(source);
+        }
+
+        @Override
+        public VkUser[] newArray(int size) {
+            return new VkUser[size];
+        }
+    };
 }

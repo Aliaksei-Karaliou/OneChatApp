@@ -2,6 +2,7 @@ package com.github.aliakseiKaraliou.onechatapp;
 
 import android.app.Application;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
@@ -12,14 +13,16 @@ import com.github.aliakseiKaraliou.onechatapp.logic.db.DbHelper;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.ChatModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.DialogListMessageModel;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.models.MessageModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.GroupModel;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.models.MessageModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.UserModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.LazyImageLoaderManager;
+import com.github.aliakseiKaraliou.onechatapp.logic.utils.network.NetworkConnectionChecker;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.services.ReceivingService;
+import com.github.aliakseiKaraliou.onechatapp.services.broadcastReceiver.MessageBroadcastReceiver;
 import com.github.aliakseiKaraliou.onechatapp.services.notifications.SimpleNotificationManager;
 
 import java.util.ArrayList;
@@ -37,10 +40,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        if (VkInfo.isUserAuthorized()) {
-            startService(new Intent(this, ReceivingService.class));
-        }
-
         //recieverORM
         recieverORM = new ORM(new DbHelper(this, Constants.Db.RECEIVERS, 1, UserModel.class ,ChatModel.class, GroupModel.class));
 
@@ -55,6 +54,18 @@ public class App extends Application {
 
         //applicationSharedPreferences
         applicationSharedPreferences = getSharedPreferences(Constants.Other.PREFERENCES, MODE_PRIVATE);
+
+        if (NetworkConnectionChecker.check(this)) {
+            // boolean isOnline = true;
+            VkInfo.userGetAuth(applicationSharedPreferences);
+        }
+
+        if (VkInfo.isUserAuthorized()) {
+            startService(new Intent(this, ReceivingService.class));
+        }
+
+        final MessageBroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
+        registerReceiver(messageBroadcastReceiver, new IntentFilter(Constants.Other.BROADCAST_MESSAGE_RECEIVER_NAME));
 
         //read receivers from db
         new Thread(new Runnable() {

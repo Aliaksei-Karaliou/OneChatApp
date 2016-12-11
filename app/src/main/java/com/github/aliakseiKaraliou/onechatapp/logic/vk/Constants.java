@@ -63,6 +63,7 @@ public interface Constants {
     }
 
     interface Other {
+        String BROADCAST_MESSAGE_RECEIVER_NAME = "com.github.aliakseiKaraliou.newMessage";
         String CONVERT = "convert";
         String DEVELOPER_EMAIL = "alexeykoroliov@gmail.com";
         String MAILTO = "mailto";

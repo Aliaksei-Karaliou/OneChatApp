@@ -102,17 +102,24 @@ public final class ChatModel implements AbstractModel<ChatModel> {
     public static List<ChatModel> convertTo(Collection<IChat> chatCollection) {
         List<ChatModel> modelList = new ArrayList<>();
         for (IChat chat : chatCollection) {
-            modelList.add(new ChatModel(chat));
+            modelList.add(convertTo(chat));
         }
         return modelList;
+    }
+
+    public static ChatModel convertTo(IChat chat){
+        return new ChatModel(chat);
     }
 
     public static List<IChat> convertFrom(Collection<ChatModel> chatModelCollection) {
         List<IChat> chatList = new ArrayList<>();
         for (ChatModel chatModel : chatModelCollection) {
-            IChat chat = new VkChat(chatModel.getId(), chatModel.getName(), chatModel.photo);
-            chatList.add(chat);
+            chatList.add(convertFrom(chatModel));
         }
         return chatList;
+    }
+
+    public static IChat convertFrom(ChatModel chatModel){
+        return new VkChat(chatModel.getId(), chatModel.getName(), chatModel.photo);
     }
 }

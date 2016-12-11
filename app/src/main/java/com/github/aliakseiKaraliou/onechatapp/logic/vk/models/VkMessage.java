@@ -1,5 +1,6 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk.models;
 
+import android.os.Parcel;
 import android.support.annotation.Nullable;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
@@ -143,4 +144,44 @@ public class VkMessage implements IMessage {
             return new VkMessage(id, sender, text, date, read, out, chat);
         }
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.sender, flags);
+        dest.writeLong(this.id);
+        dest.writeString(this.text);
+        dest.writeLong(this.date != null ? this.date.getTime() : -1);
+        dest.writeParcelable(this.chat, flags);
+        dest.writeByte(this.isRead ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.out ? (byte) 1 : (byte) 0);
+    }
+
+    protected VkMessage(Parcel in) {
+        this.sender = in.readParcelable(ISender.class.getClassLoader());
+        this.id = in.readLong();
+        this.text = in.readString();
+        long tmpDate = in.readLong();
+        this.date = tmpDate == -1 ? null : new Date(tmpDate);
+        this.chat = in.readParcelable(IChat.class.getClassLoader());
+        this.isRead = in.readByte() != 0;
+        this.out = in.readByte() != 0;
+    }
+
+    public static final Creator<VkMessage> CREATOR = new Creator<VkMessage>() {
+        @Override
+        public VkMessage createFromParcel(Parcel source) {
+            return new VkMessage(source);
+        }
+
+        @Override
+        public VkMessage[] newArray(int size) {
+            return new VkMessage[size];
+        }
+    };
 }

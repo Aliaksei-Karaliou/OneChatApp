@@ -1,8 +1,9 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class VkInfo {
 
@@ -41,18 +42,17 @@ public class VkInfo {
 
     private static String accessToken = null;
 
-    public static void userSetAuth(Activity activity) {
-        SharedPreferences.Editor editor = activity.getPreferences(Context.MODE_PRIVATE).edit();
+    public static void userSetAuth(SharedPreferences sharedPreferences) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(ACCESS_TOKEN, VkInfo.getAccessToken());
         editor.putLong(USER_ID, VkInfo.getUserId());
         editor.apply();
     }
 
-    public static void userGetAuth(Activity activity) {
-        SharedPreferences preferences = activity.getPreferences(Context.MODE_PRIVATE);
-        final long id = preferences.getLong(USER_ID, -1);
+    public static void userGetAuth(SharedPreferences sharedPreferences) {
+        final long id = sharedPreferences.getLong(USER_ID, -1);
         VkInfo.setUserId(id);
-        VkInfo.setAccessToken(preferences.getString(ACCESS_TOKEN, null));
+        VkInfo.setAccessToken(sharedPreferences.getString(ACCESS_TOKEN, null));
     }
 
     public static boolean isUserAuthorized() {

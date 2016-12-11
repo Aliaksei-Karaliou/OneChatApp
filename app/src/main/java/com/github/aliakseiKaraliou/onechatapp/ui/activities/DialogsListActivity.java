@@ -1,6 +1,7 @@
 package com.github.aliakseiKaraliou.onechatapp.ui.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -10,9 +11,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.utils.network.NetworkConnectionChecker;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogsListManager;
@@ -24,14 +25,13 @@ public class DialogsListActivity extends AppCompatActivity {
 
     List<IMessage> messages;
 
+    private SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialogs_list);
-        if (NetworkConnectionChecker.check(this)) {
-            // boolean isOnline = true;
-            VkInfo.userGetAuth(this);
-        }
+        preferences = ((App) getApplicationContext()).getApplicationSharedPreferences();
 
         if (VkInfo.isUserAuthorized()) {
             auth();
@@ -41,7 +41,7 @@ public class DialogsListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        VkInfo.userSetAuth(this);
+        VkInfo.userSetAuth(preferences);
         if (VkInfo.isUserAuthorized() && messages == null) {
             auth();
         }

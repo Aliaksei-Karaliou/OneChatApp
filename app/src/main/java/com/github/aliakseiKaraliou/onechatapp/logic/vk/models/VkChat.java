@@ -1,5 +1,7 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk.models;
 
+import android.os.Parcel;
+
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
@@ -61,4 +63,35 @@ public class VkChat implements IChat {
     public void setName(java.lang.String name) {
         this.name = name;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.photoUrl);
+    }
+
+    protected VkChat(Parcel in) {
+        this.id = in.readLong();
+        this.name = in.readString();
+        this.photoUrl = in.readString();
+    }
+
+    public static final Creator<VkChat> CREATOR = new Creator<VkChat>() {
+        @Override
+        public VkChat createFromParcel(Parcel source) {
+            return new VkChat(source);
+        }
+
+        @Override
+        public VkChat[] newArray(int size) {
+            return new VkChat[size];
+        }
+    };
 }

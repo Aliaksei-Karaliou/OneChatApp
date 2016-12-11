@@ -43,8 +43,6 @@ public class LazyImageLoaderManager {
 
                     @Override
                     protected Bitmap doInBackground(Void... strings) {
-                        final int threadCount = Thread.activeCount();
-                        Log.i("thread count", String.valueOf(threadCount));
                         return loader.loadFromUrl(url);
                     }
 

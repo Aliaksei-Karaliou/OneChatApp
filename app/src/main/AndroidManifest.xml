@@ -35,6 +35,12 @@
 
         <activity android:name=".ui.activities.SettingsActivity">
         </activity>
+
+        <receiver
+            android:name=".services.broadcastReceiver.MessageBroadcastReceiver"
+            android:enabled="true"
+            android:exported="false">
+        </receiver>
     </application>
 
 </manifest>

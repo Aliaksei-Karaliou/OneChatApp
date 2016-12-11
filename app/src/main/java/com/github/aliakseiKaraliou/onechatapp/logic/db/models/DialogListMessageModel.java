@@ -156,9 +156,13 @@ public class DialogListMessageModel implements AbstractModel<DialogListMessageMo
     public static List<DialogListMessageModel> convertTo(Collection<IMessage> messageCollection) {
         List<DialogListMessageModel> dialogListMessageModelList = new ArrayList<>();
         for (IMessage message : messageCollection) {
-            dialogListMessageModelList.add(new DialogListMessageModel(message));
+            dialogListMessageModelList.add(convertTo(message));
         }
         return dialogListMessageModelList;
+    }
+
+    public static DialogListMessageModel convertTo(IMessage message) {
+        return new DialogListMessageModel(message);
     }
 
     public static List<IMessage> convertFrom(Collection<DialogListMessageModel> dialogListMessageModels) {

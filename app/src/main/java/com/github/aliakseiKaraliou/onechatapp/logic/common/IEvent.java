@@ -1,5 +1,7 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.common;
 
-public interface IEvent {
+import android.os.Parcelable;
+
+public interface IEvent extends Parcelable {
 
 }

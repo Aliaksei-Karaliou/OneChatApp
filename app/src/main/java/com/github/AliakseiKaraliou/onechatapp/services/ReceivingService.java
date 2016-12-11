@@ -1,12 +1,10 @@
 package com.github.aliakseiKaraliou.onechatapp.services;
 
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
-import com.github.aliakseiKaraliou.onechatapp.App;
-import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOperation;
@@ -16,8 +14,6 @@ import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollServer
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollUpdate;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkGetLongPollServerParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkLongPollParser;
-import com.github.aliakseiKaraliou.onechatapp.services.notifications.SimpleNotificationManager;
-import com.github.aliakseiKaraliou.onechatapp.ui.activities.DialogActivity;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,14 +21,16 @@ import java.util.List;
 public class ReceivingService extends Service {
 
     private VkLongPollServer longPollServer;
+    private IMessage message = null;
 
     public ReceivingService() {
     }
 
     @Override
     public void onCreate() {
+        Log.i("SERVICE", "created");
         super.onCreate();
-        AsyncOperation<Void, VkLongPollServer> asyncOperation = new AsyncOperation<Void, VkLongPollServer>() {
+        final AsyncOperation<Void, VkLongPollServer> asyncOperation = new AsyncOperation<Void, VkLongPollServer>() {
             @Override
             protected VkLongPollServer doInBackground(Void aVoid) {
                 try {
@@ -50,33 +48,35 @@ public class ReceivingService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, final int flags, int startId) {
-        infinityLoop();
-        return START_STICKY;
+        Log.i("SERVICE", "started");
+        final Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String request = new VkRequester().doLongPollRequest(longPollServer);
+                final VkLongPollUpdate update = new VkLongPollParser().parse(request);
+                final List<IEvent> events = update.getEvents();
+                for (IEvent event : events) {
+                    if (event instanceof IMessage) {
+                        message = (IMessage) event;
+                    }
+                }
+                longPollServer.setTs(update.getTs());
+                stopSelf();
+            }
+        });
+        thread.start();
+        return START_REDELIVER_INTENT;
     }
 
-    private void infinityLoop() {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    final String request = new VkRequester().doLongPollRequest(longPollServer);
-                    final VkLongPollUpdate update = new VkLongPollParser().parse(request);
-                    final List<IEvent> events = update.getEvents();
-                    IMessage message = null;
-                    for (IEvent event : events) {
-                        if (event instanceof IMessage) {
-                            message = (IMessage) event;
-                        }
-                    }
-                    if (message != null) {
-                        final SimpleNotificationManager notificationManager = ((App) getApplicationContext()).getNotificationManager();
-                        Intent intent = new Intent(ReceivingService.this, DialogActivity.class);
-                        intent.putExtra(Constants.Other.PEER_ID, message.getReceiver().getId());
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(ReceivingService.this, 0, intent, 0);
-                        notificationManager.send(message.getReceiver().getName(), message.getText(), R.drawable.ic_vk_social_network_logo, pendingIntent);
-                    }
-                    longPollServer.setTs(update.getTs());
-                }
-            }).start();
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Intent broadcastIntent = new Intent(Constants.Other.BROADCAST_MESSAGE_RECEIVER_NAME);
+        if (message != null) {
+            broadcastIntent.putExtra(Constants.Params.MESSAGE, message);
+        }
+        sendBroadcast(broadcastIntent);
+        Log.i("SERVICE", "stopped");
     }
 
     @Override

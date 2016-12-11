@@ -11,7 +11,6 @@ import android.support.v4.app.NotificationCompat;
 public class SimpleNotificationManager {
 
     private NotificationManager notificationManager;
-    private int notificationId = 0;
     private Context context;
 
     public SimpleNotificationManager(Context context) {
@@ -30,6 +29,6 @@ public class SimpleNotificationManager {
         builder.setContentText(text);
         builder.setSmallIcon(smallIconId);
         final Notification notification = builder.build();
-        notificationManager.notify(notificationId++, notification);
+        notificationManager.notify(0, notification);
     }
 }
