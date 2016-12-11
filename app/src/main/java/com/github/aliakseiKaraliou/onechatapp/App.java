@@ -12,6 +12,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.db.DbHelper;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.ChatModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.DialogListMessageModel;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.models.MessageModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.GroupModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.UserModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.LazyImageLoaderManager;
@@ -44,7 +45,7 @@ public class App extends Application {
         recieverORM = new ORM(new DbHelper(this, Constants.Db.RECEIVERS, 1, UserModel.class ,ChatModel.class, GroupModel.class));
 
         //messageORM
-        messageORM = new ORM(new DbHelper(this, Constants.Db.MESSAGES, 1, DialogListMessageModel.class));
+        messageORM = new ORM(new DbHelper(this, Constants.Db.MESSAGES, 1, MessageModel.class, DialogListMessageModel.class));
 
         //imageLoadManager
         imageLoaderManager = new LazyImageLoaderManager();

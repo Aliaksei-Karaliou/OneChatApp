@@ -15,6 +15,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.ChatModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.DialogListMessageModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.GroupModel;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.models.MessageModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.UserModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOperation;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
@@ -30,7 +31,7 @@ import java.util.Set;
 
 ;
 
-public class VkDialogsListManager {
+public final class VkDialogsListManager {
 
     private AsyncOperation<Integer, List<IMessage>> asyncOperation;
 
@@ -77,8 +78,7 @@ public class VkDialogsListManager {
 
                         final ORM messageORM = ((App) context.getApplicationContext()).getMessageORM();
                         messageORM.insertAll(Constants.Db.DIALOGS_LIST, DialogListMessageModel.convertTo(messageList));
-                        final List<DialogListMessageModel> dialogListMessageModelList = messageORM.selectAll(Constants.Db.DIALOGS_LIST, DialogListMessageModel.getInstance());
-                        final List<IMessage> messageList1 = DialogListMessageModel.convertFrom(dialogListMessageModelList);
+                        messageORM.insertAll(Constants.Db.ALL_MESSAGES, MessageModel.convertTo(messageList));
 
                         return messageList;
                     } catch (Exception e) {

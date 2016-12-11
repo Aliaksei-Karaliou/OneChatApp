@@ -3,7 +3,9 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers;
 import android.support.annotation.Nullable;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IParser;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,10 +25,16 @@ public class VkDialogStartParser implements IParser<String, Set<Long>> {
             for (int i = 0; i < items.length(); i++) {
                 currentObject = items.getJSONObject(i);
                 final long fromId = currentObject.getLong(Constants.Json.FROM_ID);
-                set.add(fromId);
+                final IReceiver receiver = VkReceiverStorage.get(fromId);
+                if (receiver == null) {
+                    set.add(fromId);
+                }
                 if (currentObject.has(Constants.Json.ACTION_MID)) {
-                    final long aLong = currentObject.getLong(Constants.Json.ACTION_MID);
-                    set.add(aLong);
+                    final long actionPeer = currentObject.getLong(Constants.Json.ACTION_MID);
+                    final IReceiver actionReceiver = VkReceiverStorage.get(actionPeer);
+                    if (actionReceiver == null) {
+                        set.add(actionPeer);
+                    }
                 }
             }
             return set;

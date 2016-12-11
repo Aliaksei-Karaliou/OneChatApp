@@ -5,8 +5,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.LongSparseArray;
 import android.util.Pair;
 
+import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.models.MessageModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOperation;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
@@ -29,10 +32,10 @@ public final class VkDialogManager {
                 protected List<IMessage> doInBackground(Integer integer) {
                     try {
                         String id = Long.toString(reciever.getId());
-                        Pair<String, String> peerId = new Pair<>("peer_id", id);
+                        Pair<String, String> peerId = new Pair<>(Constants.Json.PEER_ID, id);
                         final String json;
                         if (offset > 0) {
-                            Pair<String, String> offsetPair = new Pair<>("offset", Integer.toString(offset));
+                            Pair<String, String> offsetPair = new Pair<>(Constants.Params.OFFSET, Integer.toString(offset));
                             json = new VkRequester().doRequest(Constants.Method.MESSAGES_GETHISTORY, peerId, offsetPair);
                         } else {
                             json = new VkRequester().doRequest(Constants.Method.MESSAGES_GETHISTORY, peerId);
@@ -41,7 +44,12 @@ public final class VkDialogManager {
                         final Set<Long> parse = new VkDialogStartParser().parse(json);
                         final LongSparseArray<IReceiver> longSparseArray = new VkReceiverDataParser().parse(parse);
                         VkReceiverStorage.putAll(longSparseArray);
-                        return new VkDialogFinalParser().parse(context, json, longSparseArray);
+                        final List<IMessage> messageList = new VkDialogFinalParser().parse(context, json);
+
+                        final ORM messageORM = ((App) context.getApplicationContext()).getMessageORM();
+                        messageORM.insertAll(Constants.Db.ALL_MESSAGES, MessageModel.convertTo(messageList));
+
+                        return messageList;
                     } catch (IOException e) {
                         e.printStackTrace();
                         return null;

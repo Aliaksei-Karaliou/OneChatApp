@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.LazyImageLoaderManager;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final LazyImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
 
         final DialogAdapterViewHolder dialogAdapterViewHolder = (DialogAdapterViewHolder) holder;
-        loaderManager.load(context, dialogAdapterViewHolder.photo, currentMessage.getReceiver().getPhotoUrl(), defaultBitmap);
+        loaderManager.load(context, dialogAdapterViewHolder.photo, currentMessage.getSender().getPhotoUrl(), defaultBitmap);
         dialogAdapterViewHolder.messageTextView.setText(currentMessage.getText());
         dialogAdapterViewHolder.photo.setOnClickListener(new View.OnClickListener() {
             @Override

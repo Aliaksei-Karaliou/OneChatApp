@@ -20,6 +20,7 @@ public interface Constants {
         String MESSAGE = "message";
         String NAME = "name";
         String OUT = "out";
+        String PEER_ID = "peer_id";
         String PHOTO_50 = "photo_50";
         String READ_STATE = "read_state";
         String RESPONSE = "response";
@@ -52,7 +53,7 @@ public interface Constants {
     }
 
     interface Db {
-        String ALL_MESSAGES = "All messages";
+        String ALL_MESSAGES = "AllMessages";
         String CHATS = "Chats";
         String DIALOGS_LIST = "DialogsList";
         String GROUPS = "Groups";

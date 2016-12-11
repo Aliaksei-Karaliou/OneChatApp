@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 
 @DbTableName(name = Constants.Db.GROUPS)
-public class GroupModel implements AbstractModel<GroupModel> {
+public final class GroupModel implements AbstractModel<GroupModel> {
 
     private static final String SOCIAL_NETWORK = "social_network";
     private static final String PEER_ID = "peerId";

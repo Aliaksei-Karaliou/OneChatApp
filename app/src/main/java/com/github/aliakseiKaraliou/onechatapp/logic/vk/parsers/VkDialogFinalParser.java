@@ -10,6 +10,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.ISender;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkChatAction;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkIdConverter;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkMessage;
 
 import org.json.JSONArray;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class VkDialogFinalParser {
 
-    public List<IMessage> parse(Context context, String json, LongSparseArray<IReceiver> array) {
+    public List<IMessage> parse(Context context, String json) {
         try {
             List<IMessage> result = new ArrayList<>();
             JSONArray items = new JSONObject(json).getJSONObject(Constants.Json.RESPONSE).getJSONArray(Constants.Json.ITEMS);
@@ -48,16 +49,17 @@ public class VkDialogFinalParser {
                 builder.setOut(isOut);
 
                 long userId = currentObject.getLong(Constants.Json.FROM_ID);
-                ISender sender = (ISender) array.get(userId);
+                ISender sender = (ISender) VkReceiverStorage.get(userId);
                 builder.setSender(sender);
 
                 if (currentObject.has(Constants.Json.CHAT_ID)) {
                     long chatId = currentObject.getLong(Constants.Json.CHAT_ID);
                     Long peerId = vkIdConverter.chatToPeer(chatId);
                     if (peerId != null) {
-                        IChat chat = (IChat) array.get(peerId);
+                        IChat chat = (IChat) VkReceiverStorage.get(peerId);
                         builder.setChat(chat);
                     }
+                    new StringBuilder();
                 }
 
                 if (currentObject.has(Constants.Json.ACTION)) {
