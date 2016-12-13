@@ -35,6 +35,7 @@ public interface Constants {
     interface Method {
         String GROUPS_GETBYID = "groups.getById";
         String MESSAGES_DELETEDIALOG = "messages.deleteDialog";
+        String MESSAGES_GETBYID = "messages.getById";
         String MESSAGES_GETDIALOGS = "messages.getDialogs";
         String MESSAGES_GETCHAT = "messages.getChat";
         String MESSAGES_GETHISTORY = "messages.getHistory";
@@ -47,6 +48,7 @@ public interface Constants {
         String ACCESS_TOKEN = "access_token";
         String AUTHORIZE_URL = "https://oauth.vk.com/authorize?client_id=%d&display=mobile&redirect_uri=https://oauth.vk.com/blank.html&scope=offline,%s&response_type=token&v=%f&revoke=1";
         String MESSAGE = "message";
+        String MESSAGE_IDS = "message_ids";
         String OFFSET = "offset";
         String PEER_ID = "peer_id";
         String USER_ID = "user_id";

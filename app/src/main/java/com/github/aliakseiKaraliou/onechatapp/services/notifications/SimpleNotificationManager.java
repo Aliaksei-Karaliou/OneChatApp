@@ -18,7 +18,7 @@ public class SimpleNotificationManager {
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
-    public void send(String title, String text, int smallIconId, PendingIntent pendingIntent) {
+    public void send(String title, String text, int smallIconId, String statusBarText, PendingIntent pendingIntent) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -28,6 +28,7 @@ public class SimpleNotificationManager {
         builder.setContentTitle(title);
         builder.setContentText(text);
         builder.setSmallIcon(smallIconId);
+        builder.setTicker(statusBarText);
         final Notification notification = builder.build();
         notificationManager.notify(0, notification);
     }

@@ -16,18 +16,21 @@ import com.github.aliakseiKaraliou.onechatapp.services.ReceivingService;
 import com.github.aliakseiKaraliou.onechatapp.services.notifications.SimpleNotificationManager;
 import com.github.aliakseiKaraliou.onechatapp.ui.activities.DialogActivity;
 
+import java.util.Locale;
+
 public class MessageBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, Intent intent) {
         final IMessage message = intent.getParcelableExtra(Constants.Params.MESSAGE);
         if (message != null) {
-            if (message.isOut() || message.getSender().getId() == VkInfo.getUserId()) {
+            if (!message.isOut()) {
                 final SimpleNotificationManager notificationManager = ((App) context.getApplicationContext()).getNotificationManager();
                 Intent notificationIntent = new Intent(context, DialogActivity.class);
                 notificationIntent.putExtra(Constants.Other.PEER_ID, message.getReceiver().getId());
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, notificationIntent, 0);
-                notificationManager.send(message.getReceiver().getName(), message.getText(), R.drawable.ic_vk_social_network_logo, pendingIntent);
+                String statusBarText = String.format(Locale.US, "(%s) %s", message.getReceiver().getName(), message.getText());
+                notificationManager.send(message.getReceiver().getName(), message.getText(), R.drawable.ic_vk_social_network_logo, statusBarText, pendingIntent);
             }
 
             new Thread(new Runnable() {

@@ -34,7 +34,7 @@ public class ReceivingService extends Service {
             @Override
             protected VkLongPollServer doInBackground(Void aVoid) {
                 try {
-                    final String request = new VkRequester().doRequest("messages.getLongPollServer");
+                    final String request = new VkRequester().doRequest(Constants.Method.MESSAGES_GETLONGPOLLSERVER);
                     return new VkGetLongPollServerParser().parse(request);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -53,7 +53,7 @@ public class ReceivingService extends Service {
             @Override
             public void run() {
                 final String request = new VkRequester().doLongPollRequest(longPollServer);
-                final VkLongPollUpdate update = new VkLongPollParser().parse(request);
+                final VkLongPollUpdate update = new VkLongPollParser().parse(getApplicationContext(), request);
                 final List<IEvent> events = update.getEvents();
                 for (IEvent event : events) {
                     if (event instanceof IMessage) {

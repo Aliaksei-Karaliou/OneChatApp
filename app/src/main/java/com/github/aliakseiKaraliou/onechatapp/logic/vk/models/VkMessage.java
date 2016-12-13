@@ -130,11 +130,6 @@ public class VkMessage implements IMessage {
             return this;
         }
 
-        public Builder setDate(Date date) {
-            this.date = date;
-            return this;
-        }
-
         public Builder setDate(long timeStamp) {
             this.date = new Date(timeStamp * 1000);
             return this;

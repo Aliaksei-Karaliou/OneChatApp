@@ -1,5 +1,7 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers;
 
+import android.content.Context;
+
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollUpdate;
 
@@ -11,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VkLongPollParser {
-    public VkLongPollUpdate parse(String json) {
+    public VkLongPollUpdate parse(Context context, String json) {
         try {
             JSONObject jsonObject = new JSONObject(json);
             long ts = jsonObject.getLong(Constants.Json.TS);
@@ -26,7 +28,7 @@ public class VkLongPollParser {
                 result.add(currentResult);
                 currentResult = new ArrayList<>();
             }
-            return new VkLongPollUpdate(ts, result);
+            return new VkLongPollUpdate(context, ts, result);
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
