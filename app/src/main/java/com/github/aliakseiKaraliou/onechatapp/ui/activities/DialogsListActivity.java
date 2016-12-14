@@ -113,5 +113,4 @@ public class DialogsListActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    //Broadcast Receiver
 }

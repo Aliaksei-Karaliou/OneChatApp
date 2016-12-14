@@ -3,17 +3,22 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk.models;
 import android.os.Parcel;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.PeerRecieverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 
 public class VkUser implements IUser {
     private long id;
+    private String photo50Url;
+    private String photo100Url;
+    private String firstName = "";
+    private String lastName = "";
 
-    public VkUser(long id, java.lang.String firstName, java.lang.String lastName, java.lang.String photoUrl) {
+    public VkUser(long id, String firstName, String lastName, String photo50Url, String photo100Url) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.photoUrl = photoUrl;
+        this.photo50Url = photo50Url;
+        this.photo100Url = photo100Url;
     }
 
     @Override
@@ -22,46 +27,41 @@ public class VkUser implements IUser {
     }
 
     @Override
-    public java.lang.String getName() {
+    public String getName() {
         if (firstName != null && lastName != null) {
             return firstName + " " + lastName;
         } else return "";
     }
 
-    private java.lang.String firstName = "";
-
     @Override
-    public java.lang.String getFirstName() {
+    public String getFirstName() {
         return firstName;
     }
 
     @Override
-    public void setFirstName(java.lang.String firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    private java.lang.String lastName = "";
-
     @Override
-    public java.lang.String getLastName() {
+    public String getLastName() {
         return lastName;
     }
 
     @Override
-    public void setLastName(java.lang.String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    private java.lang.String photoUrl;
 
     @Override
-    public java.lang.String getPhotoUrl() {
-        return photoUrl;
+    public String getPhoto50Url() {
+        return photo50Url;
     }
 
     @Override
-    public void setPhotoUrl(java.lang.String photoUrl) {
-        this.photoUrl = photoUrl;
+    public String getPhoto100Url() {
+        return photo100Url;
     }
 
     @Override
@@ -70,9 +70,10 @@ public class VkUser implements IUser {
     }
 
     @Override
-    public PeerRecieverType getPeerReceiverType() {
-        return PeerRecieverType.USER;
+    public ReceiverType getReceiverType() {
+        return ReceiverType.USER;
     }
+
 
 
     @Override
@@ -83,16 +84,18 @@ public class VkUser implements IUser {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
+        dest.writeString(this.photo100Url);
+        dest.writeString(this.photo50Url);
         dest.writeString(this.firstName);
         dest.writeString(this.lastName);
-        dest.writeString(this.photoUrl);
     }
 
     protected VkUser(Parcel in) {
         this.id = in.readLong();
+        this.photo100Url = in.readString();
+        this.photo50Url = in.readString();
         this.firstName = in.readString();
         this.lastName = in.readString();
-        this.photoUrl = in.readString();
     }
 
     public static final Creator<VkUser> CREATOR = new Creator<VkUser>() {

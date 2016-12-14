@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.AbstractModel;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.models.ChatModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,12 +63,13 @@ public final class ORM {
         final String allQuery = new QueryGenerator().getSelectAllQuery(tableName);
         final Cursor cursor = database.rawQuery(allQuery, null);
 
-        cursor.moveToFirst();
-        do {
-            final T currentModel = (T) object.convertToModel(cursor);
-            modelList.add(currentModel);
+        if (cursor.moveToFirst()) {
+            do {
+                final T currentModel = (T) object.convertToModel(cursor);
+                modelList.add(currentModel);
+            }
+            while (cursor.moveToNext());
         }
-        while (cursor.moveToNext());
         return modelList;
     }
 

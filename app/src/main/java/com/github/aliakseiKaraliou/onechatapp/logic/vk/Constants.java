@@ -22,6 +22,8 @@ public interface Constants {
         String OUT = "out";
         String PEER_ID = "peer_id";
         String PHOTO_50 = "photo_50";
+        String PHOTO_100 = "photo_100";
+        String PHOTO_50_100 = "photo_50,photo_100";
         String READ_STATE = "read_state";
         String RESPONSE = "response";
         String SERVER = "server";
@@ -65,7 +67,8 @@ public interface Constants {
     }
 
     interface Other {
-        String BROADCAST_MESSAGE_RECEIVER_NAME = "com.github.aliakseiKaraliou.newMessage";
+        String BROADCAST_EVENT_RECEIVER_NAME = "com.github.aliakseiKaraliou.newEvent";
+        String BROADCAST_NEW_MESSAGE_RECEIVER_NAME = "com.github.aliakseiKaraliou.newMessage";
         String CONVERT = "convert";
         String DEVELOPER_EMAIL = "alexeykoroliov@gmail.com";
         String MAILTO = "mailto";

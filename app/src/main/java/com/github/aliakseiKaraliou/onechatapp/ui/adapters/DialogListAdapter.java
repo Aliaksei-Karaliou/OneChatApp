@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.PeerRecieverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.DateFriendlyFormat;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.LazyImageLoaderManager;
 
@@ -36,8 +36,8 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final PeerRecieverType peerRecieverType = PeerRecieverType.values()[viewType];
-        if (peerRecieverType != PeerRecieverType.CHAT) {
+        final ReceiverType receiverType = ReceiverType.values()[viewType];
+        if (receiverType != ReceiverType.CHAT) {
             final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_list_item_user_group, parent, false);
             return new UserGroupViewHolder(view);
         } else {
@@ -52,13 +52,13 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         final IMessage currentMessage = messageList.get(position);
         final LazyImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
         final int viewType = getItemViewType(position);
-        final PeerRecieverType peerRecieverType = PeerRecieverType.values()[viewType];
+        final ReceiverType receiverType = ReceiverType.values()[viewType];
 
-        if (peerRecieverType != PeerRecieverType.CHAT) {
+        if (receiverType != ReceiverType.CHAT) {
 
             final UserGroupViewHolder viewHolder = (UserGroupViewHolder) holder;
 
-            loaderManager.load(context, viewHolder.avatarImageView, currentMessage.getReceiver().getPhotoUrl(), defaultBitmap);
+            loaderManager.load(context, viewHolder.avatarImageView, currentMessage.getReceiver().getPhoto50Url(), defaultBitmap);
 
             viewHolder.messageTextView.setText(currentMessage.getText());
             viewHolder.nameTextView.setText(currentMessage.getSender().getName());
@@ -79,8 +79,8 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 
             final ChatViewHolder viewHolder = (ChatViewHolder) holder;
-            loaderManager.load(context, viewHolder.avatarImageView, currentMessage.getReceiver().getPhotoUrl(), defaultBitmap);
-            loaderManager.load(context, viewHolder.userPhotoImageView, currentMessage.getSender().getPhotoUrl(), defaultBitmap);
+            loaderManager.load(context, viewHolder.avatarImageView, currentMessage.getReceiver().getPhoto50Url(), defaultBitmap);
+            loaderManager.load(context, viewHolder.userPhotoImageView, currentMessage.getSender().getPhoto50Url(), defaultBitmap);
 
 
             viewHolder.messageTextView.setText(currentMessage.getText());
@@ -147,7 +147,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
-        return messageList.get(position).getReceiver().getPeerReceiverType().ordinal();
+        return messageList.get(position).getReceiver().getReceiverType().ordinal();
     }
 
 }

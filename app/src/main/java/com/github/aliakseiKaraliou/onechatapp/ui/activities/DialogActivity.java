@@ -1,8 +1,12 @@
 package com.github.aliakseiKaraliou.onechatapp.ui.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -25,19 +29,19 @@ import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogManager;
 import com.github.aliakseiKaraliou.onechatapp.ui.adapters.DialogAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DialogActivity extends AppCompatActivity {
 
-    IReceiver reciever;
-    EditText messageTextView;
+    private IReceiver reciever;
+    private List<IMessage> messageList = new ArrayList<>();
+    private RecyclerView.Adapter<RecyclerView.ViewHolder> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog);
-
-        messageTextView = (EditText) findViewById(R.id.dialog_new_message_text);
 
         Intent intent = getIntent();
         Long peerId = intent.getLongExtra(Constants.Other.PEER_ID, 0);
@@ -62,10 +66,10 @@ public class DialogActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
-        final List<IMessage> result = manager.getResult();
+        messageList = manager.getResult();
         manager.startLoading(this, reciever, 20);
 
-        final DialogAdapter adapter = new DialogAdapter(this, result);
+        adapter = new DialogAdapter(this, messageList);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -79,8 +83,8 @@ public class DialogActivity extends AppCompatActivity {
                         final List<IMessage> messageList = manager.getResult();
 
                         manager.startLoading(DialogActivity.this, reciever, itemCount);
-                        if (messageList != null && result != null) {
-                            result.addAll(messageList);
+                        if (messageList != null && messageList != null) {
+                            messageList.addAll(messageList);
                             adapter.notifyDataSetChanged();
                         }
 
@@ -91,6 +95,7 @@ public class DialogActivity extends AppCompatActivity {
                 }
             }
         });
+        registerReceiver(new NewMessageBroadcastReceiver(), new IntentFilter(Constants.Other.BROADCAST_NEW_MESSAGE_RECEIVER_NAME));
     }
 
 
@@ -127,6 +132,7 @@ public class DialogActivity extends AppCompatActivity {
     }
 
     public void sendButtonOnClick(View view) {
+        final EditText messageTextView = (EditText) findViewById(R.id.dialog_new_message_text);
         final String message = messageTextView.getText().toString();
         if (!message.equals("")) {
             final boolean success = new SendManager().send(reciever, message);
@@ -137,4 +143,29 @@ public class DialogActivity extends AppCompatActivity {
             }
         }
     }
+
+    public class NewMessageBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final ArrayList<Parcelable> parcelableArrayListExtra = intent.getParcelableArrayListExtra(Constants.Params.MESSAGE);
+            final List<IMessage> newMessages = new ArrayList<>();
+            if (parcelableArrayListExtra != null) {
+                for (Parcelable parcelable : parcelableArrayListExtra) {
+                    if (parcelable instanceof IMessage) {
+                        newMessages.add((IMessage) parcelable);
+                    }
+                }
+                if (newMessages.size() > 0) {
+                    for (IMessage message : newMessages) {
+                        if (message.getReceiver().equals(reciever)) {
+                            messageList.add(0, message);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }

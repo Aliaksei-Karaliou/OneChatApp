@@ -21,10 +21,14 @@ import com.github.aliakseiKaraliou.onechatapp.logic.utils.network.NetworkConnect
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollServer;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkGetLongPollServerParser;
 import com.github.aliakseiKaraliou.onechatapp.services.ReceivingService;
 import com.github.aliakseiKaraliou.onechatapp.services.broadcastReceiver.MessageBroadcastReceiver;
 import com.github.aliakseiKaraliou.onechatapp.services.notifications.SimpleNotificationManager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +39,7 @@ public class App extends Application {
     private SharedPreferences applicationSharedPreferences;
     private ORM recieverORM;
     private ORM messageORM;
+    private VkLongPollServer longPollServer;
 
     @Override
     public void onCreate() {
@@ -60,12 +65,25 @@ public class App extends Application {
             VkInfo.userGetAuth(applicationSharedPreferences);
         }
 
-        if (VkInfo.isUserAuthorized()) {
-            startService(new Intent(this, ReceivingService.class));
-        }
+        //longpoll init
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final String request = new VkRequester().doRequest(Constants.Method.MESSAGES_GETLONGPOLLSERVER);
+                    longPollServer = new VkGetLongPollServerParser().parse(request);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (VkInfo.isUserAuthorized()) {
+                    startService(new Intent(App.this, ReceivingService.class));
+                }
+            }
+        }).start();
+
 
         final MessageBroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
-        registerReceiver(messageBroadcastReceiver, new IntentFilter(Constants.Other.BROADCAST_MESSAGE_RECEIVER_NAME));
+        registerReceiver(messageBroadcastReceiver, new IntentFilter(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME));
 
         //read receivers from db
         new Thread(new Runnable() {
@@ -79,6 +97,7 @@ public class App extends Application {
                 VkReceiverStorage.putAll(new ArrayList<IReceiver>(chatList));
             }
         }).run();
+
     }
 
     public ORM getRecieverORM() {
@@ -99,5 +118,9 @@ public class App extends Application {
 
     public SharedPreferences getApplicationSharedPreferences() {
         return applicationSharedPreferences;
+    }
+
+    public VkLongPollServer getLongPollServer() {
+        return longPollServer;
     }
 }

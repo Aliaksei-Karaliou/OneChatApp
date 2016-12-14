@@ -3,30 +3,31 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk.models;
 import android.os.Parcel;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IGroup;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.PeerRecieverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 
 public final class VkGroup implements IGroup {
 
     private long id;
-    private java.lang.String name;
+    private String name;
+    private String photo50Url;
+    private String photo100Url;
+
 
     @Override
-    public java.lang.String getPhotoUrl() {
-        return photoUrl;
+    public String getPhoto50Url() {
+        return photo50Url;
     }
-
     @Override
-    public void setPhotoUrl(java.lang.String photoUrl) {
-        this.photoUrl = photoUrl;
+    public String getPhoto100Url() {
+        return photo100Url;
     }
 
-    private java.lang.String photoUrl;
-
-    public VkGroup(long id, java.lang.String name, java.lang.String photoUrl) {
+    public VkGroup(long id, String name, String photo50Url, String photo100Url) {
         this.id = id;
         this.name = name;
-        this.photoUrl = photoUrl;
+        this.photo50Url = photo50Url;
+        this.photo100Url = photo100Url;
     }
 
     @Override
@@ -35,7 +36,7 @@ public final class VkGroup implements IGroup {
     }
 
     @Override
-    public java.lang.String getName() {
+    public String getName() {
         return name;
     }
 
@@ -46,9 +47,10 @@ public final class VkGroup implements IGroup {
     }
 
     @Override
-    public PeerRecieverType getPeerReceiverType() {
-        return PeerRecieverType.GROUP;
+    public ReceiverType getReceiverType() {
+        return ReceiverType.GROUP;
     }
+
 
 
     @Override
@@ -60,14 +62,17 @@ public final class VkGroup implements IGroup {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
         dest.writeString(this.name);
-        dest.writeString(this.photoUrl);
+        dest.writeString(this.photo50Url);
+        dest.writeString(this.photo100Url);
     }
 
     protected VkGroup(Parcel in) {
         this.id = in.readLong();
         this.name = in.readString();
-        this.photoUrl = in.readString();
+        this.photo50Url = in.readString();
+        this.photo100Url = in.readString();
     }
+
 
     public static final Creator<VkGroup> CREATOR = new Creator<VkGroup>() {
         @Override

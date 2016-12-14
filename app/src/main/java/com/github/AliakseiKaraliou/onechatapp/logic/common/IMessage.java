@@ -26,5 +26,7 @@ public interface IMessage extends Cloneable, IEvent {
 
     @Nullable
     IChat getChat();
+
+
 }
 

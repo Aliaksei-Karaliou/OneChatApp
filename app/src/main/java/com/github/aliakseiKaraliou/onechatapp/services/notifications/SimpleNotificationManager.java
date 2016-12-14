@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
@@ -18,7 +19,7 @@ public class SimpleNotificationManager {
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
-    public void send(String title, String text, int smallIconId, String statusBarText, PendingIntent pendingIntent) {
+    public void send(String title, String text, Bitmap bigIcon, String statusBarText, int smallIconId, PendingIntent pendingIntent) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -27,6 +28,7 @@ public class SimpleNotificationManager {
         builder.setContentIntent(pendingIntent);
         builder.setContentTitle(title);
         builder.setContentText(text);
+        builder.setLargeIcon(bigIcon);
         builder.setSmallIcon(smallIconId);
         builder.setTicker(statusBarText);
         final Notification notification = builder.build();

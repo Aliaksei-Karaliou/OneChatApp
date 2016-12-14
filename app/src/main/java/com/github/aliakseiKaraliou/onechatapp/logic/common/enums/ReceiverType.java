@@ -1,6 +1,6 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.common.enums;
 
-public enum PeerRecieverType {
+public enum ReceiverType {
     USER,
     CHAT,
     GROUP,

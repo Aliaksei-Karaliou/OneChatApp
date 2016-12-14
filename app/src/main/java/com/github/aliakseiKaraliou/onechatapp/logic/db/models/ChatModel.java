@@ -22,7 +22,8 @@ public final class ChatModel implements AbstractModel<ChatModel> {
     private static final String SOCIAL_NETWORK = "social_network";
     private static final String PEER_ID = "peerId";
     private static final String NAME = "name";
-    private static final String PHOTO = "photo";
+    private static final String PHOTO50 = "photo50";
+    private static final String PHOTO100 = "photo100";
 
     @DbType(type = DbType.Type.INTEGER)
     @DbColumnName(name = PEER_ID)
@@ -34,25 +35,31 @@ public final class ChatModel implements AbstractModel<ChatModel> {
     private String name;
 
     @DbType(type = DbType.Type.TEXT)
-    @DbColumnName(name = PHOTO)
-    private String photo;
+    @DbColumnName(name = PHOTO50)
+    private String photo50Url;
+
+    @DbType(type = DbType.Type.TEXT)
+    @DbColumnName(name = PHOTO100)
+    private String photo100Url;
 
     @DbType(type = DbType.Type.TEXT)
     @DbColumnName(name = SOCIAL_NETWORK)
     @DbPrimaryKey
     private String socialNetwork;
 
-    private ChatModel(long id, String name, String photo, SocialNetwork socialNetwork) {
+    private ChatModel(long id, String name, String photo50Url, String photo100Url, SocialNetwork socialNetwork) {
         this.id = id;
         this.name = name;
-        this.photo = photo;
+        this.photo50Url = photo50Url;
+        this.photo100Url = photo100Url;
         this.socialNetwork = socialNetwork.toString();
     }
 
     private ChatModel(IChat chat) {
         this.id = chat.getId();
         this.name = chat.getName();
-        this.photo = chat.getPhotoUrl();
+        this.photo50Url = chat.getPhoto50Url();
+        this.photo100Url = chat.getPhoto100Url();
         this.socialNetwork = chat.getSocialNetwork().toString();
     }
 
@@ -64,8 +71,8 @@ public final class ChatModel implements AbstractModel<ChatModel> {
         return name;
     }
 
-    public String getPhoto() {
-        return photo;
+    public String getPhoto50Url() {
+        return photo50Url;
     }
 
     public String getSocialNetwork() {
@@ -77,7 +84,8 @@ public final class ChatModel implements AbstractModel<ChatModel> {
         ContentValues contentValues = new ContentValues();
         contentValues.put(PEER_ID, id);
         contentValues.put(NAME, name);
-        contentValues.put(PHOTO, photo);
+        contentValues.put(PHOTO50, photo50Url);
+        contentValues.put(PHOTO100, photo100Url);
         contentValues.put(SOCIAL_NETWORK, socialNetwork);
         return contentValues;
     }
@@ -86,9 +94,10 @@ public final class ChatModel implements AbstractModel<ChatModel> {
     public ChatModel convertToModel(Cursor cursor) {
         final long peerId = cursor.getLong(0);
         final String name = cursor.getString(1);
-        final String photoUrl = cursor.getString(2);
-        final String social_network = cursor.getString(3);
-        return new ChatModel(peerId, name, photoUrl, SocialNetwork.valueOf(social_network));
+        final String photo100 = cursor.getString(2);
+        final String photo50 = cursor.getString(3);
+        final String social_network = cursor.getString(4);
+        return new ChatModel(peerId, name, photo50, photo100, SocialNetwork.valueOf(social_network));
     }
 
     private ChatModel() {
@@ -120,6 +129,6 @@ public final class ChatModel implements AbstractModel<ChatModel> {
     }
 
     public static IChat convertFrom(ChatModel chatModel){
-        return new VkChat(chatModel.getId(), chatModel.getName(), chatModel.photo);
+        return new VkChat(chatModel.getId(), chatModel.getName(), chatModel.photo50Url, chatModel.photo100Url);
     }
 }

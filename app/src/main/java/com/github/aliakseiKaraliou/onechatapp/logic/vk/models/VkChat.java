@@ -3,29 +3,26 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk.models;
 import android.os.Parcel;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.PeerRecieverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkIdConverter;
 
 
 public class VkChat implements IChat {
 
     private long id = -1;
-    private java.lang.String name = "";
-    private java.lang.String photoUrl = null;
+    private String name = "";
+    private String photo50Url = null;
+    private String photo100Url = null;
 
-    public VkChat(long id, String name, java.lang.String photoUrl) {
-        if (id < 2000000000)
+    public VkChat(long id, String name, String photo50Url, String photo100Url) {
+        if (id < VkIdConverter.getChatPeerOffset())
             this.id = id + 2000000000;
         else
             this.id = id;
         this.name = name;
-        this.photoUrl = photoUrl;
+        this.photo50Url = photo50Url;
+        this.photo100Url = photo100Url;
     }
 
 
@@ -35,18 +32,13 @@ public class VkChat implements IChat {
     }
 
     @Override
-    public java.lang.String getName() {
+    public String getName() {
         return name;
     }
 
     @Override
-    public java.lang.String getPhotoUrl() {
-        return photoUrl;
-    }
-
-    @Override
-    public void setPhotoUrl(java.lang.String photoUrl) {
-        this.photoUrl = photoUrl;
+    public String getPhoto50Url() {
+        return photo50Url;
     }
 
     @Override
@@ -55,15 +47,19 @@ public class VkChat implements IChat {
     }
 
     @Override
-    public PeerRecieverType getPeerReceiverType() {
-        return PeerRecieverType.CHAT;
+    public ReceiverType getReceiverType() {
+        return ReceiverType.CHAT;
     }
 
     @Override
-    public void setName(java.lang.String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
+    @Override
+    public String getPhoto100Url() {
+        return photo100Url;
+    }
 
     @Override
     public int describeContents() {
@@ -74,13 +70,15 @@ public class VkChat implements IChat {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
         dest.writeString(this.name);
-        dest.writeString(this.photoUrl);
+        dest.writeString(this.photo50Url);
+        dest.writeString(this.photo100Url);
     }
 
     protected VkChat(Parcel in) {
         this.id = in.readLong();
         this.name = in.readString();
-        this.photoUrl = in.readString();
+        this.photo50Url = in.readString();
+        this.photo100Url = in.readString();
     }
 
     public static final Creator<VkChat> CREATOR = new Creator<VkChat>() {

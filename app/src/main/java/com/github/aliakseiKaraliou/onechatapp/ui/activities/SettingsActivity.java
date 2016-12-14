@@ -1,6 +1,7 @@
 package com.github.aliakseiKaraliou.onechatapp.ui.activities;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,16 +19,18 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
 
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.preferences);
 
+        new StringBuilder();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         final Switch nightModeSwitch = (Switch) findViewById(R.id.night_mode_switch);
         nightModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

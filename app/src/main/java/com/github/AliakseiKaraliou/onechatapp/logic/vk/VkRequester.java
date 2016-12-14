@@ -15,11 +15,14 @@ import java.util.Locale;
 
 public class VkRequester {
 
+    public VkRequester() {
+    }
+
     @SafeVarargs
-    public final String doRequest(String methodName, Pair<String, String>... params) throws IOException {
+    public synchronized final String doRequest(String methodName, Pair<String, String>... params) throws IOException {
 
         try {
-            StringBuilder paramsBuilder = new StringBuilder();
+            final StringBuilder paramsBuilder = new StringBuilder();
             String stringParams = "";
             if (params.length > 0) {
                 for (Pair<String, String> param : params) {
@@ -32,7 +35,8 @@ public class VkRequester {
 
             URL url = new URL(stringUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod("GET");
+            Thread.sleep(400);
             final int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 final String result = readConnection(connection);
@@ -49,7 +53,7 @@ public class VkRequester {
     }
 
     @Nullable
-    public final String doLongPollRequest(VkLongPollServer server) {
+    public synchronized final String doLongPollRequest(VkLongPollServer server) {
         try {
             final String urlString = String.format(Locale.US, Constants.Other.VK_LONG_POLL_REQUEST, server.getServer(), server.getKey(), server.getTs());
             try {

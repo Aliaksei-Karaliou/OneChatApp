@@ -21,14 +21,15 @@ public class VkUserDataParser implements IParser<String, LongSparseArray<IUser>>
             JSONArray jsonArray = new JSONObject(json).getJSONArray(Constants.Json.RESPONSE);
             JSONObject currentObject;
             long id;
-            String firstName, lastName, photoUrl;
+            String firstName, lastName, photo50, photo100;
             for (int i = 0; i < jsonArray.length(); i++) {
                 currentObject = jsonArray.getJSONObject(i);
                 id = currentObject.getLong(Constants.Json.ID);
                 firstName = currentObject.getString(Constants.Json.FIRST_NAME);
                 lastName = currentObject.getString(Constants.Json.LAST_NAME);
-                photoUrl = currentObject.getString(Constants.Json.PHOTO_50);
-                IUser user = new VkUser(id, firstName, lastName, photoUrl);
+                photo50 = currentObject.getString(Constants.Json.PHOTO_50);
+                photo100 = currentObject.getString(Constants.Json.PHOTO_100);
+                IUser user = new VkUser(id, firstName, lastName, photo50, photo100);
                 userLongSparseArray.put(id, user);
             }
             return userLongSparseArray;

@@ -2,7 +2,7 @@ package com.github.aliakseiKaraliou.onechatapp.logic.common;
 
 import android.os.Parcelable;
 
-import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.PeerRecieverType;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 
 public interface IReceiver extends Parcelable {
@@ -10,11 +10,11 @@ public interface IReceiver extends Parcelable {
 
     String getName();
 
-    String getPhotoUrl();
+    String getPhoto50Url();
 
-    void setPhotoUrl(String photoUrl);
+    String getPhoto100Url();
 
     SocialNetwork getSocialNetwork();
 
-    PeerRecieverType getPeerReceiverType();
+    ReceiverType getReceiverType();
 }

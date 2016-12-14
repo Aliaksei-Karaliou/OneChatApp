@@ -1,14 +1,10 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.util.Log;
 import android.util.LruCache;
 import android.widget.ImageView;
 
@@ -36,7 +32,7 @@ public class LazyImageLoaderManager {
 
                     @Override
                     protected void onPreExecute() {
-                        final Drawable drawable = roundDrawable(context, defaultitmap);
+                        final Drawable drawable = ImageRounder.makeRoundDrawable(context, defaultitmap);
                         imageView.setImageDrawable(drawable);
                         imageView.setTag(url);
                     }
@@ -49,10 +45,9 @@ public class LazyImageLoaderManager {
                     @Override
                     protected void onPostExecute(Bitmap bitmap) {
                         if (imageView.getTag().equals(url) && bitmap != null) {
-                            final Drawable drawable = roundDrawable(context, bitmap);
+                            final Drawable drawable = ImageRounder.makeRoundDrawable(context, bitmap);
                             cache.put(url, drawable);
                             imageView.setImageDrawable(drawable);
-                            new StringBuilder();
                         }
                     }
                 };
@@ -62,12 +57,6 @@ public class LazyImageLoaderManager {
             }
     }
 
-    private Drawable roundDrawable(final Context context, final Bitmap bitmap) {
-        final Resources resources = context.getResources();
-        final RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, bitmap);
-        roundedBitmapDrawable.setCircular(true);
-        return roundedBitmapDrawable;
-    }
 
     private class ImageLoader {
 

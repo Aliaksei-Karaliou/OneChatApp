@@ -22,7 +22,8 @@ public final class GroupModel implements AbstractModel<GroupModel> {
     private static final String SOCIAL_NETWORK = "social_network";
     private static final String PEER_ID = "peerId";
     private static final String NAME = "name";
-    private static final String PHOTO = "photo";
+    private static final String PHOTO50 = "photo50";
+    private static final String PHOTO100 = "photo100";
 
     @DbType(type = DbType.Type.INTEGER)
     @DbColumnName(name = PEER_ID)
@@ -34,25 +35,31 @@ public final class GroupModel implements AbstractModel<GroupModel> {
     private String name;
 
     @DbType(type = DbType.Type.TEXT)
-    @DbColumnName(name = PHOTO)
-    private String photo;
+    @DbColumnName(name = PHOTO50)
+    private String photo50;
+
+    @DbType(type = DbType.Type.TEXT)
+    @DbColumnName(name = PHOTO100)
+    private String photo100;
 
     @DbType(type = DbType.Type.TEXT)
     @DbColumnName(name = SOCIAL_NETWORK)
     @DbPrimaryKey
     private String socialNetwork;
 
-    public GroupModel(long id, String name, String photo, SocialNetwork socialNetwork) {
+    public GroupModel(long id, String name, String photo50, String photo100, SocialNetwork socialNetwork) {
         this.id = id;
         this.name = name;
-        this.photo = photo;
+        this.photo50 = photo50;
+        this.photo100 = photo100;
         this.socialNetwork = socialNetwork.toString();
     }
 
     public GroupModel(IGroup group) {
         this.id = group.getId();
         this.name = group.getName();
-        this.photo = group.getPhotoUrl();
+        this.photo50 = group.getPhoto50Url();
+        this.photo100 = group.getPhoto100Url();
         this.socialNetwork = group.getSocialNetwork().toString();
     }
 
@@ -61,7 +68,8 @@ public final class GroupModel implements AbstractModel<GroupModel> {
         ContentValues contentValues = new ContentValues();
         contentValues.put(PEER_ID, id);
         contentValues.put(NAME, name);
-        contentValues.put(PHOTO, photo);
+        contentValues.put(PHOTO50, photo50);
+        contentValues.put(PHOTO100, photo100);
         contentValues.put(SOCIAL_NETWORK, socialNetwork);
         return contentValues;
     }
@@ -70,10 +78,11 @@ public final class GroupModel implements AbstractModel<GroupModel> {
     public GroupModel convertToModel(Cursor cursor) {
         final long peerId = cursor.getLong(0);
         final String name = cursor.getString(1);
-        final String photoUrl = cursor.getString(2);
-        final String socialNetwork = cursor.getString(3);
+        final String photo100 = cursor.getString(2);
+        final String photo50 = cursor.getString(3);
+        final String socialNetwork = cursor.getString(4);
 
-        return new GroupModel(peerId, name, photoUrl, SocialNetwork.valueOf(socialNetwork));
+        return new GroupModel(peerId, name, photo50, photo100, SocialNetwork.valueOf(socialNetwork));
     }
 
     private GroupModel() {
@@ -95,7 +104,7 @@ public final class GroupModel implements AbstractModel<GroupModel> {
     public static List<IGroup> convertFrom(Collection<GroupModel> groupModelCollection) {
         List<IGroup> groupList = new ArrayList<>();
         for (GroupModel groupModel : groupModelCollection) {
-            groupList.add(new VkGroup(groupModel.id, groupModel.name, groupModel.photo));
+            groupList.add(new VkGroup(groupModel.id, groupModel.name, groupModel.photo50, groupModel.photo100));
         }
         return groupList;
     }

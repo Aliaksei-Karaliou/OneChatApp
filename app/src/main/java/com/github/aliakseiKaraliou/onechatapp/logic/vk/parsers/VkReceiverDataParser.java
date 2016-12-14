@@ -49,9 +49,9 @@ public class VkReceiverDataParser implements IParser<Set<Long>, LongSparseArray<
         try {
             if (userIdSB.length() > 0) {
                 final String userIdString = userIdSB.substring(0, userIdSB.length() - 1);
-                Pair<String, String> fields = new Pair<>(Constants.Json.FIELDS, Constants.Json.PHOTO_50);
+                Pair<String, String> photosPair = new Pair<>(Constants.Json.FIELDS, Constants.Json.PHOTO_50_100);
                 Pair<String, String> userIds = new Pair<>(Constants.Json.USER_IDS, userIdString);
-                String userResponse = new VkRequester().doRequest(Constants.Method.USERS_GET, userIds, fields);
+                String userResponse = new VkRequester().doRequest(Constants.Method.USERS_GET, userIds, photosPair);
                 userSparseArray = new VkUserDataParser().parse(userResponse);
 
             }
@@ -74,21 +74,21 @@ public class VkReceiverDataParser implements IParser<Set<Long>, LongSparseArray<
             LongSparseArray<IReceiver> result = new LongSparseArray<>();
 
             for (Long id : ids) {
-                IReceiver reciever = VkReceiverStorage.get(id);
-                if (reciever == null) {
+                IReceiver receiver = VkReceiverStorage.get(id);
+                if (receiver == null) {
                     if (id > VkIdConverter.getChatPeerOffset()) {  //chat
                         assert chatSparseArray != null;
-                        reciever = chatSparseArray.get(id);
+                        receiver = chatSparseArray.get(id);
                     } else if (id > 0 || id < VkIdConverter.getEmailPeerOffset()) { //user or email
                         assert userSparseArray != null;
-                        reciever = userSparseArray.get(id);
+                        receiver = userSparseArray.get(id);
                     } else { //group
-                        assert userSparseArray != null;
-                        reciever = groupSparseArray.get(id);
+                        assert groupSparseArray != null;
+                        receiver = groupSparseArray.get(id);
                     }
                 }
-                assert reciever != null;
-                result.put(reciever.getId(), reciever);
+                assert receiver != null;
+                result.put(receiver.getId(), receiver);
             }
             return result;
         } catch (IOException | NullPointerException e) {

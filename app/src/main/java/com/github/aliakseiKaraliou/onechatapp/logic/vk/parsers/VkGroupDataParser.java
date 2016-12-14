@@ -25,10 +25,11 @@ public class VkGroupDataParser implements IParser<String, LongSparseArray<IGroup
             for (int i = 0; i < jsonArray.length(); i++) {
                 final JSONObject currentObject = jsonArray.getJSONObject(i);
                 Long id = converter.groupToPeer(currentObject.getLong(Constants.Json.ID));
-                String name = currentObject.getString(Constants.Json.NAME);
-                String photoUrl = currentObject.getString(Constants.Json.PHOTO_50);
+                final String name = currentObject.getString(Constants.Json.NAME);
+                final String photo50 = currentObject.getString(Constants.Json.PHOTO_50);
+                final String photo100 = currentObject.getString(Constants.Json.PHOTO_100);
                 if (id!=null){
-                    IGroup currentGroup = new VkGroup(id, name, photoUrl);
+                    IGroup currentGroup = new VkGroup(id, name, photo50, photo100);
                     sparseArray.put(id, currentGroup);
                 }
             }
