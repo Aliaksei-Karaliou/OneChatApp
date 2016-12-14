@@ -158,7 +158,7 @@ public class DialogActivity extends AppCompatActivity {
                 }
                 if (newMessages.size() > 0) {
                     for (IMessage message : newMessages) {
-                        if (message.getReceiver().equals(reciever)) {
+                        if (message.getReceiver().isEquals(reciever)) {
                             messageList.add(0, message);
                             adapter.notifyDataSetChanged();
                         }

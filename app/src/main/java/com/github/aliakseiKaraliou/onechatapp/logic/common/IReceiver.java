@@ -17,4 +17,6 @@ public interface IReceiver extends Parcelable {
     SocialNetwork getSocialNetwork();
 
     ReceiverType getReceiverType();
+
+    boolean isEquals(IReceiver receiver);
 }

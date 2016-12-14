@@ -3,6 +3,7 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk.models;
 import android.os.Parcel;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkIdConverter;
@@ -49,6 +50,11 @@ public class VkChat implements IChat {
     @Override
     public ReceiverType getReceiverType() {
         return ReceiverType.CHAT;
+    }
+
+    @Override
+    public boolean isEquals(IReceiver receiver) {
+        return getSocialNetwork() == receiver.getSocialNetwork() && getReceiverType() == receiver.getReceiverType() && receiver.getId() == getId();
     }
 
     @Override

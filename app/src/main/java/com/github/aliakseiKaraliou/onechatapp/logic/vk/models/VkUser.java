@@ -2,6 +2,7 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk.models;
 
 import android.os.Parcel;
 
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
@@ -74,6 +75,10 @@ public class VkUser implements IUser {
         return ReceiverType.USER;
     }
 
+    @Override
+    public boolean isEquals(IReceiver receiver) {
+        return getSocialNetwork() == receiver.getSocialNetwork() && getReceiverType() == receiver.getReceiverType() && receiver.getId() == getId();
+    }
 
 
     @Override

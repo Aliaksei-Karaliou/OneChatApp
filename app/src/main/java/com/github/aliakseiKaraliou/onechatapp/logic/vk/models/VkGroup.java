@@ -3,6 +3,7 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk.models;
 import android.os.Parcel;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IGroup;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
 
@@ -51,6 +52,10 @@ public final class VkGroup implements IGroup {
         return ReceiverType.GROUP;
     }
 
+    @Override
+    public boolean isEquals(IReceiver receiver) {
+        return getSocialNetwork() == receiver.getSocialNetwork() && getReceiverType() == receiver.getReceiverType() && receiver.getId() == getId();
+    }
 
 
     @Override
