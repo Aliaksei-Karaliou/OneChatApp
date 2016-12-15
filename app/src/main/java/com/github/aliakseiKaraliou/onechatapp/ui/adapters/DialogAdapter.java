@@ -16,6 +16,8 @@ import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.DateFriendlyFormat;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.LazyImageLoaderManager;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
 
 import java.util.List;
 
@@ -43,7 +45,13 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final LazyImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
 
         final DialogAdapterViewHolder dialogAdapterViewHolder = (DialogAdapterViewHolder) holder;
-        loaderManager.load(context, dialogAdapterViewHolder.photo, currentMessage.getSender().getPhoto50Url(), defaultBitmap);
+        final String photoUrl;
+        if (currentMessage.isOut()) {
+            photoUrl = VkReceiverStorage.get(VkInfo.getUserId()).getPhoto50Url();
+        } else {
+            photoUrl = currentMessage.getSender().getPhoto50Url();
+        }
+        loaderManager.load(context, dialogAdapterViewHolder.photo, photoUrl, defaultBitmap);
         dialogAdapterViewHolder.messageTextView.setText(currentMessage.getText());
         dialogAdapterViewHolder.photo.setOnClickListener(new View.OnClickListener() {
             @Override

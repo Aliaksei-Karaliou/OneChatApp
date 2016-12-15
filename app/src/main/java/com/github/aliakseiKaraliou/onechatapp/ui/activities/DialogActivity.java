@@ -63,8 +63,7 @@ public class DialogActivity extends AppCompatActivity {
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.dialog_message_recycler_view);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         linearLayoutManager.setReverseLayout(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        recyclerView.setLayoutManager(linearLayoutManager);;
 
         messageList = manager.getResult();
         manager.startLoading(this, reciever, 20);
@@ -80,11 +79,11 @@ public class DialogActivity extends AppCompatActivity {
                     final int itemCount = linearLayoutManager.getItemCount();
                     if (lastCompletelyVisibleItemPosition + 1 == itemCount && dy < 0) {
 
-                        final List<IMessage> messageList = manager.getResult();
+                        final List<IMessage> newMessageList = manager.getResult();
 
                         manager.startLoading(DialogActivity.this, reciever, itemCount);
-                        if (messageList != null && messageList != null) {
-                            messageList.addAll(messageList);
+                        if (messageList != null && newMessageList != null) {
+                            messageList.addAll(newMessageList);
                             adapter.notifyDataSetChanged();
                         }
 

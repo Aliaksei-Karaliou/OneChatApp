@@ -31,6 +31,7 @@ public class SimpleNotificationManager {
         builder.setLargeIcon(bigIcon);
         builder.setSmallIcon(smallIconId);
         builder.setTicker(statusBarText);
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(text));
         final Notification notification = builder.build();
         notificationManager.notify(0, notification);
     }
