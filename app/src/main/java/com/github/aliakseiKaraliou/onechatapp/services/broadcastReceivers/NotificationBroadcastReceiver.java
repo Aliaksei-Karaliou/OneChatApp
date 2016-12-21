@@ -4,12 +4,14 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.RingtoneManager;
 import android.support.v4.app.NotificationCompat;
 
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
+import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.SimpleImageLoader;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 
 import java.util.List;
@@ -36,6 +38,9 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
         //Message
         if (message != null) {
 
+            final SimpleImageLoader simpleImageLoader = new SimpleImageLoader();
+
+            simpleImageLoader.startLoading(message.getReceiver().getPhoto100Url());
             final String title;
             if (message.getChat() == null) {
                 title = message.getSender().getName();
@@ -44,12 +49,15 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
             }
             final String ticker = String.format(Locale.US, "%s: %s", title, message.getText());
 
+            final Bitmap receiverPhoto = simpleImageLoader.getResult();
+
             notificationBuilder.setSmallIcon(R.drawable.ic_mail)
                     .setContentTitle(title)
                     .setContentText(message.getText())
                     .setTicker(ticker)
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                    .setStyle(new NotificationCompat.BigTextStyle().bigText(message.getText()));
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(message.getText()))
+                    .setLargeIcon(receiverPhoto);
 
             notificationManager.notify(NEW_MESSAGE_ID, notificationBuilder.build());
         }
