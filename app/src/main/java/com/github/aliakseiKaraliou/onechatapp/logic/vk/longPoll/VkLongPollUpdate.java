@@ -54,17 +54,15 @@ public class VkLongPollUpdate {
         if (newMessageIdStringBuilder.length() > 0) {
             try {
                 messageIdString = newMessageIdStringBuilder.substring(0, newMessageIdStringBuilder.length() - 1);
-                Pair<String, String> messageIdPair = new Pair<>(Constants.Params.MESSAGE_IDS, messageIdString);
+                final Pair<String, String> messageIdPair = new Pair<>(Constants.Params.MESSAGE_IDS, messageIdString);
                 final String request = new VkRequester().doRequest(Constants.Method.MESSAGES_GETBYID, messageIdPair);
                 final Set<Long> parse = new VkMessageByIdStartParser().parse(request);
-                if (parse != null) {
-                    if (parse.size() > 0) {
-                        final LongSparseArray<IReceiver> longSparseArrayStorage = new VkReceiverDataParser().parse(parse);
-                        if (longSparseArrayStorage != null) {
-                            for (int i = 0; i < longSparseArrayStorage.size(); i++) {
-                                final IReceiver receiver = longSparseArrayStorage.get(i);
+                if (parse != null && parse.size() > 0) {
+                    final LongSparseArray<IReceiver> longSparseArrayStorage = new VkReceiverDataParser().parse(parse);
+                    if (longSparseArrayStorage != null) {
+                        for (int i = 0; i < longSparseArrayStorage.size(); i++) {
+                                final IReceiver receiver = longSparseArrayStorage.valueAt(i);
                                 VkReceiverStorage.put(receiver);
-                            }
                         }
                     }
                 }

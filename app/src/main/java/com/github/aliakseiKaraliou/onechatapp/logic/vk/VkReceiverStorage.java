@@ -10,10 +10,12 @@ public class VkReceiverStorage {
     private static LongSparseArray<IReceiver> storage = new LongSparseArray<>();
 
     public static void put(IReceiver reciever) {
-        final IReceiver receiver = storage.get(reciever.getId());
-        if (receiver == null) {
-            storage.put(reciever.getId(), reciever);
+        final long id = reciever.getId();
+        final IReceiver receiver = storage.get(id);
+        if (receiver != null) {
+            storage.delete(id);
         }
+        storage.put(id, reciever);
     }
 
     public static IReceiver get(Long id) {
@@ -22,12 +24,8 @@ public class VkReceiverStorage {
 
     public static void putAll(LongSparseArray<IReceiver> array) {
         for (int i = 0; i < array.size(); i++) {
-            long key = array.keyAt(i);
-            IReceiver reciever = storage.get(key);
-            if (reciever == null) {
-                IReceiver value = array.valueAt(i);
-                storage.put(key, value);
-            }
+            final IReceiver receiver = array.valueAt(i);
+            VkReceiverStorage.put(receiver);
         }
     }
 

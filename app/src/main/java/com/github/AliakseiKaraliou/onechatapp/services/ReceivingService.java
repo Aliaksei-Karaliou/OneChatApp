@@ -1,54 +1,65 @@
 package com.github.aliakseiKaraliou.onechatapp.services;
 
-import android.app.Service;
+import android.app.IntentService;
 import android.content.Intent;
-import android.os.IBinder;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
-import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollServer;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollUpdate;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkGetLongPollServerParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkLongPollParser;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReceivingService extends Service {
+public class ReceivingService extends IntentService {
 
     private VkLongPollServer longPollServer;
-    private List<IEvent> events=new ArrayList<>();
+
+    public ReceivingService() {
+        super(Constants.Other.EVENT_SERVICE);
+    }
 
     @Override
-    public int onStartCommand(Intent intent, final int flags, int startId) {
-        final Thread thread = new Thread(new Runnable() {
+    public void onCreate() {
+        super.onCreate();
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                longPollServer = ((App) getApplicationContext()).getLongPollServer();
-                final String request = new VkRequester().doLongPollRequest(longPollServer);
-                final VkLongPollUpdate update = new VkLongPollParser().parse(getApplicationContext(), request);
-                events = update.getEvents();
-                longPollServer.setTs(update.getTs());
-                stopSelf();
+                try {
+                    final String request = new VkRequester().doRequest(Constants.Method.MESSAGES_GETLONGPOLLSERVER);
+                    longPollServer = new VkGetLongPollServerParser().parse(request);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        });
-        thread.start();
-        return START_REDELIVER_INTENT;
+        }).start();
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Intent broadcastIntent = new Intent(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME);
-        broadcastIntent.putParcelableArrayListExtra(Constants.Params.MESSAGE, (ArrayList<? extends Parcelable>) events);
-        events = new ArrayList<>();
-        sendBroadcast(broadcastIntent);
+    protected void onHandleIntent(@Nullable Intent intent) {
+        //waits for longPollServer initialize
+        while (longPollServer == null) ;
+
+
+        while (true) {
+            final String longPollRequest = new VkRequester().doLongPollRequest(longPollServer);
+            final VkLongPollUpdate parse = new VkLongPollParser().parse(getApplicationContext(), longPollRequest);
+            final List<IEvent> events = parse.getEvents();
+            if (events.size() > 0) {
+                Intent broadcastIntent = new Intent(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME);
+                broadcastIntent.putParcelableArrayListExtra(Constants.Other.EVENT_LIST, (ArrayList<? extends Parcelable>) events);
+                sendBroadcast(broadcastIntent);
+            }
+            final long newTs = parse.getTs();
+            longPollServer.setTs(newTs);
+        }
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
+
 }

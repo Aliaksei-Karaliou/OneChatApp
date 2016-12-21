@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-;
 
 public final class VkDialogsListManager {
 
@@ -40,11 +39,11 @@ public final class VkDialogsListManager {
             asyncOperation = new AsyncOperation<Integer, List<IMessage>>() {
                 @Override
                 protected List<IMessage> doInBackground(Integer offset) {
-                    List<IMessage> messageList = null;
+                    List<IMessage> messageList;
                     try {
                         final String jsonString;
                         if (offset > 0) {
-                            Pair<String, String> offsetPair = new Pair<String, String>(Constants.Params.OFFSET, offset.toString());
+                            Pair<String, String> offsetPair = new Pair<>(Constants.Params.OFFSET, offset.toString());
                             jsonString = new VkRequester().doRequest(Constants.Method.MESSAGES_GETDIALOGS, offsetPair);
                         } else {
                             jsonString = new VkRequester().doRequest(Constants.Method.MESSAGES_GETDIALOGS);

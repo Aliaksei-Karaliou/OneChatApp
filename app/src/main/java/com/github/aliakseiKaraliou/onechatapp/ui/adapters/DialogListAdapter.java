@@ -21,7 +21,7 @@ import java.util.List;
 
 public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private OnMessageClick onMessageClick;
+    private View.OnClickListener onMessageClick;
     private List<IMessage> messageList;
     private final DateFriendlyFormat dateFriendlyFormat;
     private Context context;
@@ -66,12 +66,8 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 
             if (onMessageClick != null) {
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        onMessageClick.onClick(currentMessage.getReceiver().getId());
-                    }
-                });
+                viewHolder.itemView.setTag(currentMessage.getReceiver().getId());
+                viewHolder.itemView.setOnClickListener(onMessageClick);
             }
 
 
@@ -88,12 +84,8 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             viewHolder.dateTextView.setText(dateFriendlyFormat.convert(context, currentMessage.getDate()));
 
             if (onMessageClick != null) {
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        onMessageClick.onClick(currentMessage.getReceiver().getId());
-                    }
-                });
+                viewHolder.itemView.setTag(currentMessage.getReceiver().getId());
+                viewHolder.itemView.setOnClickListener(onMessageClick);
             }
         }
     }
@@ -103,8 +95,14 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return messageList.size();
     }
 
-    public void onItemClick(OnMessageClick onMessageClick) {
-        this.onMessageClick = onMessageClick;
+    public void onItemClick(final OnMessageClick onMessageClick) {
+        this.onMessageClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final long tag = (long) view.getTag();
+                onMessageClick.onClick(tag);
+            }
+        };
     }
 
     private class UserGroupViewHolder extends RecyclerView.ViewHolder {

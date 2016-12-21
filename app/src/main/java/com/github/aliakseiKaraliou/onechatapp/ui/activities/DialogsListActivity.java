@@ -1,6 +1,9 @@
 package com.github.aliakseiKaraliou.onechatapp.ui.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +16,9 @@ import android.view.MenuItem;
 
 import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogsListManager;
@@ -23,9 +28,10 @@ import java.util.List;
 
 public class DialogsListActivity extends AppCompatActivity {
 
-    List<IMessage> messages;
-
+    private List<IMessage> messages;
+    private BroadcastReceiver broadcastReceiver;
     private SharedPreferences preferences;
+    private DialogListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +41,9 @@ public class DialogsListActivity extends AppCompatActivity {
 
         if (VkInfo.isUserAuthorized()) {
             auth();
+            broadcastReceiver = new NewEventBroadcastReceiver();
+            IntentFilter intentFilter = new IntentFilter(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME);
+            registerReceiver(broadcastReceiver, intentFilter);
         }
     }
 
@@ -60,7 +69,7 @@ public class DialogsListActivity extends AppCompatActivity {
         vkDialogsListManager.startLoading(DialogsListActivity.this, 20);
 
 
-        final DialogListAdapter adapter = new DialogListAdapter(this, messages);
+        adapter = new DialogListAdapter(this, messages);
         messagesRecyclerView.setAdapter(adapter);
 
         adapter.onItemClick(new DialogListAdapter.OnMessageClick() {
@@ -112,5 +121,28 @@ public class DialogsListActivity extends AppCompatActivity {
             startActivity(new Intent(this, SettingsActivity.class));
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private class NewEventBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final List<IEvent> eventList = intent.getParcelableArrayListExtra(Constants.Other.EVENT_LIST);
+            for (IEvent event : eventList) {
+                if (event instanceof IMessage) {
+                    final IMessage currentBroadcastMessage = (IMessage) event;
+                    IReceiver receiver = currentBroadcastMessage.getReceiver();
+                    for (int i = 0; i < messages.size(); i++) {
+                        IMessage message = messages.get(i);
+                        if (receiver.isEquals(message.getReceiver())) {
+                            messages.remove(i);
+                            break;
+                        }
+                    }
+                    messages.add(0, currentBroadcastMessage);
+                }
+            }
+            adapter.notifyDataSetChanged();
+        }
     }
 }

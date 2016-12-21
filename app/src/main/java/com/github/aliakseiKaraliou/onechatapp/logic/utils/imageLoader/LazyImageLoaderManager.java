@@ -25,7 +25,7 @@ public class LazyImageLoaderManager {
     }
 
     public void load(final Context context, final ImageView imageView, final String url, final Bitmap defaultitmap) {
-            Drawable image = cache.get(url);
+            final Drawable image = cache.get(url);
 
             if (image == null) {
                 final AsyncTask<Void, Void, Bitmap> asyncTask = new AsyncTask<Void, Void, Bitmap>() {

@@ -8,6 +8,8 @@ public interface Constants {
         String BODY = "body";
         String CHAT_ID = "chat_id";
         String CHAT_IDS = "chat_ids";
+        String CHAT_INVITE_USER = "chat_invite_user";
+        String CHAT_KICK_USER = "chat_kick_user";
         String DATE = "date";
         String GROUP_ID = "group_ids";
         String FIRST_NAME = "first_name";
@@ -68,15 +70,21 @@ public interface Constants {
 
     interface Other {
         String BROADCAST_EVENT_RECEIVER_NAME = "com.github.aliakseiKaraliou.newEvent";
-        String BROADCAST_NEW_MESSAGE_RECEIVER_NAME = "com.github.aliakseiKaraliou.newMessage";
         String CONVERT = "convert";
         String DEVELOPER_EMAIL = "alexeykoroliov@gmail.com";
+        String EVENT_LIST = "event list";
+        String EVENT_SERVICE = "event service";
         String MAILTO = "mailto";
         String PEER_ID = "peer id";
         String PREFERENCES = "preferences";
         String LIGHT_THEME = "light theme";
         String THEME_SWITCH_KEY = "Theme key";
         String VK_REQUEST_TEMPLATE = "https://api.vk.com/method/%s?%s&access_token=%s&v=%.2f";
-        String VK_LONG_POLL_REQUEST = "http://%s?act=a_check&key=%s&ts=%d&wait=25&mode=2";
+        String VK_LONG_POLL_REQUEST = "https://%s?act=a_check&key=%s&ts=%d&wait=25&mode=2";
+    }
+
+    interface TagIds {
+        int URL_ID = 0;
+        int ONCLICK_ID = 1;
     }
 }

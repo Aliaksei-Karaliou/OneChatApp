@@ -5,6 +5,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbPrimaryKey;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbTableName;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbType;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,11 +40,11 @@ public final class QueryGenerator {
                 primaryKeyBuilder.append(column.getAnnotation(DbColumnName.class).name()).append(",");
             }
         }
+        final Annotation[] annotations = clazz.getAnnotations();
+        final DbTableName declaredAnnotation = clazz.getAnnotation(DbTableName.class);
+        final String name = declaredAnnotation.name();
 
-        final String name = clazz.getAnnotation(DbTableName.class).name();
-        final String format = String.format(Locale.US, CREATE_IF_NOT_EXISTS_QUERY, name, builder.substring(0, builder.length() - 1), primaryKeyBuilder.substring(0, primaryKeyBuilder.length() - 1));
-
-        return format;
+        return String.format(Locale.US, CREATE_IF_NOT_EXISTS_QUERY, name, builder.substring(0, builder.length() - 1), primaryKeyBuilder.substring(0, primaryKeyBuilder.length() - 1));
     }
 
     public String getSelectAllQuery(String name) {

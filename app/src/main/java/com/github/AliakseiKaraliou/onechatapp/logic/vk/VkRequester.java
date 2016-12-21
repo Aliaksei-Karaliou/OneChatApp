@@ -19,7 +19,7 @@ public class VkRequester {
     }
 
     @SafeVarargs
-    public synchronized final String doRequest(String methodName, Pair<String, String>... params) throws IOException {
+    public final String doRequest(String methodName, Pair<String, String>... params) throws IOException {
 
         try {
             final StringBuilder paramsBuilder = new StringBuilder();
@@ -31,12 +31,12 @@ public class VkRequester {
                 stringParams = paramsBuilder.toString().substring(0, paramsBuilder.length() - 1);
             }
 
-            String stringUrl = String.format(Locale.US, Constants.Other.VK_REQUEST_TEMPLATE, methodName, stringParams, VkInfo.getAccessToken(), VkInfo.getVkApiVersion());
+            final String stringUrl = String.format(Locale.US, Constants.Other.VK_REQUEST_TEMPLATE, methodName, stringParams, VkInfo.getAccessToken(), VkInfo.getVkApiVersion());
 
-            URL url = new URL(stringUrl);
+            final URL url = new URL(stringUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            Thread.sleep(400);
+            Thread.sleep(350);
             final int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 final String result = readConnection(connection);
@@ -53,19 +53,20 @@ public class VkRequester {
     }
 
     @Nullable
-    public synchronized final String doLongPollRequest(VkLongPollServer server) {
+    public final String doLongPollRequest(VkLongPollServer server) {
         try {
             final String urlString = String.format(Locale.US, Constants.Other.VK_LONG_POLL_REQUEST, server.getServer(), server.getKey(), server.getTs());
             try {
                 final URL url = new URL(urlString);
                 final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                final int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
                     final String result = readConnection(connection);
                     connection.disconnect();
                     return result;
                 }
                 return null;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }

@@ -22,8 +22,7 @@ public final class ORM {
         try {
             final SQLiteDatabase database = helper.getWritableDatabase();
             final ContentValues contentValues = model.convertToContentValues();
-            final long insert = database.insert(tableName, null, contentValues);
-            return insert;
+            return database.insert(tableName, null, contentValues);
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
@@ -72,6 +71,19 @@ public final class ORM {
         }
         return modelList;
     }
+
+//    public <T extends AbstractModel> void update(final String tableName, final T object) {
+//        final SQLiteDatabase database = helper.getWritableDatabase();
+//        final String allQuery = new QueryGenerator().getSelectAllQuery(tableName);
+//
+//        final Cursor cursor = database.rawQuery(allQuery, null);
+//        do {
+//            final T model = (T) object.convertToModel(cursor);
+//            if (model.equals(object)){
+//            }
+//        }
+//        while (cursor.moveToNext());
+//    }
 
 
     public interface SelectCondition<T extends AbstractModel> {

@@ -31,7 +31,6 @@ public class DialogListMessageModel implements AbstractModel<DialogListMessageMo
     private static final String IS_OUT = "isOut";
     private static final String SOCIAL_NETWORK = "socialNetwork";
 
-    @DbPrimaryKey
     @DbColumnName(name = ID)
     @DbType(type = DbType.Type.INTEGER)
     private long id;
@@ -51,7 +50,6 @@ public class DialogListMessageModel implements AbstractModel<DialogListMessageMo
 
     @DbColumnName(name = USER_ID)
     @DbType(type = DbType.Type.INTEGER)
-    @DbPrimaryKey
     private long userId;
 
     @DbColumnName(name = IS_READ)
@@ -151,6 +149,16 @@ public class DialogListMessageModel implements AbstractModel<DialogListMessageMo
         final long userId = cursor.getLong(7);
 
         return new DialogListMessageModel(id, text, timestamp, peerId, userId, isRead > 0, isOut > 0, SocialNetwork.valueOf(socialNetwork));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof DialogListMessageModel) {
+            final DialogListMessageModel dialogListMessageModel = (DialogListMessageModel) obj;
+            return dialogListMessageModel.peerId == peerId && dialogListMessageModel.socialNetwork.equals(socialNetwork);
+        } else {
+            return false;
+        }
     }
 
     public static List<DialogListMessageModel> convertTo(Collection<IMessage> messageCollection) {

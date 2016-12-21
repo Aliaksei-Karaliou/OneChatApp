@@ -15,9 +15,9 @@ import java.util.List;
 public class VkLongPollParser {
     public VkLongPollUpdate parse(Context context, String json) {
         try {
-            JSONObject jsonObject = new JSONObject(json);
-            long ts = jsonObject.getLong(Constants.Json.TS);
-            JSONArray array = jsonObject.getJSONArray(Constants.Json.UPDATES);
+            final JSONObject jsonObject = new JSONObject(json);
+            final long ts = jsonObject.getLong(Constants.Json.TS);
+            final JSONArray array = jsonObject.getJSONArray(Constants.Json.UPDATES);
             final List<List<String>> result = new ArrayList<>();
             List<String> currentResult = new ArrayList<>();
             for (int i = 0; i < array.length(); i++) {

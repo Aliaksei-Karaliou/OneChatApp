@@ -76,13 +76,39 @@ public final class GroupModel implements AbstractModel<GroupModel> {
 
     @Override
     public GroupModel convertToModel(Cursor cursor) {
-        final long peerId = cursor.getLong(0);
-        final String name = cursor.getString(1);
-        final String photo100 = cursor.getString(2);
-        final String photo50 = cursor.getString(3);
-        final String socialNetwork = cursor.getString(4);
-
+        final String[] columnNames = cursor.getColumnNames();
+        String name = null, photo50 = null, photo100 = null, socialNetwork = null;
+        long peerId = 0;
+        for (int i = 0; i < columnNames.length; i++) {
+            switch (columnNames[i]) {
+                case PEER_ID:
+                    peerId = cursor.getLong(i);
+                    break;
+                case NAME:
+                    name = cursor.getString(i);
+                    break;
+                case PHOTO50:
+                    photo50 = cursor.getString(i);
+                    break;
+                case PHOTO100:
+                    photo100 = cursor.getString(i);
+                    break;
+                case SOCIAL_NETWORK:
+                    socialNetwork = cursor.getString(i);
+                    break;
+            }
+        }
         return new GroupModel(peerId, name, photo50, photo100, SocialNetwork.valueOf(socialNetwork));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof GroupModel) {
+            final GroupModel groupModel = (GroupModel) obj;
+            return groupModel.socialNetwork.equals(socialNetwork) && groupModel.id == id;
+        } else {
+            return false;
+        }
     }
 
     private GroupModel() {

@@ -27,7 +27,6 @@ public class VkReceiverDataParser implements IParser<Set<Long>, LongSparseArray<
         StringBuilder chatIdSB = new StringBuilder();
         StringBuilder groupIdSB = new StringBuilder();
         VkIdConverter converter = new VkIdConverter();
-        int i = 0;
         for (Long id : ids) {
             if (VkReceiverStorage.get(id) == null) {
                 if (id < 0)

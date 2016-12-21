@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.github.aliakseiKaraliou.onechatapp"
         minSdkVersion 17
@@ -22,8 +22,10 @@ android {
 }
 
 ext.versions = [
-        appCompat   : '25.0.1',
-        recyclerView: '25.0.1',
+        appCompat   : '25.1.0',
+        recyclerView: '25.1.0',
+        supportVectorDrawable: '25.1.0',
+        supportV4: '25.1.0',
         jUnit       : '4.12'
 ]
 
@@ -40,7 +42,7 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$versions.recyclerView"
 
     testCompile "junit:junit:$versions.jUnit"
-    compile 'com.android.support:support-v4:25.0.1'
-    compile 'com.android.support:support-vector-drawable:25.0.1'
+    compile "com.android.support:support-v4:$versions.supportV4"
+    compile "com.android.support:support-vector-drawable:$versions.supportVectorDrawable"
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
 }

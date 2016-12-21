@@ -6,4 +6,5 @@ import android.database.Cursor;
 public interface AbstractModel<T extends AbstractModel> {
     ContentValues convertToContentValues();
     T convertToModel(Cursor cursor);
+
 }

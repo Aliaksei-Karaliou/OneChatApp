@@ -119,6 +119,16 @@ public final class MessageModel implements AbstractModel<MessageModel> {
 
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof MessageModel) {
+            final MessageModel model = (MessageModel) obj;
+            return model.socialNetwork.equals(socialNetwork) && model.id == id;
+        } else {
+            return false;
+        }
+    }
+
     public static MessageModel getInstance() {
         return new MessageModel();
     }

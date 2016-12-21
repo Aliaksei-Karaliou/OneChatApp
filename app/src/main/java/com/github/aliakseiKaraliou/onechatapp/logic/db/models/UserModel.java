@@ -56,18 +56,6 @@ public final class UserModel implements AbstractModel<UserModel> {
         return id;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getPhoto50Url() {
-        return photo50Url;
-    }
-
     public String getSocialNetwork() {
         return socialNetwork;
     }
@@ -87,13 +75,42 @@ public final class UserModel implements AbstractModel<UserModel> {
 
     @Override
     public UserModel convertToModel(Cursor cursor) {
-        String firstName = cursor.getString(0);
-        long uid = cursor.getLong(1);
-        String lastname = cursor.getString(2);
-        String photo100 = cursor.getString(3);
-        String photo50 = cursor.getString(4);
-        String socialNetwork = cursor.getString(5);
-        return new UserModel(uid, firstName, lastname, photo50, photo100, SocialNetwork.valueOf(socialNetwork));
+        final String[] columnNames = cursor.getColumnNames();
+        String firstName = null, lastName = null, photo50 = null, photo100 = null, socialNetwork = null;
+        long uid = 0;
+        for (int i = 0; i < columnNames.length; i++) {
+            switch (columnNames[i]) {
+                case FIRST_NAME:
+                    firstName = cursor.getString(i);
+                    break;
+                case UID:
+                    uid = cursor.getLong(i);
+                    break;
+                case LAST_NAME:
+                    lastName = cursor.getString(i);
+                    break;
+                case PHOTO50:
+                    photo50 = cursor.getString(i);
+                    break;
+                case PHOTO100:
+                    photo100 = cursor.getString(i);
+                    break;
+                case SOCIAL_NETWORK:
+                    socialNetwork = cursor.getString(i);
+                    break;
+            }
+        }
+        return new UserModel(uid, firstName, lastName, photo50, photo100, SocialNetwork.valueOf(socialNetwork));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof UserModel) {
+            final UserModel model = (UserModel) obj;
+            return model.id == id && model.socialNetwork.equals(socialNetwork);
+        } else {
+            return false;
+        }
     }
 
     private UserModel(long id, String firstName, String lastName, String photo50Url, String photo100Url, SocialNetwork socialNetwork) {

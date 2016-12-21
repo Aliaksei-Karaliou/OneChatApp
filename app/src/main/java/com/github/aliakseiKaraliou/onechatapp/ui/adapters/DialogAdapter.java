@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.DateFriendlyFormat;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.LazyImageLoaderManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
@@ -26,11 +28,19 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private List<IMessage> messageList;
     private Context context;
     private Bitmap defaultBitmap;
+    private View.OnClickListener onClickListener;
 
-    public DialogAdapter(Context context, List<IMessage> messageList) {
+    public DialogAdapter(final Context context, final List<IMessage> messageList) {
         this.context = context;
         this.messageList = messageList;
         this.defaultBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.camera_50);
+        onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final View parent = (View) view.getParent();
+                Toast.makeText(context, parent.getTag().toString(), Toast.LENGTH_SHORT).show();
+            }
+        };
     }
 
     @Override
@@ -45,26 +55,18 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final LazyImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
 
         final DialogAdapterViewHolder dialogAdapterViewHolder = (DialogAdapterViewHolder) holder;
-        final String photoUrl;
+        final IReceiver receiver;
         if (currentMessage.isOut()) {
-            photoUrl = VkReceiverStorage.get(VkInfo.getUserId()).getPhoto50Url();
+            receiver = VkReceiverStorage.get(VkInfo.getUserId());
         } else {
-            photoUrl = currentMessage.getSender().getPhoto50Url();
+           receiver = currentMessage.getSender();
         }
-        loaderManager.load(context, dialogAdapterViewHolder.photo, photoUrl, defaultBitmap);
+        loaderManager.load(context, dialogAdapterViewHolder.photo, receiver.getPhoto50Url(), defaultBitmap);
         dialogAdapterViewHolder.messageTextView.setText(currentMessage.getText());
-        dialogAdapterViewHolder.photo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(context, currentMessage.getSender().getName(), Toast.LENGTH_SHORT).show();
-            }
-        });
-        dialogAdapterViewHolder.timeTexView.setText(new DateFriendlyFormat().convert(context, currentMessage.getDate()));
-    }
 
-    public void deleteItem(int position) {
-        messageList.remove(position);
-        this.notifyItemRemoved(position);
+        dialogAdapterViewHolder.photo.setOnClickListener(onClickListener);
+        dialogAdapterViewHolder.itemView.setTag(receiver.getName());
+        dialogAdapterViewHolder.timeTexView.setText(new DateFriendlyFormat().convert(context, currentMessage.getDate()));
     }
 
     @Override

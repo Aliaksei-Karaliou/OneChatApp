@@ -4,14 +4,12 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbTableName;
-
 public class DbHelper extends SQLiteOpenHelper {
 
-    private Class<?>[] clazz;
+    private final Class<?>[] clazz;
 
 
-    public DbHelper(Context context, String name, int version, Class<?>... clazz) {
+    public DbHelper(Context context, String name, int version, final Class<?>... clazz) {
         super(context, name, null, version);
         this.clazz = clazz;
 

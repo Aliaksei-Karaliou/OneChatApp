@@ -14,10 +14,12 @@ public class VkAuth {
     private List<String> scope;
 
     public void setScope(@NonNull String... scope) {
-        if (this.scope == null)
+        if (this.scope == null) {
             this.scope = Arrays.asList(scope);
-        else
+        }
+        else {
             this.scope.addAll(Arrays.asList(scope));
+        }
     }
 
     @NonNull

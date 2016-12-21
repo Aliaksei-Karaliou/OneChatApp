@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -20,6 +19,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.github.aliakseiKaraliou.onechatapp.R;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.ClearHistoryManager;
@@ -37,6 +37,7 @@ public class DialogActivity extends AppCompatActivity {
     private IReceiver reciever;
     private List<IMessage> messageList = new ArrayList<>();
     private RecyclerView.Adapter<RecyclerView.ViewHolder> adapter;
+    BroadcastReceiver newEventReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +58,17 @@ public class DialogActivity extends AppCompatActivity {
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        newEventReceiver = new EventBroadcastReceiver();
+        IntentFilter filter = new IntentFilter(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME);
+        registerReceiver(newEventReceiver, filter);
+
         final VkDialogManager manager = new VkDialogManager();
         manager.startLoading(this, reciever, 0);
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.dialog_message_recycler_view);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         linearLayoutManager.setReverseLayout(true);
-        recyclerView.setLayoutManager(linearLayoutManager);;
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         messageList = manager.getResult();
         manager.startLoading(this, reciever, 20);
@@ -94,7 +99,6 @@ public class DialogActivity extends AppCompatActivity {
                 }
             }
         });
-        registerReceiver(new NewMessageBroadcastReceiver(), new IntentFilter(Constants.Other.BROADCAST_NEW_MESSAGE_RECEIVER_NAME));
     }
 
 
@@ -167,4 +171,22 @@ public class DialogActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(newEventReceiver);
+    }
+
+    private class EventBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final List<IEvent> eventList = intent.getParcelableArrayListExtra(Constants.Other.EVENT_LIST);
+            for (IEvent event : eventList) {
+                if (event instanceof IMessage && ((IMessage) event).getReceiver().isEquals(reciever)) {
+                    messageList.add(0, (IMessage) event);
+                    adapter.notifyDataSetChanged();
+                }
+            };
+        }
+    }
 }

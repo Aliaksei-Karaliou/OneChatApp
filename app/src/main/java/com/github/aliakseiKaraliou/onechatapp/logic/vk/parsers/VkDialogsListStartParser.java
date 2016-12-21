@@ -39,7 +39,6 @@ public class VkDialogsListStartParser implements IParser<String, Set<Long>> {
                     set.add(peerUser);
                 if (currentObject.has(Constants.Json.ACTION_MID)) {
                     final long peerAction = currentObject.getLong(Constants.Json.ACTION_MID);
-                    final IReceiver peerReceiver = VkReceiverStorage.get(peerAction);
                     set.add(peerAction);
                 }
             }

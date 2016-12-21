@@ -2,7 +2,6 @@ package com.github.aliakseiKaraliou.onechatapp;
 
 import android.app.Application;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
@@ -21,14 +20,10 @@ import com.github.aliakseiKaraliou.onechatapp.logic.utils.network.NetworkConnect
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollServer;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkGetLongPollServerParser;
 import com.github.aliakseiKaraliou.onechatapp.services.ReceivingService;
-import com.github.aliakseiKaraliou.onechatapp.services.broadcastReceiver.MessageBroadcastReceiver;
 import com.github.aliakseiKaraliou.onechatapp.services.notifications.SimpleNotificationManager;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,29 +56,12 @@ public class App extends Application {
         applicationSharedPreferences = getSharedPreferences(Constants.Other.PREFERENCES, MODE_PRIVATE);
 
         if (NetworkConnectionChecker.check(this)) {
-            // boolean isOnline = true;
             VkInfo.userGetAuth(applicationSharedPreferences);
         }
 
-        //longpoll init
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    final String request = new VkRequester().doRequest(Constants.Method.MESSAGES_GETLONGPOLLSERVER);
-                    longPollServer = new VkGetLongPollServerParser().parse(request);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (VkInfo.isUserAuthorized()) {
-                    startService(new Intent(App.this, ReceivingService.class));
-                }
-            }
-        }).start();
-
-
-        final MessageBroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
-        registerReceiver(messageBroadcastReceiver, new IntentFilter(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME));
+        if (VkInfo.isUserAuthorized()) {
+            startService(new Intent(App.this, ReceivingService.class));
+        }
 
         //read receivers from db
         new Thread(new Runnable() {

@@ -13,15 +13,15 @@ import java.util.Locale;
 public class VkChatAction {
     public String convert(Context context, JSONObject actionJSON) {
         try {
-            final String action = actionJSON.getString("action");
+            final String action = actionJSON.getString(Constants.Json.ACTION);
             switch (action) {
-                case "chat_invite_user": {
-                    final long actionMid = actionJSON.getLong("action_mid");
+                case Constants.Json.CHAT_INVITE_USER: {
+                    final long actionMid = actionJSON.getLong(Constants.Json.ACTION_MID);
                     final IUser actioning = (IUser) VkReceiverStorage.get(actionMid);
                     return String.format(Locale.US, context.getString(R.string.message_chat_invite), actioning.getName());
                 }
-                case "chat_kick_user": {
-                    final long actionMid = actionJSON.getLong("action_mid");
+                case Constants.Json.CHAT_KICK_USER: {
+                    final long actionMid = actionJSON.getLong(Constants.Json.ACTION_MID);
                     final IUser actioning = (IUser) VkReceiverStorage.get(actionMid);
                     return String.format(Locale.US, context.getString(R.string.message_chat_kick), actioning.getName());
                 }
