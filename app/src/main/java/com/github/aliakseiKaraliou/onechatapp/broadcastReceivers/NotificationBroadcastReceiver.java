@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.RingtoneManager;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import com.github.aliakseiKaraliou.onechatapp.R;
@@ -48,7 +49,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
 
             final SimpleImageLoader simpleImageLoader = new SimpleImageLoader();
 
-            simpleImageLoader.startLoading(message.getReceiver().getPhoto100Url());
+            simpleImageLoader.startLoading(message.getSender().getPhoto100Url());
             final String title;
             if (message.getChat() == null) {
                 title = message.getSender().getName();
@@ -73,6 +74,9 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(message.getText()))
                     .setContentIntent(pendingIntent);
 
+            if (Build.VERSION.SDK_INT <= 20){
+                notificationBuilder.setSmallIcon(R.drawable.mail);
+            }
             notificationManager.notify(NEW_MESSAGE_ID, notificationBuilder.build());
         }
     }
