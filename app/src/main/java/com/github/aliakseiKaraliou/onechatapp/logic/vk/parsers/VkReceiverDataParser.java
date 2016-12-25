@@ -11,7 +11,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkIdConverter;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 
 import java.io.IOException;

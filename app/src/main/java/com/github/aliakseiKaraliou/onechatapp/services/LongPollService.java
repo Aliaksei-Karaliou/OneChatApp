@@ -17,11 +17,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReceivingService extends IntentService {
+public class LongPollService extends IntentService {
 
     private VkLongPollServer longPollServer;
 
-    public ReceivingService() {
+    public LongPollService() {
         super(Constants.Other.EVENT_SERVICE);
     }
 
@@ -34,7 +34,7 @@ public class ReceivingService extends IntentService {
                 try {
                     final String request = new VkRequester().doRequest(Constants.Method.MESSAGES_GETLONGPOLLSERVER);
                     longPollServer = new VkGetLongPollServerParser().parse(request);
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -42,7 +42,7 @@ public class ReceivingService extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
+    protected void onHandleIntent(@Nullable final Intent intent) {
         //waits for longPollServer initialize
         while (longPollServer == null) ;
 
@@ -52,7 +52,7 @@ public class ReceivingService extends IntentService {
             final VkLongPollUpdate parse = new VkLongPollParser().parse(getApplicationContext(), longPollRequest);
             final List<IEvent> events = parse.getEvents();
             if (events.size() > 0) {
-                Intent broadcastIntent = new Intent(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME);
+                final Intent broadcastIntent = new Intent(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME);
                 broadcastIntent.putParcelableArrayListExtra(Constants.Other.EVENT_LIST, (ArrayList<? extends Parcelable>) events);
                 sendBroadcast(broadcastIntent);
             }

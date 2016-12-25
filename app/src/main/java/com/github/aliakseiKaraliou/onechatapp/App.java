@@ -1,7 +1,6 @@
 package com.github.aliakseiKaraliou.onechatapp;
 
 import android.app.Application;
-import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
@@ -19,10 +18,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.LazyImageL
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.network.NetworkConnectionChecker;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollServer;
-import com.github.aliakseiKaraliou.onechatapp.services.ReceivingService;
-import com.github.aliakseiKaraliou.onechatapp.services.notifications.SimpleNotificationManager;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkReceiverStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +26,9 @@ import java.util.List;
 public class App extends Application {
 
     private LazyImageLoaderManager imageLoaderManager;
-    private SimpleNotificationManager notificationManager;
     private SharedPreferences applicationSharedPreferences;
     private ORM recieverORM;
     private ORM messageORM;
-    private VkLongPollServer longPollServer;
 
     @Override
     public void onCreate() {
@@ -49,18 +43,11 @@ public class App extends Application {
         //imageLoadManager
         imageLoaderManager = new LazyImageLoaderManager();
 
-        //notificationManager
-        notificationManager = new SimpleNotificationManager(this);
-
         //applicationSharedPreferences
         applicationSharedPreferences = getSharedPreferences(Constants.Other.PREFERENCES, MODE_PRIVATE);
 
         if (NetworkConnectionChecker.check(this)) {
             VkInfo.userGetAuth(applicationSharedPreferences);
-        }
-
-        if (VkInfo.isUserAuthorized()) {
-            startService(new Intent(App.this, ReceivingService.class));
         }
 
         //read receivers from db
@@ -90,15 +77,8 @@ public class App extends Application {
         return imageLoaderManager;
     }
 
-    public SimpleNotificationManager getNotificationManager() {
-        return notificationManager;
-    }
 
     public SharedPreferences getApplicationSharedPreferences() {
         return applicationSharedPreferences;
-    }
-
-    public VkLongPollServer getLongPollServer() {
-        return longPollServer;
     }
 }

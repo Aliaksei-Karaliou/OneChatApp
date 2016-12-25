@@ -1,6 +1,7 @@
-package com.github.aliakseiKaraliou.onechatapp.services.broadcastReceivers;
+package com.github.aliakseiKaraliou.onechatapp.broadcastReceivers;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,8 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.SimpleImageLoader;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkAddNewMessageEvent;
+import com.github.aliakseiKaraliou.onechatapp.ui.activities.DialogActivity;
 
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +23,7 @@ import java.util.Locale;
 public class NotificationBroadcastReceiver extends BroadcastReceiver {
 
     private byte NEW_MESSAGE_ID = 4;
+    private byte MESSAGE_FLAG_CHANGE = 1;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -27,8 +31,11 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
 
         IMessage message = null;
         for (IEvent event : eventList) {
-            if (event instanceof IMessage && !((IMessage) event).isOut()) {
-                message = (IMessage) event;
+            if (event instanceof VkAddNewMessageEvent) {
+                final IMessage newMessage = ((VkAddNewMessageEvent) event).getMessage();
+                if (!newMessage.isOut()) {
+                    message = newMessage;
+                }
             }
         }
 
@@ -49,15 +56,21 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
             }
             final String ticker = String.format(Locale.US, "%s: %s", title, message.getText());
 
+            final Intent openActivityIntent = new Intent(context, DialogActivity.class);
+            openActivityIntent.putExtra(Constants.Other.PEER_ID, message.getReceiver().getId());
+            final PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, openActivityIntent, 0);
+
             final Bitmap receiverPhoto = simpleImageLoader.getResult();
 
-            notificationBuilder.setSmallIcon(R.drawable.ic_mail)
+            notificationBuilder
+                    .setLargeIcon(receiverPhoto)
+                    .setSmallIcon(R.drawable.ic_mail)
                     .setContentTitle(title)
                     .setContentText(message.getText())
                     .setTicker(ticker)
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(message.getText()))
-                    .setLargeIcon(receiverPhoto);
+                    .setContentIntent(pendingIntent);
 
             notificationManager.notify(NEW_MESSAGE_ID, notificationBuilder.build());
         }

@@ -25,8 +25,10 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.ClearHistoryManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.SendManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkAddNewMessageEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogManager;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkMessageStorage;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.ui.adapters.DialogAdapter;
 
 import java.util.ArrayList;
@@ -34,36 +36,36 @@ import java.util.List;
 
 public class DialogActivity extends AppCompatActivity {
 
-    private IReceiver reciever;
+    private IReceiver receiver;
     private List<IMessage> messageList = new ArrayList<>();
     private RecyclerView.Adapter<RecyclerView.ViewHolder> adapter;
     BroadcastReceiver newEventReceiver;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog);
 
-        Intent intent = getIntent();
-        Long peerId = intent.getLongExtra(Constants.Other.PEER_ID, 0);
+        final Intent intent = getIntent();
+        final long peerId = intent.getLongExtra(Constants.Other.PEER_ID, 0);
 
         if (peerId != 0) {
-            reciever = VkReceiverStorage.get(peerId);
+            receiver = VkReceiverStorage.get(peerId);
             assert getSupportActionBar() != null;
-            getSupportActionBar().setTitle(reciever.getName());
+            getSupportActionBar().setTitle(receiver.getName());
         } else {
-            reciever = null;
+            receiver = null;
         }
 
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         newEventReceiver = new EventBroadcastReceiver();
-        IntentFilter filter = new IntentFilter(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME);
+        final IntentFilter filter = new IntentFilter(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME);
         registerReceiver(newEventReceiver, filter);
 
         final VkDialogManager manager = new VkDialogManager();
-        manager.startLoading(this, reciever, 0);
+        manager.startLoading(this, receiver, 0);
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.dialog_message_recycler_view);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -71,13 +73,14 @@ public class DialogActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         messageList = manager.getResult();
-        manager.startLoading(this, reciever, 20);
+        VkMessageStorage.putAll(messageList);
+        manager.startLoading(this, receiver, 20);
 
         adapter = new DialogAdapter(this, messageList);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
                 try {
                     super.onScrolled(recyclerView, dx, dy);
                     final int lastCompletelyVisibleItemPosition = linearLayoutManager.findLastCompletelyVisibleItemPosition();
@@ -86,15 +89,17 @@ public class DialogActivity extends AppCompatActivity {
 
                         final List<IMessage> newMessageList = manager.getResult();
 
-                        manager.startLoading(DialogActivity.this, reciever, itemCount);
                         if (messageList != null && newMessageList != null) {
                             messageList.addAll(newMessageList);
                             adapter.notifyDataSetChanged();
+                            VkMessageStorage.putAll(newMessageList);
+                            manager.startLoading(DialogActivity.this, receiver, messageList.size());
                         }
+
 
                     }
                 }
-                catch (Exception e){
+                catch (final Exception e){
                     e.printStackTrace();
                 }
             }
@@ -103,22 +108,22 @@ public class DialogActivity extends AppCompatActivity {
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.dialog_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == R.id.user_menu_item_clear_history) {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.confirm_title)
                     .setMessage(R.string.clear_history_confirmation_message)
                     .setPositiveButton(R.string.answer_yes, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            final boolean result = new ClearHistoryManager().clear(reciever);
+                        public void onClick(final DialogInterface dialogInterface, final int i) {
+                            final boolean result = new ClearHistoryManager().clear(receiver);
                             if (!result) {
                                 Toast.makeText(DialogActivity.this, getString(R.string.operation_failed), Toast.LENGTH_SHORT).show();
                             }
@@ -134,11 +139,11 @@ public class DialogActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void sendButtonOnClick(View view) {
+    public void sendButtonOnClick(final View view) {
         final EditText messageTextView = (EditText) findViewById(R.id.dialog_new_message_text);
         final String message = messageTextView.getText().toString();
         if (!message.equals("")) {
-            final boolean success = new SendManager().send(reciever, message);
+            final boolean success = new SendManager().send(receiver, message);
             if (!success) {
                 Toast.makeText(this, getString(R.string.operation_failed), Toast.LENGTH_SHORT).show();
             } else {
@@ -150,18 +155,18 @@ public class DialogActivity extends AppCompatActivity {
     public class NewMessageBroadcastReceiver extends BroadcastReceiver {
 
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(final Context context, Intent intent) {
             final ArrayList<Parcelable> parcelableArrayListExtra = intent.getParcelableArrayListExtra(Constants.Params.MESSAGE);
             final List<IMessage> newMessages = new ArrayList<>();
             if (parcelableArrayListExtra != null) {
-                for (Parcelable parcelable : parcelableArrayListExtra) {
+                for (final Parcelable parcelable : parcelableArrayListExtra) {
                     if (parcelable instanceof IMessage) {
                         newMessages.add((IMessage) parcelable);
                     }
                 }
                 if (newMessages.size() > 0) {
                     for (IMessage message : newMessages) {
-                        if (message.getReceiver().isEquals(reciever)) {
+                        if (message.getReceiver().isEquals(receiver)) {
                             messageList.add(0, message);
                             adapter.notifyDataSetChanged();
                         }
@@ -182,11 +187,14 @@ public class DialogActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             final List<IEvent> eventList = intent.getParcelableArrayListExtra(Constants.Other.EVENT_LIST);
             for (IEvent event : eventList) {
-                if (event instanceof IMessage && ((IMessage) event).getReceiver().isEquals(reciever)) {
-                    messageList.add(0, (IMessage) event);
-                    adapter.notifyDataSetChanged();
+                if (event instanceof VkAddNewMessageEvent) {
+                    final IMessage newMessage = ((VkAddNewMessageEvent) event).getMessage();
+                    if (newMessage.getReceiver().isEquals(receiver)) {
+                        messageList.add(0, newMessage);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
-            };
+            }
         }
     }
 }

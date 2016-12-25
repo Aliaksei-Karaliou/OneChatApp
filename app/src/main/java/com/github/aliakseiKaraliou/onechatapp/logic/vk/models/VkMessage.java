@@ -7,20 +7,25 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.ISender;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.IVkMessageFlagsMethods;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlag;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class VkMessage implements IMessage {
+public class VkMessage implements IMessage, IVkMessageFlagsMethods {
 
-    private ISender sender;
-    private long id;
-    private String text;
-    private Date date;
-    private IChat chat;
+    private final ISender sender;
+    private final long id;
+    private final String text;
+    private final Date date;
+    private final IChat chat;
     private boolean isRead = false;
     private boolean out = false;
+    private final List<VkMessageFlag> flags;
 
-    private VkMessage(long id, ISender sender, String text, Date date, boolean isRead, boolean out, IChat chat) {
+    private VkMessage(final long id, final ISender sender, final String text, final Date date, final boolean isRead, final boolean out, final IChat chat) {
         this.id = id;
         this.sender = sender;
         this.text = text;
@@ -28,6 +33,35 @@ public class VkMessage implements IMessage {
         this.isRead = isRead;
         this.out = out;
         this.chat = chat;
+        flags = new ArrayList<>();
+        if (!isRead) {
+            flags.add(VkMessageFlag.UNREAD);
+        }
+    }
+
+    @Override
+    public void addFlag(final VkMessageFlag flag) {
+        flags.add(flag);
+        if (flag == VkMessageFlag.UNREAD) {
+            isRead = false;
+        }
+    }
+
+    @Override
+    public void deleteFlag(final VkMessageFlag flag) {
+        flags.remove(flag);
+        if (flag == VkMessageFlag.UNREAD) {
+            isRead = true;
+        }
+    }
+
+    @Override
+    public int getIntFlags() {
+        int flagsValue = 0;
+        for (final VkMessageFlag flag : flags) {
+            flagsValue += flag.getKey();
+        }
+        return flagsValue;
     }
 
     @Override
@@ -40,7 +74,7 @@ public class VkMessage implements IMessage {
         if (text != null)
             return text;
         else
-            return "Some group";
+            return "";
     }
 
     @Override
@@ -86,6 +120,11 @@ public class VkMessage implements IMessage {
         return chat;
     }
 
+    @Override
+    public boolean isEquals(final IMessage message) {
+        return id == message.getId();
+    }
+
     public static class Builder {
 
         private long id;
@@ -96,28 +135,28 @@ public class VkMessage implements IMessage {
         private boolean out;
         private IChat chat;
 
-        public Builder setOut(boolean out) {
+        public Builder setOut(final boolean out) {
             this.out = out;
             return this;
         }
 
 
-        public Builder setChat(IChat chat) {
+        public Builder setChat(final IChat chat) {
             this.chat = chat;
             return this;
         }
 
-        public Builder setId(long id) {
+        public Builder setId(final long id) {
             this.id = id;
             return this;
         }
 
-        public Builder setRead(boolean read) {
+        public Builder setRead(final boolean read) {
             this.read = read;
             return this;
         }
 
-        public Builder setText(String text) {
+        public Builder setText(final String text) {
             if (text != null)
                 this.text = text;
             else
@@ -125,12 +164,12 @@ public class VkMessage implements IMessage {
             return this;
         }
 
-        public Builder setSender(ISender sender) {
+        public Builder setSender(final ISender sender) {
             this.sender = sender;
             return this;
         }
 
-        public Builder setDate(long timeStamp) {
+        public Builder setDate(final long timeStamp) {
             this.date = new Date(timeStamp * 1000);
             return this;
         }
@@ -147,7 +186,7 @@ public class VkMessage implements IMessage {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeParcelable(this.sender, flags);
         dest.writeLong(this.id);
         dest.writeString(this.text);
@@ -155,27 +194,30 @@ public class VkMessage implements IMessage {
         dest.writeParcelable(this.chat, flags);
         dest.writeByte(this.isRead ? (byte) 1 : (byte) 0);
         dest.writeByte(this.out ? (byte) 1 : (byte) 0);
+        dest.writeList(this.flags);
     }
 
-    protected VkMessage(Parcel in) {
+    protected VkMessage(final Parcel in) {
         this.sender = in.readParcelable(ISender.class.getClassLoader());
         this.id = in.readLong();
         this.text = in.readString();
-        long tmpDate = in.readLong();
+        final long tmpDate = in.readLong();
         this.date = tmpDate == -1 ? null : new Date(tmpDate);
         this.chat = in.readParcelable(IChat.class.getClassLoader());
         this.isRead = in.readByte() != 0;
         this.out = in.readByte() != 0;
+        this.flags = new ArrayList<>();
+        in.readList(this.flags, VkMessageFlag.class.getClassLoader());
     }
 
     public static final Creator<VkMessage> CREATOR = new Creator<VkMessage>() {
         @Override
-        public VkMessage createFromParcel(Parcel source) {
+        public VkMessage createFromParcel(final Parcel source) {
             return new VkMessage(source);
         }
 
         @Override
-        public VkMessage[] newArray(int size) {
+        public VkMessage[] newArray(final int size) {
             return new VkMessage[size];
         }
     };

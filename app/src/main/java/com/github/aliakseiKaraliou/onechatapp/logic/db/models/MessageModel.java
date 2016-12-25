@@ -12,7 +12,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbPrimaryKey;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbTableName;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbType;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkMessage;
 
 import java.util.ArrayList;
@@ -30,6 +30,7 @@ public final class MessageModel implements AbstractModel<MessageModel> {
     private static final String IS_READ = "isRead";
     private static final String IS_OUT = "isOut";
     private static final String SOCIAL_NETWORK = "socialNetwork";
+    private static final String FLAGS = "flags";
 
     @DbPrimaryKey
     @DbColumnName(name = ID)
@@ -65,35 +66,23 @@ public final class MessageModel implements AbstractModel<MessageModel> {
     @DbPrimaryKey
     private String socialNetwork;
 
+    @DbColumnName(name = FLAGS)
+    @DbType(type = DbType.Type.INTEGER)
+    private long flags;
+
     public String getText() {
         return text;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
     }
 
     public long getPeerId() {
         return peerId;
     }
 
-    public long getUserId() {
-        return userId;
-    }
-
-    public long getIsRead() {
-        return isRead;
-    }
-
-    public long getIsOut() {
-        return isOut;
-    }
-
     public String getSocialNetwork() {
         return socialNetwork;
     }
 
-    private MessageModel(long id, String text, long timestamp, long peerId, long userId, boolean isRead, boolean isOut, SocialNetwork socialNetwork) {
+    private MessageModel(long id, String text, long timestamp, long peerId, long userId, boolean isRead, boolean isOut, long flags, final SocialNetwork socialNetwork) {
         this.id = id;
         this.text = text;
         this.timestamp = timestamp;
@@ -101,6 +90,7 @@ public final class MessageModel implements AbstractModel<MessageModel> {
         this.userId = userId;
         this.isRead = isRead ? 1 : 0;
         this.isOut = isOut ? 1 : 0;
+        this.flags = flags;
         this.socialNetwork = socialNetwork.toString();
     }
 
@@ -143,22 +133,18 @@ public final class MessageModel implements AbstractModel<MessageModel> {
         contentValues.put(TIMESTAMP, timestamp);
         contentValues.put(IS_READ, isRead);
         contentValues.put(IS_OUT, isOut);
+        contentValues.put(FLAGS, flags);
         contentValues.put(SOCIAL_NETWORK, socialNetwork);
         return contentValues;
     }
 
     @Override
     public MessageModel convertToModel(Cursor cursor) {
-        final long id = cursor.getLong(0);
-        final long isOut = cursor.getLong(1);
-        final long isRead = cursor.getLong(2);
-        final long peerId = cursor.getLong(3);
-        final String socialNetwork = cursor.getString(4);
-        final String text = cursor.getString(5);
-        final long timestamp = cursor.getLong(6);
-        final long userId = cursor.getLong(7);
+        final String[] columnNames = cursor.getColumnNames();
+        for (String columnName : columnNames) {
 
-        return new MessageModel(id, text, timestamp, peerId, userId, isRead > 0, isOut > 0, SocialNetwork.valueOf(socialNetwork));
+        }
+        return null;
     }
 
     public static List<MessageModel> convertTo(Collection<IMessage> messageCollection) {

@@ -8,7 +8,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.ISender;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkChatAction;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkIdConverter;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkMessage;
 
 import org.json.JSONArray;
@@ -22,42 +22,40 @@ public class VkDialogsListFinalParser {
 
     public List<IMessage> parse(Context context, String json) {
         try {
-            List<IMessage> result = new ArrayList<>();
-            JSONArray items = new JSONObject(json).getJSONObject(Constants.Json.RESPONSE).getJSONArray(Constants.Json.ITEMS);
+            final List<IMessage> result = new ArrayList<>();
+            final JSONArray items = new JSONObject(json).getJSONObject(Constants.Json.RESPONSE).getJSONArray(Constants.Json.ITEMS);
             JSONObject currentObject;
             final VkIdConverter vkIdConverter = new VkIdConverter();
             for (int i = 0; i < items.length(); i++) {
                 currentObject = items.getJSONObject(i).getJSONObject(Constants.Json.MESSAGE);
 
-                VkMessage.Builder builder = new VkMessage.Builder();
+                final VkMessage.Builder builder = new VkMessage.Builder();
 
-                long id = currentObject.getLong(Constants.Json.ID);
+                final long id = currentObject.getLong(Constants.Json.ID);
                 builder.setId(id);
 
-                String text = currentObject.getString(Constants.Json.BODY);
+                final String text = currentObject.getString(Constants.Json.BODY);
                 builder.setText(text);
 
-                long date = currentObject.getLong(Constants.Json.DATE);
+                final long date = currentObject.getLong(Constants.Json.DATE);
                 builder.setDate(date);
 
-                boolean isRead = currentObject.getInt(Constants.Json.READ_STATE) > 0;
+                final boolean isRead = currentObject.getInt(Constants.Json.READ_STATE) > 0;
                 builder.setRead(isRead);
 
-                boolean isOut = currentObject.getInt(Constants.Json.OUT) > 0;
+                final boolean isOut = currentObject.getInt(Constants.Json.OUT) > 0;
                 builder.setOut(isOut);
 
 
-                long userId = currentObject.getLong(Constants.Json.USER_ID);
-                ISender sender = (ISender) VkReceiverStorage.get(userId);
+                final long userId = currentObject.getLong(Constants.Json.USER_ID);
+                final ISender sender = (ISender) VkReceiverStorage.get(userId);
                 builder.setSender(sender);
 
                 if (currentObject.has(Constants.Json.CHAT_ID)) {
-                    long chatId = currentObject.getLong(Constants.Json.CHAT_ID);
-                    Long peerID = vkIdConverter.chatToPeer(chatId);
-                    if (peerID != null) {
-                        IChat chat = (IChat) VkReceiverStorage.get(peerID);
+                    final long chatId = currentObject.getLong(Constants.Json.CHAT_ID);
+                    final long peerID = vkIdConverter.chatToPeer(chatId);
+                    final IChat chat = (IChat) VkReceiverStorage.get(peerID);
                         builder.setChat(chat);
-                    }
                     if (currentObject.has(Constants.Json.ACTION)) {
                         builder.setText(new VkChatAction().convert(context, currentObject));
                     }

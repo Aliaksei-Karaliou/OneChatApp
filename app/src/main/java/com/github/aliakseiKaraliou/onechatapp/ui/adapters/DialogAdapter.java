@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +18,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.DateFriendlyFormat;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.LazyImageLoaderManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkReceiverStorage;
 
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.context = context;
         this.messageList = messageList;
         this.defaultBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.camera_50);
-        onClickListener = new View.OnClickListener() {
+        this.onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final View parent = (View) view.getParent();

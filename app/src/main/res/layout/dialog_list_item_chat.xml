@@ -1,74 +1,74 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="72dp"
-             android:orientation="vertical">
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="72dp">
 
     <ImageView
-        android:id="@+id/dialog_list_item_primary_photo"
+        android:id="@+id/dialog_list_primary_photo"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
-        tools:src="@mipmap/icon"/>
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/camera_50"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/dialog_list_item_name"
+        android:layout_width="168dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_marginStart="16dp"
+        android:lines="1"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toRightOf="@+id/dialog_list_primary_photo"
+        app:layout_constraintTop_toTopOf="@+id/dialog_list_primary_photo"
+        tools:text="Name"
+        />
+
+    <TextView
+        android:id="@+id/dialog_list_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
         android:layout_marginEnd="16dp"
-        android:layout_marginStart="80dp"
-        android:orientation="vertical"
-        >
+        app:layout_constraintTop_toTopOf="@+id/dialog_list_primary_photo"
+        tools:text="00:00"/>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/dialog_list_secondary_photo"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintLeft_toLeftOf="@+id/dialog_list_item_name"
+        app:layout_constraintTop_toBottomOf="@+id/dialog_list_item_name"
+        app:srcCompat="@mipmap/icon"/>
 
-            <TextView
-                android:id="@+id/dialog_list_item_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="60dp"
-                android:lines="1"
-                android:textSize="16sp"
-                tools:text="Name"
-                />
+    <TextView
+        android:id="@+id/dialog_list_item_message"
+        android:layout_width="144dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:lines="1"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/dialog_list_secondary_photo"
+        app:layout_constraintLeft_toRightOf="@+id/dialog_list_secondary_photo"
+        tools:text="Message"/>
 
-            <TextView
-                android:id="@+id/dialog_list_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:textSize="12sp"
-                tools:text="12:33"
-                />
-        </FrameLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            tools:ignore="UseCompoundDrawables">
-
-            <ImageView
-                android:id="@+id/dialog_list_secondary_photo"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                tools:src="@mipmap/icon"/>
-
-            <TextView
-                android:id="@+id/dialog_list_item_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lines="1"
-                android:textSize="14sp"
-                tools:text="Message"
-                />
-        </LinearLayout>
-
-    </LinearLayout>
-
-</FrameLayout>
+    <ImageView
+        android:id="@+id/dialog_list_read_state"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:tint="@color/colorPrimary"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/dialog_list_item_message"
+        app:layout_constraintLeft_toLeftOf="@+id/dialog_list_date"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialog_list_date"
+        app:srcCompat="@drawable/ic_circular_shape_silhouette"/>
+</android.support.constraint.ConstraintLayout>

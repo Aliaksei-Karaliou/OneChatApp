@@ -1,4 +1,4 @@
-package com.github.aliakseiKaraliou.onechatapp.logic.vk;
+package com.github.aliakseiKaraliou.onechatapp.logic.vk.storages;
 
 import android.support.v4.util.LongSparseArray;
 

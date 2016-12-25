@@ -79,7 +79,7 @@ public final class ORM {
 //        final Cursor cursor = database.rawQuery(allQuery, null);
 //        do {
 //            final T model = (T) object.convertToModel(cursor);
-//            if (model.equals(object)){
+//            if (model.isEquals(object)){
 //            }
 //        }
 //        while (cursor.moveToNext());

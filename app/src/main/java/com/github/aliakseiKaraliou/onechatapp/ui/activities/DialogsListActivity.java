@@ -21,7 +21,13 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlag;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkAddNewMessageEvent;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.messageFlags.VkDeleteMessageFlagEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogsListManager;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkMessage;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkMessageStorage;
+import com.github.aliakseiKaraliou.onechatapp.services.LongPollService;
 import com.github.aliakseiKaraliou.onechatapp.ui.adapters.DialogListAdapter;
 
 import java.util.List;
@@ -34,7 +40,7 @@ public class DialogsListActivity extends AppCompatActivity {
     private DialogListAdapter adapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialogs_list);
         preferences = ((App) getApplicationContext()).getApplicationSharedPreferences();
@@ -42,7 +48,7 @@ public class DialogsListActivity extends AppCompatActivity {
         if (VkInfo.isUserAuthorized()) {
             auth();
             broadcastReceiver = new NewEventBroadcastReceiver();
-            IntentFilter intentFilter = new IntentFilter(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME);
+            final IntentFilter intentFilter = new IntentFilter(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME);
             registerReceiver(broadcastReceiver, intentFilter);
         }
     }
@@ -66,15 +72,17 @@ public class DialogsListActivity extends AppCompatActivity {
         messagesRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         messages = vkDialogsListManager.getResult();
+        VkMessageStorage.putAll(messages);
         vkDialogsListManager.startLoading(DialogsListActivity.this, 20);
 
+        startService(new Intent(this, LongPollService.class));
 
         adapter = new DialogListAdapter(this, messages);
         messagesRecyclerView.setAdapter(adapter);
 
         adapter.onItemClick(new DialogListAdapter.OnMessageClick() {
             @Override
-            public void onClick(long peerId) {
+            public void onClick(final long peerId) {
                 final Intent intent = new Intent(DialogsListActivity.this, DialogActivity.class);
                 intent.putExtra(Constants.Other.PEER_ID, peerId);
                 startActivity(intent);
@@ -83,23 +91,22 @@ public class DialogsListActivity extends AppCompatActivity {
 
         messagesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-                int totalItem = layoutManager.getItemCount();
+                final int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                final int totalItem = layoutManager.getItemCount();
 
                 if (lastVisibleItem + 1 == totalItem && dy > 0) {
 
-                    List<IMessage> result = vkDialogsListManager.getResult();
+                    final List<IMessage> result = vkDialogsListManager.getResult();
 
-                    if (result != null) {
-
-                        vkDialogsListManager.startLoading(DialogsListActivity.this, totalItem);
-
-                        assert messages != null;
+                    if (result != null && messages != null) {
+                        VkMessageStorage.putAll(result);
                         messages.addAll(result);
                         adapter.notifyDataSetChanged();
+
+                        vkDialogsListManager.startLoading(DialogsListActivity.this, messages.size());
                     }
                 }
             }
@@ -107,14 +114,14 @@ public class DialogsListActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.dialog_list_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == R.id.dialog_list_item_authorization) {
             startActivity(new Intent(this, AuthActivity.class));
         } else if (item.getItemId() == R.id.dialog_list_preferences) {
@@ -123,23 +130,40 @@ public class DialogsListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
+    }
+
     private class NewEventBroadcastReceiver extends BroadcastReceiver {
 
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(final Context context, final Intent intent) {
             final List<IEvent> eventList = intent.getParcelableArrayListExtra(Constants.Other.EVENT_LIST);
-            for (IEvent event : eventList) {
-                if (event instanceof IMessage) {
-                    final IMessage currentBroadcastMessage = (IMessage) event;
-                    IReceiver receiver = currentBroadcastMessage.getReceiver();
+            for (final IEvent event : eventList) {
+                if (event instanceof VkAddNewMessageEvent) {
+                    final IMessage currentBroadcastMessage = ((VkAddNewMessageEvent) event).getMessage();
+                    final IReceiver receiver = currentBroadcastMessage.getReceiver();
                     for (int i = 0; i < messages.size(); i++) {
-                        IMessage message = messages.get(i);
+                        final IMessage message = messages.get(i);
                         if (receiver.isEquals(message.getReceiver())) {
                             messages.remove(i);
                             break;
                         }
                     }
                     messages.add(0, currentBroadcastMessage);
+                }
+                else if (event instanceof VkDeleteMessageFlagEvent){
+                    final VkDeleteMessageFlagEvent deleteMessageFlagEvent = (VkDeleteMessageFlagEvent) event;
+                    final IMessage deleteMessageFlagEventMessage = deleteMessageFlagEvent.getMessage();
+                    final VkMessageFlag messageFlag = deleteMessageFlagEvent.getMessageFlag();
+                    for (final IMessage message : messages) {
+                        if (message.isEquals(deleteMessageFlagEventMessage)){
+                            ((VkMessage) message).deleteFlag(messageFlag);
+                            break;
+                        }
+                    }
                 }
             }
             adapter.notifyDataSetChanged();

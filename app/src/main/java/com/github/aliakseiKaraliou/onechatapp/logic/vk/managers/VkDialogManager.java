@@ -12,7 +12,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.MessageModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOperation;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogFinalParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogStartParser;

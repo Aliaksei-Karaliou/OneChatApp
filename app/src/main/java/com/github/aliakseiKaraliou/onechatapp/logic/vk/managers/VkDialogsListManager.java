@@ -19,7 +19,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.db.models.MessageModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.UserModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOperation;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkReceiverStorage;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogsListFinalParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogsListStartParser;
@@ -43,19 +43,19 @@ public final class VkDialogsListManager {
                     try {
                         final String jsonString;
                         if (offset > 0) {
-                            Pair<String, String> offsetPair = new Pair<>(Constants.Params.OFFSET, offset.toString());
+                            final Pair<String, String> offsetPair = new Pair<>(Constants.Params.OFFSET, offset.toString());
                             jsonString = new VkRequester().doRequest(Constants.Method.MESSAGES_GETDIALOGS, offsetPair);
                         } else {
                             jsonString = new VkRequester().doRequest(Constants.Method.MESSAGES_GETDIALOGS);
                         }
 
-                        Set<Long> idSet = new VkDialogsListStartParser().parse(jsonString);
+                        final Set<Long> idSet = new VkDialogsListStartParser().parse(jsonString);
                         final LongSparseArray<IReceiver> parse = new VkReceiverDataParser().parse(idSet);
 
-                        List<IUser> userList = new ArrayList<>();
-                        List<IChat> chatList = new ArrayList<>();
-                        List<IGroup> groupList = new ArrayList<>();
-                        if (parse != null) {
+                        final List<IUser> userList = new ArrayList<>();
+                        final List<IChat> chatList = new ArrayList<>();
+                        final List<IGroup> groupList = new ArrayList<>();
+                        if (parse != null && parse.size()>0) {
                             for (int i = 0; i < parse.size(); i++) {
                                 final IReceiver reciever = parse.valueAt(i);
                                 if (reciever instanceof IUser)

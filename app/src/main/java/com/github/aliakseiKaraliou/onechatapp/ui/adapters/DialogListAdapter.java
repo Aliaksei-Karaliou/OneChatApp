@@ -3,6 +3,7 @@ package com.github.aliakseiKaraliou.onechatapp.ui.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,12 +23,14 @@ import java.util.List;
 public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private View.OnClickListener onMessageClick;
-    private List<IMessage> messageList;
+    private final List<IMessage> messageList;
     private final DateFriendlyFormat dateFriendlyFormat;
-    private Context context;
-    private Bitmap defaultBitmap;
+    private final Context context;
+    private final Bitmap defaultBitmap;
+    private static final int ITEM_UNREAD_BACKGROUND = Color.rgb(221, 221, 221);
+    private static final int ITEM_READ_BACKGROUND = Color.WHITE;
 
-    public DialogListAdapter(Context context, List<IMessage> messageList) {
+    public DialogListAdapter(final Context context, final List<IMessage> messageList) {
         this.messageList = messageList;
         this.context = context;
         dateFriendlyFormat = new DateFriendlyFormat();
@@ -35,7 +38,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
         final ReceiverType receiverType = ReceiverType.values()[viewType];
         if (receiverType != ReceiverType.CHAT) {
             final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_list_item_user_group, parent, false);
@@ -47,7 +50,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
 
         final IMessage currentMessage = messageList.get(position);
         final LazyImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
@@ -64,11 +67,23 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             viewHolder.nameTextView.setText(currentMessage.getSender().getName());
             viewHolder.dateTextView.setText(dateFriendlyFormat.convert(context, currentMessage.getDate()));
 
-
             if (onMessageClick != null) {
-                viewHolder.itemView.setTag(currentMessage.getReceiver().getId());
-                viewHolder.itemView.setOnClickListener(onMessageClick);
+                holder.itemView.setTag(currentMessage.getReceiver().getId());
+                holder.itemView.setOnClickListener(onMessageClick);
             }
+
+
+            if (!currentMessage.isRead()) {
+                if (!currentMessage.isOut()) {
+                    holder.itemView.setBackgroundColor(ITEM_UNREAD_BACKGROUND);
+                } else {
+                    viewHolder.readState.setVisibility(View.VISIBLE);
+                }
+            } else {
+                holder.itemView.setBackgroundColor(ITEM_READ_BACKGROUND);
+                viewHolder.readState.setVisibility(View.INVISIBLE);
+            }
+
 
 
         } else {
@@ -83,11 +98,19 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             viewHolder.nameTextView.setText(currentMessage.getReceiver().getName());
             viewHolder.dateTextView.setText(dateFriendlyFormat.convert(context, currentMessage.getDate()));
 
-            if (onMessageClick != null) {
-                viewHolder.itemView.setTag(currentMessage.getReceiver().getId());
-                viewHolder.itemView.setOnClickListener(onMessageClick);
+            if (!currentMessage.isRead()) {
+                if (!currentMessage.isOut()) {
+                    holder.itemView.setBackgroundColor(ITEM_UNREAD_BACKGROUND);
+                } else {
+                    viewHolder.readState.setVisibility(View.VISIBLE);
+                }
+            } else {
+                holder.itemView.setBackgroundColor(ITEM_READ_BACKGROUND);
+                viewHolder.readState.setVisibility(View.INVISIBLE);
             }
         }
+
+
     }
 
     @Override
@@ -98,7 +121,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onItemClick(final OnMessageClick onMessageClick) {
         this.onMessageClick = new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 final long tag = (long) view.getTag();
                 onMessageClick.onClick(tag);
             }
@@ -111,13 +134,15 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         private final TextView messageTextView;
         private final ImageView avatarImageView;
         private final TextView dateTextView;
+        private final ImageView readState;
 
-        public UserGroupViewHolder(View itemView) {
+        public UserGroupViewHolder(final View itemView) {
             super(itemView);
             nameTextView = ((TextView) itemView.findViewById(R.id.dialog_list_item_name));
             messageTextView = ((TextView) itemView.findViewById(R.id.dialog_list_item_message));
-            avatarImageView = ((ImageView) itemView.findViewById(R.id.dialog_list_item_primary_photo));
+            avatarImageView = ((ImageView) itemView.findViewById(R.id.dialog_list_primary_photo));
             dateTextView = ((TextView) itemView.findViewById(R.id.dialog_list_date));
+            readState = ((ImageView) itemView.findViewById(R.id.dialog_list_read_state));
         }
     }
 
@@ -128,14 +153,16 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         private final ImageView avatarImageView;
         private final ImageView userPhotoImageView;
         private final TextView dateTextView;
+        private final ImageView readState;
 
-        public ChatViewHolder(View itemView) {
+        public ChatViewHolder(final View itemView) {
             super(itemView);
             nameTextView = ((TextView) itemView.findViewById(R.id.dialog_list_item_name));
             messageTextView = ((TextView) itemView.findViewById(R.id.dialog_list_item_message));
-            avatarImageView = ((ImageView) itemView.findViewById(R.id.dialog_list_item_primary_photo));
+            avatarImageView = ((ImageView) itemView.findViewById(R.id.dialog_list_primary_photo));
             userPhotoImageView = ((ImageView) itemView.findViewById(R.id.dialog_list_secondary_photo));
             dateTextView = ((TextView) itemView.findViewById(R.id.dialog_list_date));
+            readState = ((ImageView) itemView.findViewById(R.id.dialog_list_read_state));
         }
     }
 
@@ -144,7 +171,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public int getItemViewType(int position) {
+    public int getItemViewType(final int position) {
         return messageList.get(position).getReceiver().getReceiverType().ordinal();
     }
 

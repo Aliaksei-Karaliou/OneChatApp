@@ -31,7 +31,7 @@
             android:windowSoftInputMode="stateHidden"/>
 
         <service
-            android:name=".services.ReceivingService"
+            android:name=".services.LongPollService"
             android:enabled="true"
             android:exported="false">
         </service>
@@ -40,7 +40,7 @@
         </activity>
 
         <receiver
-            android:name=".services.broadcastReceivers.NotificationBroadcastReceiver"
+            android:name=".broadcastReceivers.NotificationBroadcastReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
