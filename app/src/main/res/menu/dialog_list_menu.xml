@@ -3,9 +3,11 @@
 
 <item
     android:id="@+id/dialog_list_item_authorization"
-    android:title="@string/authorization_menu"/>
+    android:title="@string/authorization_menu"
+    android:icon="@drawable/ic_mail"/>
 
     <item
         android:id="@+id/dialog_list_preferences"
-        android:title="@string/preferences"/>
+        android:title="@string/preferences"
+        android:icon="@drawable/ic_mail"/>
 </menu>

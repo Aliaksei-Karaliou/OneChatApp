@@ -9,16 +9,16 @@ public class DbHelper extends SQLiteOpenHelper {
     private final Class<?>[] clazz;
 
 
-    public DbHelper(Context context, String name, int version, final Class<?>... clazz) {
+    public DbHelper(final Context context, final String name, final int version, final Class<?>... clazz) {
         super(context, name, null, version);
         this.clazz = clazz;
 
     }
 
     @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+    public void onCreate(final SQLiteDatabase sqLiteDatabase) {
         if (clazz.length > 0) {
-            for (Class<?> claz : clazz) {
+            for (final Class<?> claz : clazz) {
                 final String createTableQuery = new QueryGenerator().getCreateTableQuery(claz);
                 sqLiteDatabase.execSQL(createTableQuery);
             }
@@ -26,7 +26,7 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    public void onUpgrade(final SQLiteDatabase sqLiteDatabase, final int i, final int i1) {
 
     }
 

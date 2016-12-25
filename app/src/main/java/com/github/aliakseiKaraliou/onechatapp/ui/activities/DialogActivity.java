@@ -28,6 +28,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.SendManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlag;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkAddNewMessageEvent;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkReadAllMessagesEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.messageFlags.VkDeleteMessageFlagEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkMessage;
@@ -200,7 +201,6 @@ public class DialogActivity extends AppCompatActivity {
                     final IMessage newMessage = ((VkAddNewMessageEvent) event).getMessage();
                     if (newMessage.getReceiver().isEquals(receiver)) {
                         messageList.add(0, newMessage);
-                        adapter.notifyDataSetChanged();
                     }
                 } else if (event instanceof VkDeleteMessageFlagEvent) {
                     final VkDeleteMessageFlagEvent deleteMessageFlagEvent = (VkDeleteMessageFlagEvent) event;
@@ -210,12 +210,33 @@ public class DialogActivity extends AppCompatActivity {
                         for (final IMessage message : messageList) {
                             if (message instanceof VkMessage && deleteMessageFlagEventMessage.isEquals(message)){
                                 ((VkMessage) message).deleteFlag(messageFlag);
+                                new StringBuilder();
                                 break;
+                            }
+                        }
+                    }
+                } else if (event instanceof VkReadAllMessagesEvent) {
+                    boolean isRead = false;
+                    final VkReadAllMessagesEvent allMessagesEvent = (VkReadAllMessagesEvent) event;
+                    final IReceiver readReceiver = allMessagesEvent.getReceiver();
+                    final IMessage finalMessage = allMessagesEvent.getFinalMessage();
+                    if (readReceiver.isEquals(receiver)) {
+                        for (final IMessage message : messageList) {
+                            if (message.isOut()) {
+                                if (finalMessage.isEquals(message)) {
+                                    isRead = true;
+                                }
+                                if (isRead  && !message.isRead()) {
+                                    ((VkMessage) message).deleteFlag(VkMessageFlag.UNREAD);
+                                } else if (isRead && !message.isRead()) {
+                                    break;
+                                }
                             }
                         }
                     }
                 }
             }
+            adapter.notifyDataSetChanged();
         }
     }
 }

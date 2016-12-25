@@ -17,6 +17,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlag;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlagConverter;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkAddNewMessageEvent;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkReadAllMessagesEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.messageFlags.VkAddMessageFlagEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.messageFlags.VkChangeMessageFlagEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.messageFlags.VkDeleteMessageFlagEvent;
@@ -35,10 +36,12 @@ public class VkLongPollUpdate {
     private final Context context;
     private final long ts;
     private final List<List<String>> info;
+
     private static final byte CHANGE_MESSAGE_FLAGS_CODE = 1;
     private static final byte ADD_MESSAGE_FLAGS_CODE = 2;
     private static final byte DELETE_MESSAGE_FLAGS_CODE = 3;
     private static final byte NEW_MESSAGE_CODE = 4;
+    private static final byte READ_ALL_MESSAGES_CODE = 6;
 
 
     public VkLongPollUpdate(final Context context, final long ts, @NonNull final List<List<String>> info) {
@@ -81,6 +84,11 @@ public class VkLongPollUpdate {
 
                     eventList.add(event);
                 }
+            } else if (code == READ_ALL_MESSAGES_CODE) {
+                final long id = Long.parseLong(stringList.get(2));
+                final IMessage message = VkMessageStorage.get(id);
+                final IEvent event = new VkReadAllMessagesEvent(message);
+                eventList.add(event);
             }
         }
         final String messageIdString;

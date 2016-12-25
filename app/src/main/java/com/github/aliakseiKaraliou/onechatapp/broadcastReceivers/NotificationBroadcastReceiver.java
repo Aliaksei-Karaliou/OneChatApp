@@ -22,7 +22,9 @@ import java.util.Locale;
 
 public class NotificationBroadcastReceiver extends BroadcastReceiver {
 
-    private final byte NEW_MESSAGE_ID = 4;
+    private static final String TITLE_TEMPLATE = "%s (%s)";
+    private static final byte NEW_MESSAGE_ID = 4;
+    private static final String TICKER_TEMPLATE = "%s: %s";
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
@@ -51,9 +53,9 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
             if (message.getChat() == null) {
                 title = message.getSender().getName();
             } else {
-                title = String.format(Locale.US, "%s (%s)", message.getSender().getName(), message.getChat().getName());
+                title = String.format(Locale.US, TITLE_TEMPLATE, message.getSender().getName(), message.getChat().getName());
             }
-            final String ticker = String.format(Locale.US, "%s: %s", title, message.getText());
+            final String ticker = String.format(Locale.US, TICKER_TEMPLATE, title, message.getText());
 
             final Intent openActivityIntent = new Intent(context, DialogActivity.class);
             openActivityIntent.putExtra(Constants.Other.PEER_ID, message.getReceiver().getId());

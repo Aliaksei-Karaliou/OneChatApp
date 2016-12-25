@@ -16,28 +16,26 @@
             android:configChanges="orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ui.activities.AuthActivity"
             android:noHistory="true"/>
         <activity android:name=".ui.activities.VkAuthActivity"/>
+
         <activity
             android:name=".ui.activities.DialogActivity"
             android:configChanges="orientation"
-            android:launchMode="singleTop"
             android:windowSoftInputMode="stateHidden"/>
 
         <service
             android:name=".services.LongPollService"
             android:enabled="true"
-            android:exported="false">
-        </service>
+            android:exported="false"/>
 
-        <activity android:name=".ui.activities.SettingsActivity">
-        </activity>
+        <activity android:name=".ui.activities.SettingsActivity"/>
 
         <receiver
             android:name=".broadcastReceivers.NotificationBroadcastReceiver"

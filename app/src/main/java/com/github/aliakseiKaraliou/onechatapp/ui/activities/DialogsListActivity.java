@@ -23,6 +23,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlag;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkAddNewMessageEvent;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkReadAllMessagesEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.messageFlags.VkDeleteMessageFlagEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogsListManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkMessage;
@@ -166,7 +167,6 @@ public class DialogsListActivity extends AppCompatActivity {
                         if (message instanceof VkMessage && message.isEquals(deleteMessageFlagEventMessage)){
                             final VkMessage vkMessage = (VkMessage) message;
                             vkMessage.deleteFlag(messageFlag);
-                            new StringBuilder();
                             break;
                         }
                     }
