@@ -45,7 +45,7 @@
         android:layout_marginTop="4dp"
         app:layout_constraintLeft_toLeftOf="@+id/dialog_list_item_name"
         app:layout_constraintTop_toBottomOf="@+id/dialog_list_item_name"
-        app:srcCompat="@mipmap/icon"/>
+        tools:src="@mipmap/icon"/>
 
     <TextView
         android:id="@+id/dialog_list_item_message"

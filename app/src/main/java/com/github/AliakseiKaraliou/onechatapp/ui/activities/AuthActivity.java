@@ -12,7 +12,7 @@ public class AuthActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
 
@@ -21,14 +21,14 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId()==android.R.id.home){
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void VkAuthClick(View view) {
+    public void VkAuthClick(final View view) {
         startActivity(new Intent(this, VkAuthActivity.class));
     }
 }

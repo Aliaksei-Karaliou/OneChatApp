@@ -24,10 +24,10 @@ import java.util.List;
 
 public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<IMessage> messageList;
-    private Context context;
-    private Bitmap defaultBitmap;
-    private View.OnClickListener onClickListener;
+    private final List<IMessage> messageList;
+    private final Context context;
+    private final Bitmap defaultBitmap;
+    private final View.OnClickListener onClickListener;
 
     public DialogAdapter(final Context context, final List<IMessage> messageList) {
         this.context = context;
@@ -35,7 +35,7 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.defaultBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.camera_50);
         this.onClickListener = new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 final View parent = (View) view.getParent();
                 Toast.makeText(context, parent.getTag().toString(), Toast.LENGTH_SHORT).show();
             }
@@ -43,13 +43,13 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_item, parent, false);
         return new DialogAdapterViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         final IMessage currentMessage = messageList.get(position);
         final LazyImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
 
@@ -66,6 +66,17 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         dialogAdapterViewHolder.photo.setOnClickListener(onClickListener);
         dialogAdapterViewHolder.itemView.setTag(receiver.getName());
         dialogAdapterViewHolder.timeTexView.setText(new DateFriendlyFormat().convert(context, currentMessage.getDate()));
+
+        if (!currentMessage.isRead()) {
+            if (!currentMessage.isOut()) {
+                holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_UNREAD_BACKGROUND);
+            } else {
+                dialogAdapterViewHolder.readState.setVisibility(View.VISIBLE);
+            }
+        } else {
+            holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_READ_BACKGROUND);
+            dialogAdapterViewHolder.readState.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -78,12 +89,14 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private final TextView messageTextView;
         private final TextView timeTexView;
         private final ImageView photo;
+        private final ImageView readState;
 
-        public DialogAdapterViewHolder(View itemView) {
+        public DialogAdapterViewHolder(final View itemView) {
             super(itemView);
             messageTextView = (TextView) itemView.findViewById(R.id.dialog_item_message);
             timeTexView = (TextView) itemView.findViewById(R.id.dialog_item_time);
             photo = (ImageView) itemView.findViewById(R.id.dialog_item_primary_photo);
+            readState = ((ImageView) itemView.findViewById(R.id.dialog_list_read_state));
         }
     }
 

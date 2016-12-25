@@ -77,6 +77,10 @@ public class DialogsListActivity extends AppCompatActivity {
 
         startService(new Intent(this, LongPollService.class));
 
+        final DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this,
+                layoutManager.getOrientation());
+        messagesRecyclerView.addItemDecoration(dividerItemDecoration);
+
         adapter = new DialogListAdapter(this, messages);
         messagesRecyclerView.setAdapter(adapter);
 
@@ -159,8 +163,10 @@ public class DialogsListActivity extends AppCompatActivity {
                     final IMessage deleteMessageFlagEventMessage = deleteMessageFlagEvent.getMessage();
                     final VkMessageFlag messageFlag = deleteMessageFlagEvent.getMessageFlag();
                     for (final IMessage message : messages) {
-                        if (message.isEquals(deleteMessageFlagEventMessage)){
-                            ((VkMessage) message).deleteFlag(messageFlag);
+                        if (message instanceof VkMessage && message.isEquals(deleteMessageFlagEventMessage)){
+                            final VkMessage vkMessage = (VkMessage) message;
+                            vkMessage.deleteFlag(messageFlag);
+                            new StringBuilder();
                             break;
                         }
                     }

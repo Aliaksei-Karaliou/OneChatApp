@@ -3,7 +3,6 @@ package com.github.aliakseiKaraliou.onechatapp.ui.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +26,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private final DateFriendlyFormat dateFriendlyFormat;
     private final Context context;
     private final Bitmap defaultBitmap;
-    private static final int ITEM_UNREAD_BACKGROUND = Color.rgb(221, 221, 221);
-    private static final int ITEM_READ_BACKGROUND = Color.WHITE;
+
 
     public DialogListAdapter(final Context context, final List<IMessage> messageList) {
         this.messageList = messageList;
@@ -75,12 +73,12 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             if (!currentMessage.isRead()) {
                 if (!currentMessage.isOut()) {
-                    holder.itemView.setBackgroundColor(ITEM_UNREAD_BACKGROUND);
+                    holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_UNREAD_BACKGROUND);
                 } else {
                     viewHolder.readState.setVisibility(View.VISIBLE);
                 }
             } else {
-                holder.itemView.setBackgroundColor(ITEM_READ_BACKGROUND);
+                holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_READ_BACKGROUND);
                 viewHolder.readState.setVisibility(View.INVISIBLE);
             }
 
@@ -98,14 +96,19 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             viewHolder.nameTextView.setText(currentMessage.getReceiver().getName());
             viewHolder.dateTextView.setText(dateFriendlyFormat.convert(context, currentMessage.getDate()));
 
+            if (onMessageClick != null) {
+                holder.itemView.setTag(currentMessage.getReceiver().getId());
+                holder.itemView.setOnClickListener(onMessageClick);
+            }
+
             if (!currentMessage.isRead()) {
                 if (!currentMessage.isOut()) {
-                    holder.itemView.setBackgroundColor(ITEM_UNREAD_BACKGROUND);
+                    holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_UNREAD_BACKGROUND);
                 } else {
                     viewHolder.readState.setVisibility(View.VISIBLE);
                 }
             } else {
-                holder.itemView.setBackgroundColor(ITEM_READ_BACKGROUND);
+                holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_READ_BACKGROUND);
                 viewHolder.readState.setVisibility(View.INVISIBLE);
             }
         }

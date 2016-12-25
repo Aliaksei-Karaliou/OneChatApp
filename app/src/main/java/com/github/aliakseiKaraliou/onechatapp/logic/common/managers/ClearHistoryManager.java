@@ -11,15 +11,15 @@ import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import java.io.IOException;
 
 public class ClearHistoryManager {
-    public boolean clear(IReceiver reciever) {
+    public boolean clear(final IReceiver reciever) {
         if (reciever.getSocialNetwork() == SocialNetwork.VK) {
             final AsyncOperation<Long, java.lang.String> asyncOperation = new AsyncOperation<Long, java.lang.String>() {
                 @Override
-                protected java.lang.String doInBackground(Long peerId) {
+                protected java.lang.String doInBackground(final Long peerId) {
                     try {
                         final Pair<java.lang.String, java.lang.String> peerIdPair = new Pair<>(Constants.Params.PEER_ID, Long.toString(peerId));
                         return new VkRequester().doRequest(Constants.Method.MESSAGES_DELETEDIALOG, peerIdPair);
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         e.printStackTrace();
                         return null;
                     }

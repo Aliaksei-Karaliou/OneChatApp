@@ -13,7 +13,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
 public class VkAuthActivity extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vk_auth);
 
@@ -32,8 +32,8 @@ public class VkAuthActivity extends AppCompatActivity {
         webView.setWebViewClient(new WebViewClient() {
 
             @Override
-            public void onPageFinished(WebView view, String url) {
-                String webViewUrl = webView.getUrl();
+            public void onPageFinished(final WebView view, final String url) {
+                final String webViewUrl = webView.getUrl();
                 if (webViewUrl.contains("access_token")) {
                     VkAuth.parseUrl(webViewUrl);
                     finish();

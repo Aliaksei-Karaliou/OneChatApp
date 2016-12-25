@@ -22,15 +22,14 @@ import java.util.Locale;
 
 public class NotificationBroadcastReceiver extends BroadcastReceiver {
 
-    private byte NEW_MESSAGE_ID = 4;
-    private byte MESSAGE_FLAG_CHANGE = 1;
+    private final byte NEW_MESSAGE_ID = 4;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, final Intent intent) {
         final List<IEvent> eventList = intent.getParcelableArrayListExtra(Constants.Other.EVENT_LIST);
 
         IMessage message = null;
-        for (IEvent event : eventList) {
+        for (final IEvent event : eventList) {
             if (event instanceof VkAddNewMessageEvent) {
                 final IMessage newMessage = ((VkAddNewMessageEvent) event).getMessage();
                 if (!newMessage.isOut()) {

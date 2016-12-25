@@ -11,7 +11,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import java.io.IOException;
 
 public class SendManager {
-    public boolean send(IReceiver reciever, final String message) {
+    public boolean send(final IReceiver reciever, final String message) {
         if (reciever.getSocialNetwork() == SocialNetwork.VK) {
             final AsyncOperation<Long, String> asyncOperation = new AsyncOperation<Long, String>() {
                 @Override
@@ -20,7 +20,7 @@ public class SendManager {
                     final Pair<String, String> messagepair = new Pair<>(Constants.Params.MESSAGE, message);
                     try {
                         return new VkRequester().doRequest(Constants.Method.MESSAGES_SEND, peerIdPair, messagepair);
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         e.printStackTrace();
                         return null;
                     }

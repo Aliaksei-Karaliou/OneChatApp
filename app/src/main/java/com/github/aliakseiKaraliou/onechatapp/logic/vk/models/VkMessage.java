@@ -101,11 +101,6 @@ public class VkMessage implements IMessage, IVkMessageFlagsMethods {
         return out;
     }
 
-    public IMessage read() {
-        isRead = true;
-        return this;
-    }
-
     @Override
     public IReceiver getReceiver() {
         if (chat != null)

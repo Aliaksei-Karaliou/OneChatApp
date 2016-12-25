@@ -5,7 +5,7 @@ import android.net.ConnectivityManager;
 
 public class NetworkConnectionChecker {
 
-    public static boolean check(Context context) {
+    public static boolean check(final Context context) {
         final ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         return connectivityManager.getActiveNetworkInfo() != null;
     }

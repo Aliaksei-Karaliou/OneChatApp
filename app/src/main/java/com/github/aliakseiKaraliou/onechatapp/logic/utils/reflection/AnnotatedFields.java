@@ -8,17 +8,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class AnnotatedFields {
-    public final Map<String, String> getAnnotatedbyDbTypeFields(Class<?> primaryClass) {
+public class AnnotatedFields {
+    public Map<String, String> getAnnotatedbyDbTypeFields(final Class<?> primaryClass) {
         final Map<String, String> map = new HashMap<>();
         final Field[] declaredFields = primaryClass.getDeclaredFields();
-        List<Field> fieldList = new ArrayList<>();
-        for (Field declaredField : declaredFields) {
+        final List<Field> fieldList = new ArrayList<>();
+        for (final Field declaredField : declaredFields) {
             if (declaredField.isAnnotationPresent(DbType.class)) {
                 fieldList.add(declaredField);
             }
         }
-        for (Field field : fieldList) {
+        for (final Field field : fieldList) {
             final DbType.Type type = field.getAnnotation(DbType.class).type();
             final String fieldName = field.getName();
             map.put(fieldName, type.toString());

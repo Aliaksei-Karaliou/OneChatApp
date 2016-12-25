@@ -23,8 +23,6 @@ public interface IMessage extends Cloneable, Parcelable, Equatable<IMessage> {
 
     boolean isOut();
 
-    IMessage read();
-
     IReceiver getReceiver();
 
     @Nullable

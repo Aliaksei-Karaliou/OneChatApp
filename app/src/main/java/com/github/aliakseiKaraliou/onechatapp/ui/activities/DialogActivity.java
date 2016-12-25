@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -25,8 +26,11 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.ClearHistoryManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.SendManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlag;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkAddNewMessageEvent;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.messageFlags.VkDeleteMessageFlagEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogManager;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkMessageStorage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.ui.adapters.DialogAdapter;
@@ -78,6 +82,11 @@ public class DialogActivity extends AppCompatActivity {
 
         adapter = new DialogAdapter(this, messageList);
         recyclerView.setAdapter(adapter);
+
+        final DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                linearLayoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
@@ -155,7 +164,7 @@ public class DialogActivity extends AppCompatActivity {
     public class NewMessageBroadcastReceiver extends BroadcastReceiver {
 
         @Override
-        public void onReceive(final Context context, Intent intent) {
+        public void onReceive(final Context context, final Intent intent) {
             final ArrayList<Parcelable> parcelableArrayListExtra = intent.getParcelableArrayListExtra(Constants.Params.MESSAGE);
             final List<IMessage> newMessages = new ArrayList<>();
             if (parcelableArrayListExtra != null) {
@@ -165,7 +174,7 @@ public class DialogActivity extends AppCompatActivity {
                     }
                 }
                 if (newMessages.size() > 0) {
-                    for (IMessage message : newMessages) {
+                    for (final IMessage message : newMessages) {
                         if (message.getReceiver().isEquals(receiver)) {
                             messageList.add(0, message);
                             adapter.notifyDataSetChanged();
@@ -184,14 +193,26 @@ public class DialogActivity extends AppCompatActivity {
 
     private class EventBroadcastReceiver extends BroadcastReceiver {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(final Context context, final Intent intent) {
             final List<IEvent> eventList = intent.getParcelableArrayListExtra(Constants.Other.EVENT_LIST);
-            for (IEvent event : eventList) {
+            for (final IEvent event : eventList) {
                 if (event instanceof VkAddNewMessageEvent) {
                     final IMessage newMessage = ((VkAddNewMessageEvent) event).getMessage();
                     if (newMessage.getReceiver().isEquals(receiver)) {
                         messageList.add(0, newMessage);
                         adapter.notifyDataSetChanged();
+                    }
+                } else if (event instanceof VkDeleteMessageFlagEvent) {
+                    final VkDeleteMessageFlagEvent deleteMessageFlagEvent = (VkDeleteMessageFlagEvent) event;
+                    final IMessage deleteMessageFlagEventMessage = deleteMessageFlagEvent.getMessage();
+                    final VkMessageFlag messageFlag = deleteMessageFlagEvent.getMessageFlag();
+                    if (deleteMessageFlagEventMessage != null && messageFlag != null && deleteMessageFlagEventMessage.getReceiver().isEquals(receiver)) {
+                        for (final IMessage message : messageList) {
+                            if (message instanceof VkMessage && deleteMessageFlagEventMessage.isEquals(message)){
+                                ((VkMessage) message).deleteFlag(messageFlag);
+                                break;
+                            }
+                        }
                     }
                 }
             }
