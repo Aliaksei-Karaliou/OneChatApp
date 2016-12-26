@@ -1,5 +1,6 @@
 package com.github.aliakseiKaraliou.onechatapp.broadcastReceivers;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -13,7 +14,7 @@ import android.support.v4.app.NotificationCompat;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.SimpleImageLoader;
+import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.ImageLoader;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkAddNewMessageEvent;
 import com.github.aliakseiKaraliou.onechatapp.ui.activities.DialogActivity;
@@ -24,7 +25,6 @@ import java.util.Locale;
 public class NotificationBroadcastReceiver extends BroadcastReceiver {
 
     private static final String TITLE_TEMPLATE = "%s (%s)";
-    private static final byte NEW_MESSAGE_ID = 4;
     private static final String TICKER_TEMPLATE = "%s: %s";
 
     @Override
@@ -47,9 +47,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
         //Message
         if (message != null) {
 
-            final SimpleImageLoader simpleImageLoader = new SimpleImageLoader();
 
-            simpleImageLoader.startLoading(message.getSender().getPhoto100Url());
             final String title;
             if (message.getChat() == null) {
                 title = message.getSender().getName();
@@ -61,23 +59,35 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
             final Intent openActivityIntent = new Intent(context, DialogActivity.class);
             openActivityIntent.putExtra(Constants.Other.PEER_ID, message.getReceiver().getId());
             final PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, openActivityIntent, 0);
+            final String text = message.getText();
 
-            final Bitmap receiverPhoto = simpleImageLoader.getResult();
+            new ImageLoader<String, Void, Bitmap>() {
+                @Override
+                protected Bitmap doInBackground(final String... params) {
+                    return loadImageFromUrl(params[0]);
+                }
 
-            notificationBuilder
-                    .setLargeIcon(receiverPhoto)
-                    .setSmallIcon(R.drawable.ic_mail)
-                    .setContentTitle(title)
-                    .setContentText(message.getText())
-                    .setTicker(ticker)
-                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                    .setStyle(new NotificationCompat.BigTextStyle().bigText(message.getText()))
-                    .setContentIntent(pendingIntent);
+                @Override
+                protected void onPostExecute(final Bitmap bitmap) {
+                    super.onPostExecute(bitmap);
+                    notificationBuilder
+                            .setSmallIcon(R.drawable.ic_mail)
+                            .setLargeIcon(bitmap)
+                            .setContentTitle(title)
+                            .setContentText(text)
+                            .setTicker(ticker)
+                            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                            .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
+                            .setContentIntent(pendingIntent);
 
-            if (Build.VERSION.SDK_INT <= 20){
-                notificationBuilder.setSmallIcon(R.drawable.mail);
-            }
-            notificationManager.notify(NEW_MESSAGE_ID, notificationBuilder.build());
+                    if (Build.VERSION.SDK_INT <= 20) {
+                        notificationBuilder.setSmallIcon(R.drawable.mail);
+                    }
+
+                    final Notification notification = notificationBuilder.build();
+                    notificationManager.notify(0, notification);
+                }
+            }.execute(message.getSender().getPhoto100Url());
         }
     }
 }

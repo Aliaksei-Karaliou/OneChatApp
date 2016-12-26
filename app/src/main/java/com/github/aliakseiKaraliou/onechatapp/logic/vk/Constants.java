@@ -77,14 +77,9 @@ public interface Constants {
         String MAILTO = "mailto";
         String PEER_ID = "peer id";
         String PREFERENCES = "preferences";
-        String LIGHT_THEME = "light theme";
+        String DARK_THEME = "light theme";
         String THEME_SWITCH_KEY = "Theme key";
         String VK_REQUEST_TEMPLATE = "https://api.vk.com/method/%s?%s&access_token=%s&v=%.2f";
         String VK_LONG_POLL_REQUEST = "https://%s?act=a_check&key=%s&ts=%d&wait=25&mode=2";
-    }
-
-    interface TagIds {
-        int URL_ID = 0;
-        int ONCLICK_ID = 1;
     }
 }

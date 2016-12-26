@@ -2,6 +2,8 @@ package com.github.aliakseiKaraliou.onechatapp;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IGroup;
@@ -14,7 +16,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.db.models.DialogListMessageM
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.GroupModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.MessageModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.UserModel;
-import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.LazyImageLoaderManager;
+import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.AvatarImageLoaderManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.network.NetworkConnectionChecker;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
@@ -25,7 +27,7 @@ import java.util.List;
 
 public class App extends Application {
 
-    private LazyImageLoaderManager imageLoaderManager;
+    private AvatarImageLoaderManager imageLoaderManager;
     private SharedPreferences applicationSharedPreferences;
     private ORM recieverORM;
     private ORM messageORM;
@@ -41,7 +43,7 @@ public class App extends Application {
         messageORM = new ORM(new DbHelper(this, Constants.Db.MESSAGES, 1, MessageModel.class, DialogListMessageModel.class));
 
         //imageLoadManager
-        imageLoaderManager = new LazyImageLoaderManager();
+        imageLoaderManager = new AvatarImageLoaderManager();
 
         //applicationSharedPreferences
         applicationSharedPreferences = getSharedPreferences(Constants.Other.PREFERENCES, MODE_PRIVATE);
@@ -73,12 +75,23 @@ public class App extends Application {
         return messageORM;
     }
 
-    public LazyImageLoaderManager getImageLoaderManager() {
+    public AvatarImageLoaderManager getImageLoaderManager() {
         return imageLoaderManager;
     }
 
 
     public SharedPreferences getApplicationSharedPreferences() {
         return applicationSharedPreferences;
+    }
+
+    public int getApplicationBackgroundColour() {
+        final TypedArray array = getTheme().obtainStyledAttributes(new int[]{
+                android.R.attr.windowBackground,
+        });
+        final int color = array.getColor(0, Color.WHITE);
+        final int red = Color.red(color);
+        final int blue = Color.blue(color);
+        final int green = Color.green(color);
+        return color;
     }
 }

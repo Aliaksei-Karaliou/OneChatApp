@@ -3,6 +3,8 @@ package com.github.aliakseiKaraliou.onechatapp.ui.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +17,7 @@ import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.ReceiverType;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.DateFriendlyFormat;
-import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.LazyImageLoaderManager;
+import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.AvatarImageLoaderManager;
 
 import java.util.List;
 
@@ -27,6 +29,8 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private final Context context;
     private final Bitmap defaultBitmap;
     private static final int LOADING_VIEW_TYPE = 4;
+
+    private static final int ITEM_UNREAD_BACKGROUND = Color.rgb(221, 221, 221);
 
 
     public DialogListAdapter(final Context context, final List<IMessage> messageList) {
@@ -60,7 +64,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         if (viewType != LOADING_VIEW_TYPE) {
             final IMessage currentMessage = messageList.get(position);
-            final LazyImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
+            final AvatarImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
             final ReceiverType receiverType = ReceiverType.values()[viewType];
 
             if (receiverType != ReceiverType.CHAT) {
@@ -81,12 +85,16 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 if (!currentMessage.isRead()) {
                     if (!currentMessage.isOut()) {
-                        holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_UNREAD_BACKGROUND);
+                        holder.itemView.setBackgroundColor(ITEM_UNREAD_BACKGROUND);
+                        viewHolder.readState.setVisibility(View.INVISIBLE);
                     } else {
+                        final int readColour = ((App) context.getApplicationContext()).getApplicationBackgroundColour();
+                        holder.itemView.setBackgroundColor(readColour);
                         viewHolder.readState.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_READ_BACKGROUND);
+                    final int readColour = ((App) context.getApplicationContext()).getApplicationBackgroundColour();
+                    holder.itemView.setBackgroundColor(readColour);
                     viewHolder.readState.setVisibility(View.INVISIBLE);
                 }
 
@@ -110,14 +118,19 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 if (!currentMessage.isRead()) {
                     if (!currentMessage.isOut()) {
-                        holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_UNREAD_BACKGROUND);
+                        holder.itemView.setBackgroundColor(ITEM_UNREAD_BACKGROUND);
+                        viewHolder.readState.setVisibility(View.INVISIBLE);
                     } else {
+                        final int readColour = ((App) context.getApplicationContext()).getApplicationBackgroundColour();
+                        holder.itemView.setBackgroundColor(readColour);
                         viewHolder.readState.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_READ_BACKGROUND);
+                    final int readColour = ((App) context.getApplicationContext()).getApplicationBackgroundColour();
+                    holder.itemView.setBackgroundColor(readColour);
                     viewHolder.readState.setVisibility(View.INVISIBLE);
                 }
+
             }
         }
 

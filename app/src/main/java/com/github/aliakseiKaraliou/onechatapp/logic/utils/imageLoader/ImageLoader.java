@@ -2,26 +2,23 @@ package com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
-import com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOperation;
+import android.os.AsyncTask;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class SimpleImageLoader extends AsyncOperation<String, Bitmap> {
+public abstract class ImageLoader<Param, Progress, Result> extends AsyncTask<Param, Progress, Result> {
 
-    @Override
-    protected Bitmap doInBackground(String url) {
+    protected final Bitmap loadImageFromUrl(final String url){
         try {
             final URL urlValue = new URL(url);
             final HttpURLConnection connection = (HttpURLConnection) urlValue.openConnection();
             connection.setDoInput(true);
             connection.connect();
             final InputStream inputStream = connection.getInputStream();
-            final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            return bitmap;
-        } catch (Exception e) {
+            return BitmapFactory.decodeStream(inputStream);
+        } catch (final Exception e) {
             e.printStackTrace();
             return null;
         }

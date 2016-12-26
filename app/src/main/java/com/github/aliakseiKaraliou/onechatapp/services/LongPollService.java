@@ -4,8 +4,11 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
+import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
+import com.github.aliakseiKaraliou.onechatapp.logic.utils.exceptions.UnknownMessageException;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollServer;
@@ -48,16 +51,22 @@ public class LongPollService extends IntentService {
 
 
         while (true) {
-            final String longPollRequest = new VkRequester().doLongPollRequest(longPollServer);
-            final VkLongPollUpdate parse = new VkLongPollParser().parse(getApplicationContext(), longPollRequest);
-            final List<IEvent> events = parse.getEvents();
-            if (events.size() > 0) {
-                final Intent broadcastIntent = new Intent(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME);
-                broadcastIntent.putParcelableArrayListExtra(Constants.Other.EVENT_LIST, (ArrayList<? extends Parcelable>) events);
-                sendBroadcast(broadcastIntent);
+            try {
+                final String longPollRequest = new VkRequester().doLongPollRequest(longPollServer);
+                final VkLongPollUpdate parse = new VkLongPollParser().parse(getApplicationContext(), longPollRequest);
+                final List<IEvent> events = parse.getEvents();
+                if (events.size() > 0) {
+                    final Intent broadcastIntent = new Intent(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME);
+                    broadcastIntent.putParcelableArrayListExtra(Constants.Other.EVENT_LIST, (ArrayList<? extends Parcelable>) events);
+                    sendBroadcast(broadcastIntent);
+                }
+                final long newTs = parse.getTs();
+                longPollServer.setTs(newTs);
             }
-            final long newTs = parse.getTs();
-            longPollServer.setTs(newTs);
+            catch (final UnknownMessageException e){
+                e.printStackTrace();
+                Toast.makeText(this, getText(R.string.operation_failed), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

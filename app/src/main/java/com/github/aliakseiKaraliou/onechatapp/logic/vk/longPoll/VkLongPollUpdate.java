@@ -12,6 +12,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.DialogListMessageModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.MessageModel;
+import com.github.aliakseiKaraliou.onechatapp.logic.utils.exceptions.UnknownMessageException;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlag;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlagConverter;
@@ -54,7 +55,7 @@ public class VkLongPollUpdate {
         return ts;
     }
 
-    public List<IEvent> getEvents() {
+    public List<IEvent> getEvents() throws UnknownMessageException {
         final List<IEvent> eventList = new ArrayList<>();
         final StringBuilder newMessageIdStringBuilder = new StringBuilder();
         for (final List<String> stringList : info) {
@@ -87,6 +88,9 @@ public class VkLongPollUpdate {
             } else if (code == READ_ALL_MESSAGES_CODE) {
                 final long id = Long.parseLong(stringList.get(2));
                 final IMessage message = VkMessageStorage.get(id);
+                if (message == null) {
+                    throw new UnknownMessageException();
+                }
                 final IEvent event = new VkReadAllMessagesEvent(message);
                 eventList.add(event);
             }

@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.util.LongSparseArray;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
@@ -37,6 +38,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogsListFinalParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogsListStartParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkReceiverDataParser;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkMessageStorage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.services.LongPollService;
 import com.github.aliakseiKaraliou.onechatapp.ui.adapters.DialogListAdapter;
@@ -50,16 +52,20 @@ public class DialogsListActivity extends AppCompatActivity {
     private final String OFFSET = "offset";
     private List<IMessage> messages;
     private BroadcastReceiver broadcastReceiver;
-    private SharedPreferences preferences;
+    private SharedPreferences sharedPreferences;
     private DialogListAdapter adapter;
 
     private ProgressBar progressBar;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+
+        sharedPreferences = ((App) getApplicationContext()).getApplicationSharedPreferences();
+        final boolean theme = sharedPreferences.getBoolean(Constants.Other.DARK_THEME, false);
+        setTheme(theme ? R.style.DarkTheme : R.style.LightTheme);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialogs_list);
-        preferences = ((App) getApplicationContext()).getApplicationSharedPreferences();
 
         if (VkInfo.isUserAuthorized()) {
             broadcastReceiver = new NewEventBroadcastReceiver();
@@ -77,7 +83,7 @@ public class DialogsListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        VkInfo.userSetAuth(preferences);
+        VkInfo.userSetAuth(sharedPreferences);
         if (VkInfo.isUserAuthorized() && messages == null) {
             progressBar = (ProgressBar) findViewById(R.id.activity_progress_bar);
             progressBar.setVisibility(View.VISIBLE);
@@ -174,9 +180,13 @@ public class DialogsListActivity extends AppCompatActivity {
                         }
                         final List<IMessage> loadedMessages = new VkDialogsListFinalParser().parse(context, jsonString);
 
-                        final ORM messageORM = ((App) context.getApplicationContext()).getMessageORM();
-                        messageORM.insertAll(Constants.Db.ALL_MESSAGES, MessageModel.convertTo(loadedMessages));
+                        if (loadedMessages != null) {
 
+                            final ORM messageORM = ((App) context.getApplicationContext()).getMessageORM();
+                            messageORM.insertAll(Constants.Db.ALL_MESSAGES, MessageModel.convertTo(loadedMessages));
+                        } else {
+                            new StringBuilder();
+                        }
                         return loadedMessages;
                     } catch (final Exception e) {
                         e.printStackTrace();
@@ -195,6 +205,10 @@ public class DialogsListActivity extends AppCompatActivity {
 
                 final LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
                 recyclerView.setLayoutManager(layoutManager);
+
+                final DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context,
+                        layoutManager.getOrientation());
+                recyclerView.addItemDecoration(dividerItemDecoration);
 
                 progressBar.setVisibility(View.INVISIBLE);
 
@@ -229,9 +243,11 @@ public class DialogsListActivity extends AppCompatActivity {
                 });
 
             } else {
+                final int size = messages.size();
                 messages.addAll(messageList);
-                adapter.notifyDataSetChanged();
+                adapter.notifyItemRangeInserted(size, messages.size() - size);
             }
+            VkMessageStorage.putAll(messageList);
 
         }
 

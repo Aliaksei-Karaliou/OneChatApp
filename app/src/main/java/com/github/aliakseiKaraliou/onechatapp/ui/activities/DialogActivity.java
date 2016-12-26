@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.util.LongSparseArray;
 import android.support.v7.app.AlertDialog;
@@ -25,13 +26,19 @@ import android.widget.Toast;
 
 import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IGroup;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.ClearHistoryManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.SendManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.models.ChatModel;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.models.GroupModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.MessageModel;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.models.UserModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlag;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
@@ -42,6 +49,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogFinalParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogStartParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkReceiverDataParser;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkMessageStorage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.ui.adapters.DialogAdapter;
 
@@ -62,6 +70,11 @@ public class DialogActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+
+        final SharedPreferences sharedPreferences = ((App) getApplicationContext()).getApplicationSharedPreferences();
+        final boolean theme = sharedPreferences.getBoolean(Constants.Other.DARK_THEME, false);
+        setTheme(theme ? R.style.DarkTheme : R.style.LightTheme);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog);
 
@@ -76,8 +89,9 @@ public class DialogActivity extends AppCompatActivity {
             receiver = null;
         }
 
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         newEventReceiver = new EventBroadcastReceiver();
         final IntentFilter filter = new IntentFilter(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME);
@@ -108,8 +122,11 @@ public class DialogActivity extends AppCompatActivity {
                     .setPositiveButton(R.string.answer_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(final DialogInterface dialogInterface, final int i) {
-                            final boolean result = new ClearHistoryManager().clear(receiver);
-                            if (!result) {
+                            try {
+                                new ClearHistoryManager().clear(receiver);
+                            }
+                            catch (final RuntimeException e){
+                                e.printStackTrace();
                                 Toast.makeText(DialogActivity.this, getString(R.string.operation_failed), Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -126,13 +143,14 @@ public class DialogActivity extends AppCompatActivity {
 
     public void sendButtonOnClick(final View view) {
         final EditText messageTextView = (EditText) findViewById(R.id.dialog_new_message_text);
-        final String message = messageTextView.getText().toString();
+        final String message = messageTextView.getText().toString().trim();
         if (!message.equals("")) {
-            final boolean success = new SendManager().send(receiver, message);
-            if (!success) {
-                Toast.makeText(this, getString(R.string.operation_failed), Toast.LENGTH_SHORT).show();
-            } else {
+            try {
+                new SendManager().send(receiver, message);
                 messageTextView.setText("");
+            }
+            catch (final RuntimeException e){
+                Toast.makeText(this, getString(R.string.operation_failed), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -217,6 +235,29 @@ public class DialogActivity extends AppCompatActivity {
                         if (parse != null && parse.size() > 0) {
                             final LongSparseArray<IReceiver> longSparseArray = new VkReceiverDataParser().parse(parse);
                             VkReceiverStorage.putAll(longSparseArray);
+                            final ORM recieverORM = ((App) context.getApplicationContext()).getRecieverORM();
+
+                            final List<IUser> userList = new ArrayList<>();
+                            final List<IChat> chatList = new ArrayList<>();
+                            final List<IGroup> groupList = new ArrayList<>();
+
+                            if (longSparseArray != null) {
+
+                                for (int i = 0; i < longSparseArray.size(); i++) {
+                                    final IReceiver receiver = longSparseArray.valueAt(i);
+                                    if (receiver instanceof IUser) {
+                                        userList.add((IUser) receiver);
+                                    } else if (receiver instanceof IChat) {
+                                        chatList.add((IChat) receiver);
+                                    } else if (receiver instanceof IGroup) {
+                                        groupList.add((IGroup) receiver);
+                                    }
+                                }
+                            }
+
+                            recieverORM.insertAll(Constants.Db.USERS, UserModel.convertTo(userList));
+                            recieverORM.insertAll(Constants.Db.CHATS, ChatModel.convertTo(chatList));
+                            recieverORM.insertAll(Constants.Db.GROUPS, GroupModel.convertTo(groupList));
                         }
                         messages = new VkDialogFinalParser().parse(context, json);
 
@@ -264,9 +305,11 @@ public class DialogActivity extends AppCompatActivity {
                     }
                 });
             } else {
+                final int size = messageList.size();
                 messageList.addAll(data);
-                adapter.notifyDataSetChanged();
+                adapter.notifyItemInserted(size);
             }
+            VkMessageStorage.putAll(data);
         }
 
         @Override

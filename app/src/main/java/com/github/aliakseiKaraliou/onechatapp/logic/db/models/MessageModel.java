@@ -147,17 +147,17 @@ public final class MessageModel implements AbstractModel<MessageModel> {
         return null;
     }
 
-    public static List<MessageModel> convertTo(Collection<IMessage> messageCollection) {
-        List<MessageModel> dialogListMessageModelList = new ArrayList<>();
-        for (IMessage message : messageCollection) {
+    public static List<MessageModel> convertTo(final Collection<IMessage> messageCollection) {
+        final List<MessageModel> dialogListMessageModelList = new ArrayList<>();
+        for (final IMessage message : messageCollection) {
             dialogListMessageModelList.add(new MessageModel(message));
         }
         return dialogListMessageModelList;
     }
 
-    public static List<IMessage> convertFrom(Collection<MessageModel> messageModels) {
-        List<IMessage> messageList = new ArrayList<>();
-        for (MessageModel messageModel : messageModels) {
+    public static List<IMessage> convertFrom(final Collection<MessageModel> messageModels) {
+        final List<IMessage> messageList = new ArrayList<>();
+        for (final MessageModel messageModel : messageModels) {
             final long userId = messageModel.userId;
             final long peerId = messageModel.peerId;
             final VkMessage.Builder builder = new VkMessage.Builder().setId(messageModel.id).setText(messageModel.text).setDate(messageModel.timestamp).setOut(messageModel.isOut > 0).setRead(messageModel.isRead > 0).setSender(((ISender) VkReceiverStorage.get(userId)));

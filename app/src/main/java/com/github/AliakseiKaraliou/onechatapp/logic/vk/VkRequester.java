@@ -3,6 +3,7 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
+import com.github.aliakseiKaraliou.onechatapp.logic.utils.exceptions.TooManyRequestsException;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollServer;
 
 import java.io.BufferedInputStream;
@@ -19,13 +20,13 @@ public class VkRequester {
     }
 
     @SafeVarargs
-    public final String doRequest(String methodName, Pair<String, String>... params) throws IOException {
+    public final String doRequest(final String methodName, final Pair<String, String>... params) throws IOException {
 
         try {
             final StringBuilder paramsBuilder = new StringBuilder();
             String stringParams = "";
             if (params.length > 0) {
-                for (Pair<String, String> param : params) {
+                for (final Pair<String, String> param : params) {
                     paramsBuilder.append(param.first).append("=").append(param.second.replace(" ", "%20")).append("&");
                 }
                 stringParams = paramsBuilder.toString().substring(0, paramsBuilder.length() - 1);
@@ -34,9 +35,9 @@ public class VkRequester {
             final String stringUrl = String.format(Locale.US, Constants.Other.VK_REQUEST_TEMPLATE, methodName, stringParams, VkInfo.getAccessToken(), VkInfo.getVkApiVersion());
 
             final URL url = new URL(stringUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            Thread.sleep(350);
+            Thread.sleep(400);
             final int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 final String result = readConnection(connection);
@@ -45,52 +46,48 @@ public class VkRequester {
             } else {
                 throw new IOException();
             }
-        }
-        catch (Exception e){
+        } catch (final Exception e) {
             e.printStackTrace();
-            return null;
+            throw new IllegalArgumentException();
         }
     }
 
     @Nullable
-    public final String doLongPollRequest(VkLongPollServer server) {
+    public String doLongPollRequest(final VkLongPollServer server) {
         try {
             final String urlString = String.format(Locale.US, Constants.Other.VK_LONG_POLL_REQUEST, server.getServer(), server.getKey(), server.getTs());
-            try {
-                final URL url = new URL(urlString);
-                final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                final int responseCode = connection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    final String result = readConnection(connection);
-                    connection.disconnect();
-                    return result;
+            final URL url = new URL(urlString);
+            final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            final int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                final String result = readConnection(connection);
+                connection.disconnect();
+                if (result.contains("Too many requests per second")) {
+                    throw new TooManyRequestsException();
                 }
-                return null;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        } catch (Exception e) {
+                return result;
+            } else throw new IllegalArgumentException();
+        } catch (final Exception e) {
             e.printStackTrace();
-            return null;
+            throw new IllegalArgumentException();
         }
     }
 
-    private String readConnection(HttpURLConnection connection) {
+    private String readConnection(final HttpURLConnection connection) {
         try {
             final BufferedInputStream stream = new BufferedInputStream(connection.getInputStream());
             final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             String line;
-            StringBuilder builder = new StringBuilder();
+            final StringBuilder builder = new StringBuilder();
             while ((line = reader.readLine()) != null) {
                 builder.append(line);
             }
             stream.close();
             reader.close();
             return builder.toString();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
-            return null;
+            throw new IllegalArgumentException();
         }
     }
 }
