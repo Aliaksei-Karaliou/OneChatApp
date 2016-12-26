@@ -1,34 +1,36 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.common.managers;
 
+import android.os.AsyncTask;
 import android.util.Pair;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.enums.SocialNetwork;
-import com.github.aliakseiKaraliou.onechatapp.logic.utils.asyncOperation.AsyncOperation;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 
 import java.io.IOException;
 
 public class ClearHistoryManager {
-    public boolean clear(final IReceiver reciever) {
-        if (reciever.getSocialNetwork() == SocialNetwork.VK) {
-            final AsyncOperation<Long, java.lang.String> asyncOperation = new AsyncOperation<Long, java.lang.String>() {
-                @Override
-                protected java.lang.String doInBackground(final Long peerId) {
-                    try {
-                        final Pair<java.lang.String, java.lang.String> peerIdPair = new Pair<>(Constants.Params.PEER_ID, Long.toString(peerId));
-                        return new VkRequester().doRequest(Constants.Method.MESSAGES_DELETEDIALOG, peerIdPair);
-                    } catch (final IOException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
+    public void clear(final IReceiver receiver) {
+        final long peerId = receiver.getId();
+        new AsyncTask<IReceiver, Void, String>() {
+            @Override
+            protected String doInBackground(final IReceiver... params) {
+                try {
+                    final Pair<java.lang.String, java.lang.String> peerIdPair = new Pair<>(Constants.Params.PEER_ID, Long.toString(peerId));
+                    return new VkRequester().doRequest(Constants.Method.MESSAGES_DELETEDIALOG, peerIdPair);
+                } catch (final IOException e) {
+                    e.printStackTrace();
+                    return null;
                 }
-            };
-            asyncOperation.startLoading(reciever.getId());
-            final java.lang.String result = asyncOperation.getResult();
-            return result != null && result.equals("{\"response\":1}");
-        }
-        return false;
+            }
+
+            @Override
+            protected void onPostExecute(final String result) {
+                super.onPostExecute(result);
+                if (result == null || !result.equals("{\"response\":1}")){
+                    throw new RuntimeException();
+                }
+            }
+        }.execute(receiver);
     }
 }

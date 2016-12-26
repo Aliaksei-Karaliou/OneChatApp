@@ -1,29 +1,38 @@
 package com.github.aliakseiKaraliou.onechatapp.ui.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
+import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+        sharedPreferences = ((App) getApplicationContext()).getApplicationSharedPreferences();
+        final boolean theme = sharedPreferences.getBoolean(Constants.Other.DARK_THEME, false);
+        setTheme(theme ? R.style.DarkTheme : R.style.LightTheme);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(R.string.preferences);
-
-        new StringBuilder();
+        final ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
+            supportActionBar.setTitle(R.string.preferences);
+        }
     }
 
 
@@ -35,7 +44,9 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(final CompoundButton compoundButton, final boolean b) {
                 final boolean checked = compoundButton.isChecked();
-                setTheme(checked ? R.style.DarkTheme : R.style.LightTheme);
+                final SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(Constants.Other.DARK_THEME, checked);
+                editor.apply();
                 recreate();
             }
         });
