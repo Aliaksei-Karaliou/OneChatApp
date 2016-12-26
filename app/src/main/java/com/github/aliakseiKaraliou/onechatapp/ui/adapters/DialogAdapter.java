@@ -29,6 +29,10 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final Bitmap defaultBitmap;
     private final View.OnClickListener onClickListener;
 
+    private static final int DATA_TYPE = 0;
+    private static final int LOADING_TYPE = 1;
+
+
     public DialogAdapter(final Context context, final List<IMessage> messageList) {
         this.context = context;
         this.messageList = messageList;
@@ -44,44 +48,61 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_item, parent, false);
-        return new DialogAdapterViewHolder(view);
+        if (viewType == DATA_TYPE) {
+            final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_item, parent, false);
+            return new DialogAdapterViewHolder(view);
+        } else if (viewType == LOADING_TYPE) {
+            final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.loading, parent, false);
+            return new LoadingViewHolder(view);
+        }
+        throw new IllegalArgumentException();
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        final IMessage currentMessage = messageList.get(position);
-        final LazyImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
 
-        final DialogAdapterViewHolder dialogAdapterViewHolder = (DialogAdapterViewHolder) holder;
-        final IReceiver receiver;
-        if (currentMessage.isOut()) {
-            receiver = VkReceiverStorage.get(VkInfo.getUserId());
-        } else {
-           receiver = currentMessage.getSender();
-        }
-        loaderManager.load(context, dialogAdapterViewHolder.photo, receiver.getPhoto50Url(), defaultBitmap);
-        dialogAdapterViewHolder.messageTextView.setText(currentMessage.getText());
+        final int viewType = getItemViewType(position);
 
-        dialogAdapterViewHolder.photo.setOnClickListener(onClickListener);
-        dialogAdapterViewHolder.itemView.setTag(receiver.getName());
-        dialogAdapterViewHolder.timeTexView.setText(new DateFriendlyFormat().convert(context, currentMessage.getDate()));
+        if (viewType == DATA_TYPE) {
 
-        if (!currentMessage.isRead()) {
-            if (!currentMessage.isOut()) {
-                holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_UNREAD_BACKGROUND);
+            final IMessage currentMessage = messageList.get(position);
+            final LazyImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
+
+            final DialogAdapterViewHolder dialogAdapterViewHolder = (DialogAdapterViewHolder) holder;
+            final IReceiver receiver;
+            if (currentMessage.isOut()) {
+                receiver = VkReceiverStorage.get(VkInfo.getUserId());
             } else {
-                dialogAdapterViewHolder.readState.setVisibility(View.VISIBLE);
+                receiver = currentMessage.getSender();
             }
-        } else {
-            holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_READ_BACKGROUND);
-            dialogAdapterViewHolder.readState.setVisibility(View.INVISIBLE);
+            loaderManager.load(context, dialogAdapterViewHolder.photo, receiver.getPhoto50Url(), defaultBitmap);
+            dialogAdapterViewHolder.messageTextView.setText(currentMessage.getText());
+
+            dialogAdapterViewHolder.photo.setOnClickListener(onClickListener);
+            dialogAdapterViewHolder.itemView.setTag(receiver.getName());
+            dialogAdapterViewHolder.timeTexView.setText(new DateFriendlyFormat().convert(context, currentMessage.getDate()));
+
+            if (!currentMessage.isRead()) {
+                if (!currentMessage.isOut()) {
+                    holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_UNREAD_BACKGROUND);
+                } else {
+                    dialogAdapterViewHolder.readState.setVisibility(View.VISIBLE);
+                }
+            } else {
+                holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_READ_BACKGROUND);
+                dialogAdapterViewHolder.readState.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
     @Override
     public int getItemCount() {
-        return messageList.size();
+        return messageList.size() + 1;
+    }
+
+    @Override
+    public int getItemViewType(final int position) {
+        return position == messageList.size() ? LOADING_TYPE : DATA_TYPE;
     }
 
     private class DialogAdapterViewHolder extends RecyclerView.ViewHolder {

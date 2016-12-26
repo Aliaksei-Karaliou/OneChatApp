@@ -26,6 +26,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private final DateFriendlyFormat dateFriendlyFormat;
     private final Context context;
     private final Bitmap defaultBitmap;
+    private static final int LOADING_VIEW_TYPE = 4;
 
 
     public DialogListAdapter(final Context context, final List<IMessage> messageList) {
@@ -37,79 +38,86 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        final ReceiverType receiverType = ReceiverType.values()[viewType];
-        if (receiverType != ReceiverType.CHAT) {
-            final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_list_item_user_group, parent, false);
-            return new UserGroupViewHolder(view);
+        if (viewType == LOADING_VIEW_TYPE) {
+            final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.loading, parent, false);
+            return new LoadingViewHolder(view);
         } else {
-            final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_list_item_chat, parent, false);
-            return new ChatViewHolder(view);
+            final ReceiverType receiverType = ReceiverType.values()[viewType];
+            if (receiverType != ReceiverType.CHAT) {
+                final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_list_item_user_group, parent, false);
+                return new UserGroupViewHolder(view);
+            } else {
+                final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_list_item_chat, parent, false);
+                return new ChatViewHolder(view);
+            }
         }
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
 
-        final IMessage currentMessage = messageList.get(position);
-        final LazyImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
         final int viewType = getItemViewType(position);
-        final ReceiverType receiverType = ReceiverType.values()[viewType];
 
-        if (receiverType != ReceiverType.CHAT) {
+        if (viewType != LOADING_VIEW_TYPE) {
+            final IMessage currentMessage = messageList.get(position);
+            final LazyImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
+            final ReceiverType receiverType = ReceiverType.values()[viewType];
 
-            final UserGroupViewHolder viewHolder = (UserGroupViewHolder) holder;
+            if (receiverType != ReceiverType.CHAT) {
 
-            loaderManager.load(context, viewHolder.avatarImageView, currentMessage.getReceiver().getPhoto50Url(), defaultBitmap);
+                final UserGroupViewHolder viewHolder = (UserGroupViewHolder) holder;
 
-            viewHolder.messageTextView.setText(currentMessage.getText());
-            viewHolder.nameTextView.setText(currentMessage.getSender().getName());
-            viewHolder.dateTextView.setText(dateFriendlyFormat.convert(context, currentMessage.getDate()));
+                loaderManager.load(context, viewHolder.avatarImageView, currentMessage.getReceiver().getPhoto50Url(), defaultBitmap);
 
-            if (onMessageClick != null) {
-                holder.itemView.setTag(currentMessage.getReceiver().getId());
-                holder.itemView.setOnClickListener(onMessageClick);
-            }
+                viewHolder.messageTextView.setText(currentMessage.getText());
+                viewHolder.nameTextView.setText(currentMessage.getSender().getName());
+                viewHolder.dateTextView.setText(dateFriendlyFormat.convert(context, currentMessage.getDate()));
 
-
-            if (!currentMessage.isRead()) {
-                if (!currentMessage.isOut()) {
-                    holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_UNREAD_BACKGROUND);
-                } else {
-                    viewHolder.readState.setVisibility(View.VISIBLE);
+                if (onMessageClick != null) {
+                    holder.itemView.setTag(currentMessage.getReceiver().getId());
+                    holder.itemView.setOnClickListener(onMessageClick);
                 }
-            } else {
-                holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_READ_BACKGROUND);
-                viewHolder.readState.setVisibility(View.INVISIBLE);
-            }
 
 
-
-        } else {
-
-
-            final ChatViewHolder viewHolder = (ChatViewHolder) holder;
-            loaderManager.load(context, viewHolder.avatarImageView, currentMessage.getReceiver().getPhoto50Url(), defaultBitmap);
-            loaderManager.load(context, viewHolder.userPhotoImageView, currentMessage.getSender().getPhoto50Url(), defaultBitmap);
-
-
-            viewHolder.messageTextView.setText(currentMessage.getText());
-            viewHolder.nameTextView.setText(currentMessage.getReceiver().getName());
-            viewHolder.dateTextView.setText(dateFriendlyFormat.convert(context, currentMessage.getDate()));
-
-            if (onMessageClick != null) {
-                holder.itemView.setTag(currentMessage.getReceiver().getId());
-                holder.itemView.setOnClickListener(onMessageClick);
-            }
-
-            if (!currentMessage.isRead()) {
-                if (!currentMessage.isOut()) {
-                    holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_UNREAD_BACKGROUND);
+                if (!currentMessage.isRead()) {
+                    if (!currentMessage.isOut()) {
+                        holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_UNREAD_BACKGROUND);
+                    } else {
+                        viewHolder.readState.setVisibility(View.VISIBLE);
+                    }
                 } else {
-                    viewHolder.readState.setVisibility(View.VISIBLE);
+                    holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_READ_BACKGROUND);
+                    viewHolder.readState.setVisibility(View.INVISIBLE);
                 }
+
+
             } else {
-                holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_READ_BACKGROUND);
-                viewHolder.readState.setVisibility(View.INVISIBLE);
+
+
+                final ChatViewHolder viewHolder = (ChatViewHolder) holder;
+                loaderManager.load(context, viewHolder.avatarImageView, currentMessage.getReceiver().getPhoto50Url(), defaultBitmap);
+                loaderManager.load(context, viewHolder.userPhotoImageView, currentMessage.getSender().getPhoto50Url(), defaultBitmap);
+
+
+                viewHolder.messageTextView.setText(currentMessage.getText());
+                viewHolder.nameTextView.setText(currentMessage.getReceiver().getName());
+                viewHolder.dateTextView.setText(dateFriendlyFormat.convert(context, currentMessage.getDate()));
+
+                if (onMessageClick != null) {
+                    holder.itemView.setTag(currentMessage.getReceiver().getId());
+                    holder.itemView.setOnClickListener(onMessageClick);
+                }
+
+                if (!currentMessage.isRead()) {
+                    if (!currentMessage.isOut()) {
+                        holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_UNREAD_BACKGROUND);
+                    } else {
+                        viewHolder.readState.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    holder.itemView.setBackgroundColor(BackgroundColoursConstants.ITEM_READ_BACKGROUND);
+                    viewHolder.readState.setVisibility(View.INVISIBLE);
+                }
             }
         }
 
@@ -118,7 +126,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        return messageList.size();
+        return messageList.size() + 1;
     }
 
     public void onItemClick(final OnMessageClick onMessageClick) {
@@ -175,7 +183,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(final int position) {
-        return messageList.get(position).getReceiver().getReceiverType().ordinal();
+        return position == messageList.size() ? LOADING_VIEW_TYPE : messageList.get(position).getReceiver().getReceiverType().ordinal();
     }
 
 }

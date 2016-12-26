@@ -38,8 +38,8 @@ public final class VkDialogsListManager {
         if (asyncOperation == null) {
             asyncOperation = new AsyncOperation<Integer, List<IMessage>>() {
                 @Override
-                protected List<IMessage> doInBackground(Integer offset) {
-                    List<IMessage> messageList;
+                protected List<IMessage> doInBackground(final Integer offset) {
+                    final List<IMessage> messageList;
                     try {
                         final String jsonString;
                         if (offset > 0) {

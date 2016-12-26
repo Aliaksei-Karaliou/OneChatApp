@@ -1,50 +1,64 @@
 package com.github.aliakseiKaraliou.onechatapp.ui.activities;
 
+import android.app.LoaderManager;
+import android.content.AsyncTaskLoader;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.Loader;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.support.v4.util.LongSparseArray;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.ClearHistoryManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.SendManager;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.models.MessageModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlag;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkAddNewMessageEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkReadAllMessagesEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.messageFlags.VkDeleteMessageFlagEvent;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkMessageStorage;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogFinalParser;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogStartParser;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkReceiverDataParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.ui.adapters.DialogAdapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class DialogActivity extends AppCompatActivity {
 
+    private static final String OFFSET = "offset";
+
     private IReceiver receiver;
-    private List<IMessage> messageList = new ArrayList<>();
+    private List<IMessage> messageList;
     private RecyclerView.Adapter<RecyclerView.ViewHolder> adapter;
-    BroadcastReceiver newEventReceiver;
+    private BroadcastReceiver newEventReceiver;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -69,51 +83,12 @@ public class DialogActivity extends AppCompatActivity {
         final IntentFilter filter = new IntentFilter(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME);
         registerReceiver(newEventReceiver, filter);
 
-        final VkDialogManager manager = new VkDialogManager();
-        manager.startLoading(this, receiver, 0);
+        final Bundle bundle = new Bundle();
+        bundle.putInt(OFFSET, 0);
+        getLoaderManager().initLoader(0, bundle, new DialogLoaderCallbacks()).forceLoad();
 
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.dialog_message_recycler_view);
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        linearLayoutManager.setReverseLayout(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-        messageList = manager.getResult();
-        VkMessageStorage.putAll(messageList);
-        manager.startLoading(this, receiver, 20);
-
-        adapter = new DialogAdapter(this, messageList);
-        recyclerView.setAdapter(adapter);
-
-        final DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                linearLayoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
-                try {
-                    super.onScrolled(recyclerView, dx, dy);
-                    final int lastCompletelyVisibleItemPosition = linearLayoutManager.findLastCompletelyVisibleItemPosition();
-                    final int itemCount = linearLayoutManager.getItemCount();
-                    if (lastCompletelyVisibleItemPosition + 1 == itemCount && dy < 0) {
-
-                        final List<IMessage> newMessageList = manager.getResult();
-
-                        if (messageList != null && newMessageList != null) {
-                            messageList.addAll(newMessageList);
-                            adapter.notifyDataSetChanged();
-                            VkMessageStorage.putAll(newMessageList);
-                            manager.startLoading(DialogActivity.this, receiver, messageList.size());
-                        }
-
-
-                    }
-                }
-                catch (final Exception e){
-                    e.printStackTrace();
-                }
-            }
-        });
+        progressBar = (ProgressBar) findViewById(R.id.activity_progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
 
@@ -158,30 +133,6 @@ public class DialogActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.operation_failed), Toast.LENGTH_SHORT).show();
             } else {
                 messageTextView.setText("");
-            }
-        }
-    }
-
-    public class NewMessageBroadcastReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            final ArrayList<Parcelable> parcelableArrayListExtra = intent.getParcelableArrayListExtra(Constants.Params.MESSAGE);
-            final List<IMessage> newMessages = new ArrayList<>();
-            if (parcelableArrayListExtra != null) {
-                for (final Parcelable parcelable : parcelableArrayListExtra) {
-                    if (parcelable instanceof IMessage) {
-                        newMessages.add((IMessage) parcelable);
-                    }
-                }
-                if (newMessages.size() > 0) {
-                    for (final IMessage message : newMessages) {
-                        if (message.getReceiver().isEquals(receiver)) {
-                            messageList.add(0, message);
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-                }
             }
         }
     }
@@ -237,6 +188,90 @@ public class DialogActivity extends AppCompatActivity {
                 }
             }
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    private class DialogLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<IMessage>> {
+
+        private final Context context = DialogActivity.this;
+
+        @Override
+        public Loader<List<IMessage>> onCreateLoader(final int id, final Bundle args) {
+            final int offset = args.getInt(OFFSET);
+            final String receiverId = Long.toString(receiver.getId());
+            return new AsyncTaskLoader<List<IMessage>>(context) {
+                @Override
+                public List<IMessage> loadInBackground() {
+                    List<IMessage> messages = new ArrayList<>();
+                    try {
+                        final Pair<String, String> peerId = new Pair<>(Constants.Json.PEER_ID, receiverId);
+                        final String json;
+                        if (offset > 0) {
+                            final Pair<String, String> offsetPair = new Pair<>(Constants.Params.OFFSET, Integer.toString(offset));
+                            json = new VkRequester().doRequest(Constants.Method.MESSAGES_GETHISTORY, peerId, offsetPair);
+                        } else {
+                            json = new VkRequester().doRequest(Constants.Method.MESSAGES_GETHISTORY, peerId);
+                        }
+
+                        final Set<Long> parse = new VkDialogStartParser().parse(json);
+                        if (parse != null && parse.size() > 0) {
+                            final LongSparseArray<IReceiver> longSparseArray = new VkReceiverDataParser().parse(parse);
+                            VkReceiverStorage.putAll(longSparseArray);
+                        }
+                        messages = new VkDialogFinalParser().parse(context, json);
+
+                        final ORM messageORM = ((App) context.getApplicationContext()).getMessageORM();
+                        messageORM.insertAll(Constants.Db.ALL_MESSAGES, MessageModel.convertTo(messages));
+
+                    } catch (final IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    return messages;
+                }
+            };
+        }
+
+
+        @Override
+        public void onLoadFinished(final Loader<List<IMessage>> loader, final List<IMessage> data) {
+            if (messageList == null) {
+                messageList = data;
+
+                final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.dialog_message_recycler_view);
+                final LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+                layoutManager.setReverseLayout(true);
+                recyclerView.setLayoutManager(layoutManager);
+
+                progressBar.setVisibility(View.INVISIBLE);
+
+                adapter = new DialogAdapter(context, data);
+                recyclerView.setAdapter(adapter);
+
+                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        final int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                        final int totalItem = layoutManager.getItemCount();
+
+                        if (lastVisibleItem + 1 == totalItem && dy < 0) {
+
+                            final Bundle bundle = new Bundle();
+                            bundle.putInt(OFFSET, totalItem);
+                            getLoaderManager().restartLoader(0, bundle, new DialogLoaderCallbacks()).forceLoad();
+                        }
+                    }
+                });
+            } else {
+                messageList.addAll(data);
+                adapter.notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public void onLoaderReset(final Loader<List<IMessage>> loader) {
+
         }
     }
 }

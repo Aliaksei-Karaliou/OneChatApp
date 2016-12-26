@@ -1,44 +1,59 @@
 package com.github.aliakseiKaraliou.onechatapp.ui.activities;
 
+import android.app.LoaderManager;
+import android.content.AsyncTaskLoader;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.util.LongSparseArray;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.models.MessageModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlag;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkAddNewMessageEvent;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkReadAllMessagesEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.messageFlags.VkDeleteMessageFlagEvent;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.managers.VkDialogsListManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkMessageStorage;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogsListFinalParser;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogsListStartParser;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkReceiverDataParser;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkReceiverStorage;
 import com.github.aliakseiKaraliou.onechatapp.services.LongPollService;
 import com.github.aliakseiKaraliou.onechatapp.ui.adapters.DialogListAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class DialogsListActivity extends AppCompatActivity {
 
+    private final String OFFSET = "offset";
     private List<IMessage> messages;
     private BroadcastReceiver broadcastReceiver;
     private SharedPreferences preferences;
     private DialogListAdapter adapter;
+
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -47,10 +62,15 @@ public class DialogsListActivity extends AppCompatActivity {
         preferences = ((App) getApplicationContext()).getApplicationSharedPreferences();
 
         if (VkInfo.isUserAuthorized()) {
-            auth();
             broadcastReceiver = new NewEventBroadcastReceiver();
             final IntentFilter intentFilter = new IntentFilter(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME);
             registerReceiver(broadcastReceiver, intentFilter);
+
+            final Bundle bundle = new Bundle();
+            bundle.putInt(OFFSET, 0);
+            getLoaderManager().initLoader(0, bundle, new DialogListLoaderCallback()).forceLoad();
+
+            startService(new Intent(this, LongPollService.class));
         }
     }
 
@@ -59,63 +79,15 @@ public class DialogsListActivity extends AppCompatActivity {
         super.onResume();
         VkInfo.userSetAuth(preferences);
         if (VkInfo.isUserAuthorized() && messages == null) {
-            auth();
+            progressBar = (ProgressBar) findViewById(R.id.activity_progress_bar);
+            progressBar.setVisibility(View.VISIBLE);
+
+            final Bundle bundle = new Bundle();
+            bundle.putInt(OFFSET, 0);
+            getLoaderManager().initLoader(0, bundle, new DialogListLoaderCallback()).forceLoad();
+
+            startService(new Intent(this, LongPollService.class));
         }
-    }
-
-    private void auth() {
-        final VkDialogsListManager vkDialogsListManager = new VkDialogsListManager();
-        vkDialogsListManager.startLoading(DialogsListActivity.this, 0);
-
-        final RecyclerView messagesRecyclerView = (RecyclerView) findViewById(R.id.activity_dialogs_list_messages);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        messagesRecyclerView.setLayoutManager(layoutManager);
-        messagesRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-
-        messages = vkDialogsListManager.getResult();
-        VkMessageStorage.putAll(messages);
-        vkDialogsListManager.startLoading(DialogsListActivity.this, 20);
-
-        startService(new Intent(this, LongPollService.class));
-
-        final DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this,
-                layoutManager.getOrientation());
-        messagesRecyclerView.addItemDecoration(dividerItemDecoration);
-
-        adapter = new DialogListAdapter(this, messages);
-        messagesRecyclerView.setAdapter(adapter);
-
-        adapter.onItemClick(new DialogListAdapter.OnMessageClick() {
-            @Override
-            public void onClick(final long peerId) {
-                final Intent intent = new Intent(DialogsListActivity.this, DialogActivity.class);
-                intent.putExtra(Constants.Other.PEER_ID, peerId);
-                startActivity(intent);
-            }
-        });
-
-        messagesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                final int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-                final int totalItem = layoutManager.getItemCount();
-
-                if (lastVisibleItem + 1 == totalItem && dy > 0) {
-
-                    final List<IMessage> result = vkDialogsListManager.getResult();
-
-                    if (result != null && messages != null) {
-                        VkMessageStorage.putAll(result);
-                        messages.addAll(result);
-                        adapter.notifyDataSetChanged();
-
-                        vkDialogsListManager.startLoading(DialogsListActivity.this, messages.size());
-                    }
-                }
-            }
-        });
     }
 
     @Override
@@ -173,6 +145,99 @@ public class DialogsListActivity extends AppCompatActivity {
                 }
             }
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    private class DialogListLoaderCallback implements LoaderManager.LoaderCallbacks<List<IMessage>> {
+
+        final Context context = DialogsListActivity.this;
+
+        @Override
+        public Loader<List<IMessage>> onCreateLoader(final int id, final Bundle args) {
+            final int offset = args.getInt(OFFSET);
+            return new AsyncTaskLoader<List<IMessage>>(DialogsListActivity.this) {
+                @Override
+                public List<IMessage> loadInBackground() {
+                    final List<IMessage> messageList = new ArrayList<>();
+                    try {
+                        final String jsonString;
+                        if (offset > 0) {
+                            final Pair<String, String> offsetPair = new Pair<>(Constants.Params.OFFSET, Integer.toString(offset));
+                            jsonString = new VkRequester().doRequest(Constants.Method.MESSAGES_GETDIALOGS, offsetPair);
+                        } else {
+                            jsonString = new VkRequester().doRequest(Constants.Method.MESSAGES_GETDIALOGS);
+                        }
+                        final Set<Long> idParse = new VkDialogsListStartParser().parse(jsonString);
+                        if (idParse != null && idParse.size() > 0) {
+                            final LongSparseArray<IReceiver> parse = new VkReceiverDataParser().parse(idParse);
+                            VkReceiverStorage.putAll(parse);
+                        }
+                        final List<IMessage> loadedMessages = new VkDialogsListFinalParser().parse(context, jsonString);
+
+                        final ORM messageORM = ((App) context.getApplicationContext()).getMessageORM();
+                        messageORM.insertAll(Constants.Db.ALL_MESSAGES, MessageModel.convertTo(loadedMessages));
+
+                        return loadedMessages;
+                    } catch (final Exception e) {
+                        e.printStackTrace();
+                    }
+                    return messageList;
+                }
+            };
+        }
+
+
+        @Override
+        public void onLoadFinished(final Loader<List<IMessage>> loader, final List<IMessage> messageList) {
+            if (messages == null) {
+                messages = messageList;
+                final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.activity_dialogs_list_messages);
+
+                final LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+                recyclerView.setLayoutManager(layoutManager);
+
+                progressBar.setVisibility(View.INVISIBLE);
+
+                adapter = new DialogListAdapter(context, messageList);
+                recyclerView.setAdapter(adapter);
+
+                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+                    @Override
+                    public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+
+                        final int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                        final int totalItem = layoutManager.getItemCount();
+
+                        if (lastVisibleItem + 1 == totalItem && dy > 0) {
+
+                            final Bundle bundle = new Bundle();
+                            bundle.putInt(OFFSET, totalItem);
+                            getLoaderManager().restartLoader(0, bundle, new DialogListLoaderCallback()).forceLoad();
+                        }
+                    }
+                });
+
+                adapter.onItemClick(new DialogListAdapter.OnMessageClick() {
+                    @Override
+                    public void onClick(final long peerId) {
+                        final Intent intent = new Intent(DialogsListActivity.this, DialogActivity.class);
+                        intent.putExtra(Constants.Other.PEER_ID, peerId);
+                        startActivity(intent);
+                    }
+                });
+
+            } else {
+                messages.addAll(messageList);
+                adapter.notifyDataSetChanged();
+            }
+
+        }
+
+        @Override
+        public void onLoaderReset(final Loader<List<IMessage>> loader) {
+
         }
     }
 }

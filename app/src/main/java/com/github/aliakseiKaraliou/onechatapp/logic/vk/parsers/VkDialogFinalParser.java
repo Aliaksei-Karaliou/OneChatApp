@@ -20,43 +20,41 @@ import java.util.List;
 
 public class VkDialogFinalParser {
 
-    public List<IMessage> parse(Context context, String json) {
+    public List<IMessage> parse(final Context context, final String json) {
         try {
-            List<IMessage> result = new ArrayList<>();
-            JSONArray items = new JSONObject(json).getJSONObject(Constants.Json.RESPONSE).getJSONArray(Constants.Json.ITEMS);
+            final List<IMessage> result = new ArrayList<>();
+            final JSONArray items = new JSONObject(json).getJSONObject(Constants.Json.RESPONSE).getJSONArray(Constants.Json.ITEMS);
             JSONObject currentObject;
             final VkIdConverter vkIdConverter = new VkIdConverter();
             for (int i = 0; i < items.length(); i++) {
                 currentObject = items.getJSONObject(i);
 
-                VkMessage.Builder builder = new VkMessage.Builder();
+                final VkMessage.Builder builder = new VkMessage.Builder();
 
-                long id = currentObject.getLong(Constants.Json.ID);
+                final long id = currentObject.getLong(Constants.Json.ID);
                 builder.setId(id);
 
-                String text = currentObject.getString(Constants.Json.BODY);
+                final String text = currentObject.getString(Constants.Json.BODY);
                 builder.setText(text);
 
-                long date = currentObject.getLong(Constants.Json.DATE);
+                final long date = currentObject.getLong(Constants.Json.DATE);
                 builder.setDate(date);
 
-                boolean isRead = currentObject.getInt(Constants.Json.READ_STATE) > 0;
+                final boolean isRead = currentObject.getInt(Constants.Json.READ_STATE) > 0;
                 builder.setRead(isRead);
 
-                boolean isOut = currentObject.getInt(Constants.Json.OUT) > 0;
+                final boolean isOut = currentObject.getInt(Constants.Json.OUT) > 0;
                 builder.setOut(isOut);
 
-                long userId = currentObject.getLong(Constants.Json.USER_ID);
-                ISender sender = (ISender) VkReceiverStorage.get(userId);
+                final long userId = currentObject.getLong(Constants.Json.USER_ID);
+                final ISender sender = (ISender) VkReceiverStorage.get(userId);
                 builder.setSender(sender);
 
                 if (currentObject.has(Constants.Json.CHAT_ID)) {
-                    long chatId = currentObject.getLong(Constants.Json.CHAT_ID);
-                    Long peerId = vkIdConverter.chatToPeer(chatId);
-                    if (peerId != null) {
-                        IChat chat = (IChat) VkReceiverStorage.get(peerId);
-                        builder.setChat(chat);
-                    }
+                    final long chatId = currentObject.getLong(Constants.Json.CHAT_ID);
+                    final long peerId = vkIdConverter.chatToPeer(chatId);
+                    final IChat chat = (IChat) VkReceiverStorage.get(peerId);
+                    builder.setChat(chat);
                     new StringBuilder();
                 }
 
@@ -64,7 +62,7 @@ public class VkDialogFinalParser {
                     builder.setText(new VkChatAction().convert(context, currentObject));
                 }
 
-                final VkMessage resultMessage = builder.build();
+                final IMessage resultMessage = builder.build();
                 result.add(resultMessage);
             }
             return result;

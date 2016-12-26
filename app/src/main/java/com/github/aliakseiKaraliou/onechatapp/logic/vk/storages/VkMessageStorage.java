@@ -8,9 +8,9 @@ import java.util.Collection;
 
 public class VkMessageStorage {
 
-    private static LongSparseArray<IMessage> longSparseArray = new LongSparseArray<>();
+    private static final LongSparseArray<IMessage> longSparseArray = new LongSparseArray<>();
 
-    public static void put(IMessage message) {
+    public static void put(final IMessage message) {
         final long id = message.getId();
         final IMessage bufMessage = get(id);
         if (bufMessage == null) {
@@ -18,13 +18,13 @@ public class VkMessageStorage {
         }
     }
 
-    public static void putAll(Collection<IMessage> messages) {
-        for (IMessage message : messages) {
+    public static void putAll(final Collection<IMessage> messages) {
+        for (final IMessage message : messages) {
             put(message);
         }
     }
 
-    public static IMessage get(long id) {
+    public static IMessage get(final long id) {
         return longSparseArray.get(id);
     }
 }
