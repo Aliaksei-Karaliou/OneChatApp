@@ -1,19 +1,14 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.util.LongSparseArray;
 import android.util.Pair;
 
-import com.github.aliakseiKaraliou.onechatapp.App;
+import com.github.aliakseiKaraliou.onechatapp.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.models.DialogListMessageModel;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.models.MessageModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.exceptions.UnknownMessageException;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlag;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlagConverter;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
@@ -34,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 
 public class VkLongPollUpdate {
-    private final Context context;
     private final long ts;
     private final List<List<String>> info;
 
@@ -45,8 +39,7 @@ public class VkLongPollUpdate {
     private static final byte READ_ALL_MESSAGES_CODE = 6;
 
 
-    public VkLongPollUpdate(final Context context, final long ts, @NonNull final List<List<String>> info) {
-        this.context = context;
+    public VkLongPollUpdate(final long ts, @NonNull final List<List<String>> info) {
         this.ts = ts;
         this.info = info;
     }
@@ -118,9 +111,6 @@ public class VkLongPollUpdate {
                         eventList.add(new VkAddNewMessageEvent(message));
                     }
                 }
-                final ORM messageORM = ((App) context.getApplicationContext()).getMessageORM();
-                messageORM.insertAll(Constants.Db.ALL_MESSAGES, MessageModel.convertTo(messageList));
-                messageORM.insertAll(Constants.Db.DIALOGS_LIST, DialogListMessageModel.convertTo(messageList));
 
             } catch (final IOException e) {
                 e.printStackTrace();

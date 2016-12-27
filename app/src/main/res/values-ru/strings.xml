@@ -18,4 +18,7 @@
     <string name="night_mode">Ночной режим</string>
     <string name="title_activity_settings">Настройки</string>
     <string name="settings_email">Отправить письмо разработчику</string>
+    <string name="registartion_unavailable">На данный момент регистрация недоступна</string>
+    <string name="change_theme_message">Приложение будет перезапущено</string>
+    <string name="change_theme_title">Вы уверены, что хотите поменять тему?</string>
 </resources>

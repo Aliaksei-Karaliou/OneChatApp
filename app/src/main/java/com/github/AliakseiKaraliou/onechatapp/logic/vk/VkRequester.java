@@ -3,6 +3,7 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
+import com.github.aliakseiKaraliou.onechatapp.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.exceptions.TooManyRequestsException;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollServer;
 

@@ -22,13 +22,11 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.github.aliakseiKaraliou.onechatapp.App;
+import com.github.aliakseiKaraliou.onechatapp.Constants;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.models.MessageModel;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlag;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
@@ -178,16 +176,8 @@ public class DialogsListActivity extends AppCompatActivity {
                             final LongSparseArray<IReceiver> parse = new VkReceiverDataParser().parse(idParse);
                             VkReceiverStorage.putAll(parse);
                         }
-                        final List<IMessage> loadedMessages = new VkDialogsListFinalParser().parse(context, jsonString);
 
-                        if (loadedMessages != null) {
-
-                            final ORM messageORM = ((App) context.getApplicationContext()).getMessageORM();
-                            messageORM.insertAll(Constants.Db.ALL_MESSAGES, MessageModel.convertTo(loadedMessages));
-                        } else {
-                            new StringBuilder();
-                        }
-                        return loadedMessages;
+                        return new VkDialogsListFinalParser().parse(context, jsonString);
                     } catch (final Exception e) {
                         e.printStackTrace();
                     }

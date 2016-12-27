@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,17 +87,15 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             if (!currentMessage.isRead()) {
                 if (!currentMessage.isOut()) {
-                    holder.itemView.setBackgroundColor(ITEM_UNREAD_BACKGROUND);
-                    dialogAdapterViewHolder.readState.setVisibility(View.INVISIBLE);
+                    dialogAdapterViewHolder.outputReadState.setVisibility(View.VISIBLE);
+                    dialogAdapterViewHolder.inputReadState.setVisibility(View.INVISIBLE);
                 } else {
-                    final int readColour = ((App) context.getApplicationContext()).getApplicationBackgroundColour();
-                    holder.itemView.setBackgroundColor(readColour);
-                    dialogAdapterViewHolder.readState.setVisibility(View.VISIBLE);
+                    dialogAdapterViewHolder.inputReadState.setVisibility(View.VISIBLE);
+
                 }
             } else {
-                final int readColour = ((App) context.getApplicationContext()).getApplicationBackgroundColour();
-                holder.itemView.setBackgroundColor(readColour);
-                dialogAdapterViewHolder.readState.setVisibility(View.INVISIBLE);
+                dialogAdapterViewHolder.outputReadState.setVisibility(View.INVISIBLE);
+                dialogAdapterViewHolder.inputReadState.setVisibility(View.INVISIBLE);
             }
 
         }
@@ -119,14 +116,16 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private final TextView messageTextView;
         private final TextView timeTexView;
         private final ImageView photo;
-        private final ImageView readState;
+        private final ImageView inputReadState;
+        private final ImageView outputReadState;
 
         public DialogAdapterViewHolder(final View itemView) {
             super(itemView);
             messageTextView = (TextView) itemView.findViewById(R.id.dialog_item_message);
             timeTexView = (TextView) itemView.findViewById(R.id.dialog_item_time);
             photo = (ImageView) itemView.findViewById(R.id.dialog_item_primary_photo);
-            readState = ((ImageView) itemView.findViewById(R.id.dialog_list_read_state));
+            inputReadState = ((ImageView) itemView.findViewById(R.id.dialog_list_output_read_state));
+            outputReadState = ((ImageView) itemView.findViewById(R.id.dialog_list_input_read_state));
         }
     }
 

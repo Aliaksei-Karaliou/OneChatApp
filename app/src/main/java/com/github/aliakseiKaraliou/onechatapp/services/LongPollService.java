@@ -6,10 +6,10 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import com.github.aliakseiKaraliou.onechatapp.Constants;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.exceptions.UnknownMessageException;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollServer;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollUpdate;
@@ -53,7 +53,7 @@ public class LongPollService extends IntentService {
         while (true) {
             try {
                 final String longPollRequest = new VkRequester().doLongPollRequest(longPollServer);
-                final VkLongPollUpdate parse = new VkLongPollParser().parse(getApplicationContext(), longPollRequest);
+                final VkLongPollUpdate parse = new VkLongPollParser().parse(longPollRequest);
                 final List<IEvent> events = parse.getEvents();
                 if (events.size() > 0) {
                     final Intent broadcastIntent = new Intent(Constants.Other.BROADCAST_EVENT_RECEIVER_NAME);

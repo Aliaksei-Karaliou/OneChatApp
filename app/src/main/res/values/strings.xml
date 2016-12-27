@@ -21,4 +21,7 @@
     <string name="title_activity_settings">Settings</string>
     <string name="night_mode">Night mode</string>
     <string name="settings_email">Send email to developer</string>
+    <string name="registartion_unavailable">Registration is unavailable now</string>
+    <string name="change_theme_title">Are you sure that you want to change your theme?</string>
+    <string name="change_theme_message">Application will be restarted</string>
 </resources>

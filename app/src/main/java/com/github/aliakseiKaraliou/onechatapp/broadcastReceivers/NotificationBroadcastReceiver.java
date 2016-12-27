@@ -15,7 +15,7 @@ import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.ImageLoader;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
+import com.github.aliakseiKaraliou.onechatapp.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkAddNewMessageEvent;
 import com.github.aliakseiKaraliou.onechatapp.ui.activities.DialogActivity;
 

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,8 +28,6 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private final Context context;
     private final Bitmap defaultBitmap;
     private static final int LOADING_VIEW_TYPE = 4;
-
-    private static final int ITEM_UNREAD_BACKGROUND = Color.rgb(221, 221, 221);
 
 
     public DialogListAdapter(final Context context, final List<IMessage> messageList) {
@@ -83,19 +80,22 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 }
 
 
+                if (onMessageClick != null) {
+                    holder.itemView.setTag(currentMessage.getReceiver().getId());
+                    holder.itemView.setOnClickListener(onMessageClick);
+                }
+
                 if (!currentMessage.isRead()) {
-                    if (!currentMessage.isOut()) {
-                        holder.itemView.setBackgroundColor(ITEM_UNREAD_BACKGROUND);
-                        viewHolder.readState.setVisibility(View.INVISIBLE);
+                    if (currentMessage.isOut()) {
+                        viewHolder.inputReadState.setVisibility(View.INVISIBLE);
+                        viewHolder.outputReadState.setVisibility(View.VISIBLE);
                     } else {
-                        final int readColour = ((App) context.getApplicationContext()).getApplicationBackgroundColour();
-                        holder.itemView.setBackgroundColor(readColour);
-                        viewHolder.readState.setVisibility(View.VISIBLE);
+                        viewHolder.inputReadState.setVisibility(View.VISIBLE);
+                        viewHolder.outputReadState.setVisibility(View.INVISIBLE);
                     }
                 } else {
-                    final int readColour = ((App) context.getApplicationContext()).getApplicationBackgroundColour();
-                    holder.itemView.setBackgroundColor(readColour);
-                    viewHolder.readState.setVisibility(View.INVISIBLE);
+                    viewHolder.outputReadState.setVisibility(View.INVISIBLE);
+                    viewHolder.inputReadState.setVisibility(View.INVISIBLE);
                 }
 
 
@@ -117,18 +117,16 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 }
 
                 if (!currentMessage.isRead()) {
-                    if (!currentMessage.isOut()) {
-                        holder.itemView.setBackgroundColor(ITEM_UNREAD_BACKGROUND);
-                        viewHolder.readState.setVisibility(View.INVISIBLE);
+                    if (currentMessage.isOut()) {
+                        viewHolder.inputReadState.setVisibility(View.INVISIBLE);
+                        viewHolder.outputReadState.setVisibility(View.VISIBLE);
                     } else {
-                        final int readColour = ((App) context.getApplicationContext()).getApplicationBackgroundColour();
-                        holder.itemView.setBackgroundColor(readColour);
-                        viewHolder.readState.setVisibility(View.VISIBLE);
+                        viewHolder.inputReadState.setVisibility(View.VISIBLE);
+                        viewHolder.outputReadState.setVisibility(View.INVISIBLE);
                     }
                 } else {
-                    final int readColour = ((App) context.getApplicationContext()).getApplicationBackgroundColour();
-                    holder.itemView.setBackgroundColor(readColour);
-                    viewHolder.readState.setVisibility(View.INVISIBLE);
+                    viewHolder.outputReadState.setVisibility(View.INVISIBLE);
+                    viewHolder.inputReadState.setVisibility(View.INVISIBLE);
                 }
 
             }
@@ -158,7 +156,8 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         private final TextView messageTextView;
         private final ImageView avatarImageView;
         private final TextView dateTextView;
-        private final ImageView readState;
+        private final ImageView outputReadState;
+        private final ImageView inputReadState;
 
         public UserGroupViewHolder(final View itemView) {
             super(itemView);
@@ -166,7 +165,8 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             messageTextView = ((TextView) itemView.findViewById(R.id.dialog_list_item_message));
             avatarImageView = ((ImageView) itemView.findViewById(R.id.dialog_list_primary_photo));
             dateTextView = ((TextView) itemView.findViewById(R.id.dialog_list_date));
-            readState = ((ImageView) itemView.findViewById(R.id.dialog_list_read_state));
+            outputReadState = ((ImageView) itemView.findViewById(R.id.dialog_list_output_read_state));
+            inputReadState = ((ImageView) itemView.findViewById(R.id.dialog_list_input_read_state));
         }
     }
 
@@ -177,7 +177,8 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         private final ImageView avatarImageView;
         private final ImageView userPhotoImageView;
         private final TextView dateTextView;
-        private final ImageView readState;
+        private final ImageView outputReadState;
+        private final ImageView inputReadState;
 
         public ChatViewHolder(final View itemView) {
             super(itemView);
@@ -186,7 +187,8 @@ public class DialogListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             avatarImageView = ((ImageView) itemView.findViewById(R.id.dialog_list_primary_photo));
             userPhotoImageView = ((ImageView) itemView.findViewById(R.id.dialog_list_secondary_photo));
             dateTextView = ((TextView) itemView.findViewById(R.id.dialog_list_date));
-            readState = ((ImageView) itemView.findViewById(R.id.dialog_list_read_state));
+            outputReadState = ((ImageView) itemView.findViewById(R.id.dialog_list_output_read_state));
+            inputReadState = ((ImageView) itemView.findViewById(R.id.dialog_list_input_read_state));
         }
     }
 

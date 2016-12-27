@@ -51,7 +51,7 @@
         app:layout_constraintTop_toTopOf="@+id/dialog_list_item_name"/>
 
     <ImageView
-        android:id="@+id/dialog_list_read_state"
+        android:id="@+id/dialog_list_output_read_state"
         android:layout_width="8dp"
         android:layout_height="8dp"
         android:layout_marginEnd="16dp"
@@ -63,4 +63,16 @@
         app:layout_constraintTop_toBottomOf="@+id/dialog_list_date"
         app:srcCompat="@drawable/ic_circular_shape_silhouette"
         app:layout_constraintLeft_toLeftOf="@+id/dialog_list_date"/>
+
+    <ImageView
+        android:id="@+id/dialog_list_input_read_state"
+        android:layout_width="4dp"
+        android:layout_height="72dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@color/colorPrimary"
+        tools:layout_editor_absoluteX="0dp"/>
+
 </android.support.constraint.ConstraintLayout>

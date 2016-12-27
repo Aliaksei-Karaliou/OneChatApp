@@ -9,7 +9,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbColumnName;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbPrimaryKey;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbTableName;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.annotations.DbType;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
+import com.github.aliakseiKaraliou.onechatapp.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkChat;
 
 import java.util.ArrayList;

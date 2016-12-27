@@ -6,7 +6,7 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.ISender;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
+import com.github.aliakseiKaraliou.onechatapp.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkIdConverter;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkReceiverStorage;

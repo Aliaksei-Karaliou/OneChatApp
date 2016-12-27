@@ -41,7 +41,7 @@
         tools:text="yesterday"/>
 
     <ImageView
-        android:id="@+id/dialog_list_read_state"
+        android:id="@+id/dialog_list_output_read_state"
         android:layout_width="8dp"
         android:layout_height="8dp"
         android:layout_marginTop="8dp"
@@ -52,5 +52,16 @@
         app:layout_constraintRight_toRightOf="@+id/dialog_item_time"
         app:layout_constraintTop_toBottomOf="@+id/dialog_item_time"
         app:srcCompat="@drawable/ic_circular_shape_silhouette"/>
+
+    <ImageView
+        android:id="@+id/dialog_list_input_read_state"
+        android:layout_width="4dp"
+        android:layout_height="72dp"
+        app:srcCompat="@color/colorPrimary"
+        tools:layout_editor_absoluteX="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="invisible"/>
 
 </android.support.constraint.ConstraintLayout>

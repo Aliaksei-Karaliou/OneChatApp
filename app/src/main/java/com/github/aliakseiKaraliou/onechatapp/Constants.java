@@ -1,4 +1,4 @@
-package com.github.aliakseiKaraliou.onechatapp.logic.vk;
+package com.github.aliakseiKaraliou.onechatapp;
 
 public interface Constants {
 
@@ -51,7 +51,9 @@ public interface Constants {
     interface Params {
         String ACCESS_TOKEN = "access_token";
         String AUTHORIZE_URL = "https://oauth.vk.com/authorize?client_id=%d&display=mobile&redirect_uri=https://oauth.vk.com/blank.html&scope=offline,%s&response_type=token&v=%f&revoke=1";
+        String JOIN = "join";
         String MESSAGE = "message";
+        String MESSAGES = "messages";
         String MESSAGE_IDS = "message_ids";
         String OFFSET = "offset";
         String PEER_ID = "peer_id";

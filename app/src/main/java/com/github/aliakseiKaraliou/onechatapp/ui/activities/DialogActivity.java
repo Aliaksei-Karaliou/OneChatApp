@@ -37,9 +37,8 @@ import com.github.aliakseiKaraliou.onechatapp.logic.common.managers.SendManager;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.ChatModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.GroupModel;
-import com.github.aliakseiKaraliou.onechatapp.logic.db.models.MessageModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.UserModel;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
+import com.github.aliakseiKaraliou.onechatapp.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlag;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkAddNewMessageEvent;
@@ -260,9 +259,6 @@ public class DialogActivity extends AppCompatActivity {
                             recieverORM.insertAll(Constants.Db.GROUPS, GroupModel.convertTo(groupList));
                         }
                         messages = new VkDialogFinalParser().parse(context, json);
-
-                        final ORM messageORM = ((App) context.getApplicationContext()).getMessageORM();
-                        messageORM.insertAll(Constants.Db.ALL_MESSAGES, MessageModel.convertTo(messages));
 
                     } catch (final IOException e) {
                         e.printStackTrace();

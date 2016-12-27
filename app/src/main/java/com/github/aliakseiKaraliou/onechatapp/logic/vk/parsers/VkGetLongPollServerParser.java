@@ -1,6 +1,6 @@
 package com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers;
 
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
+import com.github.aliakseiKaraliou.onechatapp.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.longPoll.VkLongPollServer;
 
 import org.json.JSONException;

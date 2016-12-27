@@ -2,6 +2,7 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk;
 
 import android.content.Context;
 
+import com.github.aliakseiKaraliou.onechatapp.Constants;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkReceiverStorage;

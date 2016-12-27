@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.util.Pair;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
-import com.github.aliakseiKaraliou.onechatapp.logic.vk.Constants;
+import com.github.aliakseiKaraliou.onechatapp.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 
 import java.io.IOException;

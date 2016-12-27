@@ -3,6 +3,8 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import com.github.aliakseiKaraliou.onechatapp.Constants;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
