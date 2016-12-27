@@ -324,7 +324,7 @@ public class DialogActivity extends AppCompatActivity {
 
         @Override
         public void onLoaderReset(final Loader<List<IMessage>> loader) {
-
+            Toast.makeText(context, getString(R.string.operation_failed), Toast.LENGTH_SHORT).show();
         }
     }
 }

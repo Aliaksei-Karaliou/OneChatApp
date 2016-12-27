@@ -20,14 +20,21 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.Constants;
 import com.github.aliakseiKaraliou.onechatapp.R;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.IDialog;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IGroup;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.models.ChatModel;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.models.GroupModel;
+import com.github.aliakseiKaraliou.onechatapp.logic.db.models.UserModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlag;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
@@ -179,9 +186,33 @@ public class DialogsListActivity extends AppCompatActivity {
                         if (idParse != null && idParse.size() > 0) {
                             final LongSparseArray<IReceiver> parse = new VkReceiverDataParser().parse(idParse);
                             VkReceiverStorage.putAll(parse);
+
+                            final List<IUser> userList = new ArrayList<>();
+                            final List<IChat> chatList = new ArrayList<>();
+                            final List<IGroup> groupList = new ArrayList<>();
+
+                            if (parse != null) {
+
+                                for (int i = 0; i < parse.size(); i++) {
+                                    final IReceiver receiver = parse.valueAt(i);
+                                    if (receiver instanceof IUser) {
+                                        userList.add((IUser) receiver);
+                                    } else if (receiver instanceof IChat) {
+                                        chatList.add((IChat) receiver);
+                                    } else if (receiver instanceof IGroup) {
+                                        groupList.add((IGroup) receiver);
+                                    }
+                                }
+                            }
+
+                            final ORM recieverORM = ((App) context.getApplicationContext()).getRecieverORM();
+                            recieverORM.insertAll(Constants.Db.USERS, UserModel.convertTo(userList));
+                            recieverORM.insertAll(Constants.Db.CHATS, ChatModel.convertTo(chatList));
+                            recieverORM.insertAll(Constants.Db.GROUPS, GroupModel.convertTo(groupList));
                         }
 
-                        return new VkDialogsListFinalParser().parse(context, jsonString);
+                        final List<IMessage> parse = new VkDialogsListFinalParser().parse(context, jsonString);
+                        return parse;
                     } catch (final Exception e) {
                         e.printStackTrace();
                     }
@@ -221,7 +252,7 @@ public class DialogsListActivity extends AppCompatActivity {
                         if (lastVisibleItem + 1 == totalItem && dy > 0) {
 
                             final Bundle bundle = new Bundle();
-                            bundle.putInt(OFFSET, totalItem);
+                            bundle.putInt(OFFSET, messageList.size());
                             getLoaderManager().restartLoader(0, bundle, new DialogListLoaderCallback()).forceLoad();
                         }
                     }
@@ -235,19 +266,20 @@ public class DialogsListActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
+                VkMessageStorage.putAll(messageList);
 
-            } else {
+            } else if (messageList != null) {
                 final int size = messages.size();
                 messages.addAll(messageList);
                 adapter.notifyItemRangeInserted(size, messages.size() - size);
+                VkMessageStorage.putAll(messageList);
             }
-            VkMessageStorage.putAll(messageList);
+
 
         }
 
         @Override
         public void onLoaderReset(final Loader<List<IMessage>> loader) {
-
         }
     }
 }
