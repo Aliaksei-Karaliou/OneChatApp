@@ -25,8 +25,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.github.aliakseiKaraliou.onechatapp.App;
+import com.github.aliakseiKaraliou.onechatapp.Constants;
 import com.github.aliakseiKaraliou.onechatapp.R;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IDialog;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IGroup;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
@@ -38,14 +40,15 @@ import com.github.aliakseiKaraliou.onechatapp.logic.db.ORM;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.ChatModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.GroupModel;
 import com.github.aliakseiKaraliou.onechatapp.logic.db.models.UserModel;
-import com.github.aliakseiKaraliou.onechatapp.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkMessageFlag;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkRequester;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkAddNewMessageEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.VkReadAllMessagesEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.events.messageFlags.VkDeleteMessageFlagEvent;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkDialog;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogFinalParser;
+import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogItemCountParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkDialogStartParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers.VkReceiverDataParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkMessageStorage;
@@ -61,8 +64,8 @@ public class DialogActivity extends AppCompatActivity {
 
     private static final String OFFSET = "offset";
 
-    private IReceiver receiver;
-    private List<IMessage> messageList;
+    private IDialog dialog;
+
     private RecyclerView.Adapter<RecyclerView.ViewHolder> adapter;
     private BroadcastReceiver newEventReceiver;
     private ProgressBar progressBar;
@@ -80,6 +83,7 @@ public class DialogActivity extends AppCompatActivity {
         final Intent intent = getIntent();
         final long peerId = intent.getLongExtra(Constants.Other.PEER_ID, 0);
 
+        final IReceiver receiver;
         if (peerId != 0) {
             receiver = VkReceiverStorage.get(peerId);
             assert getSupportActionBar() != null;
@@ -87,6 +91,8 @@ public class DialogActivity extends AppCompatActivity {
         } else {
             receiver = null;
         }
+
+        dialog = new VkDialog(receiver);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -122,7 +128,7 @@ public class DialogActivity extends AppCompatActivity {
                         @Override
                         public void onClick(final DialogInterface dialogInterface, final int i) {
                             try {
-                                new ClearHistoryManager().clear(receiver);
+                                new ClearHistoryManager().clear(dialog.getReceiver());
                             }
                             catch (final RuntimeException e){
                                 e.printStackTrace();
@@ -145,7 +151,7 @@ public class DialogActivity extends AppCompatActivity {
         final String message = messageTextView.getText().toString().trim();
         if (!message.equals("")) {
             try {
-                new SendManager().send(receiver, message);
+                new SendManager().send(dialog.getReceiver(), message);
                 messageTextView.setText("");
             }
             catch (final RuntimeException e){
@@ -167,15 +173,15 @@ public class DialogActivity extends AppCompatActivity {
             for (final IEvent event : eventList) {
                 if (event instanceof VkAddNewMessageEvent) {
                     final IMessage newMessage = ((VkAddNewMessageEvent) event).getMessage();
-                    if (newMessage.getReceiver().isEquals(receiver)) {
-                        messageList.add(0, newMessage);
+                    if (newMessage.getReceiver().isEquals(dialog.getReceiver())) {
+                        dialog.addMessage(0, newMessage);
                     }
                 } else if (event instanceof VkDeleteMessageFlagEvent) {
                     final VkDeleteMessageFlagEvent deleteMessageFlagEvent = (VkDeleteMessageFlagEvent) event;
                     final IMessage deleteMessageFlagEventMessage = deleteMessageFlagEvent.getMessage();
                     final VkMessageFlag messageFlag = deleteMessageFlagEvent.getMessageFlag();
-                    if (deleteMessageFlagEventMessage != null && messageFlag != null && deleteMessageFlagEventMessage.getReceiver().isEquals(receiver)) {
-                        for (final IMessage message : messageList) {
+                    if (deleteMessageFlagEventMessage != null && messageFlag != null && deleteMessageFlagEventMessage.getReceiver().isEquals(dialog.getReceiver())) {
+                        for (final IMessage message : dialog.getAllMessages()) {
                             if (message instanceof VkMessage && deleteMessageFlagEventMessage.isEquals(message)){
                                 ((VkMessage) message).deleteFlag(messageFlag);
                                 new StringBuilder();
@@ -188,8 +194,8 @@ public class DialogActivity extends AppCompatActivity {
                     final VkReadAllMessagesEvent allMessagesEvent = (VkReadAllMessagesEvent) event;
                     final IReceiver readReceiver = allMessagesEvent.getReceiver();
                     final IMessage finalMessage = allMessagesEvent.getFinalMessage();
-                    if (readReceiver.isEquals(receiver)) {
-                        for (final IMessage message : messageList) {
+                    if (readReceiver.isEquals(dialog.getReceiver())) {
+                        for (final IMessage message : dialog.getAllMessages()) {
                             if (message.isOut()) {
                                 if (finalMessage.isEquals(message)) {
                                     isRead = true;
@@ -211,18 +217,18 @@ public class DialogActivity extends AppCompatActivity {
     private class DialogLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<IMessage>> {
 
         private final Context context = DialogActivity.this;
+        private String json;
 
         @Override
         public Loader<List<IMessage>> onCreateLoader(final int id, final Bundle args) {
             final int offset = args.getInt(OFFSET);
-            final String receiverId = Long.toString(receiver.getId());
+            final String receiverId = Long.toString(dialog.getReceiver().getId());
             return new AsyncTaskLoader<List<IMessage>>(context) {
                 @Override
                 public List<IMessage> loadInBackground() {
                     List<IMessage> messages = new ArrayList<>();
                     try {
                         final Pair<String, String> peerId = new Pair<>(Constants.Json.PEER_ID, receiverId);
-                        final String json;
                         if (offset > 0) {
                             final Pair<String, String> offsetPair = new Pair<>(Constants.Params.OFFSET, Integer.toString(offset));
                             json = new VkRequester().doRequest(Constants.Method.MESSAGES_GETHISTORY, peerId, offsetPair);
@@ -272,9 +278,9 @@ public class DialogActivity extends AppCompatActivity {
 
         @Override
         public void onLoadFinished(final Loader<List<IMessage>> loader, final List<IMessage> data) {
-            if (messageList == null) {
-                messageList = data;
-
+            final int messageCount = dialog.getAllMessages().size();
+            if (messageCount == 0) {
+                dialog.addMessages(data);
                 final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.dialog_message_recycler_view);
                 final LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
                 layoutManager.setReverseLayout(true);
@@ -282,7 +288,15 @@ public class DialogActivity extends AppCompatActivity {
 
                 progressBar.setVisibility(View.INVISIBLE);
 
-                adapter = new DialogAdapter(context, data);
+                if (json != null) {
+                    final Integer parse = new VkDialogItemCountParser().parse(json);
+                    if (parse != null) {
+                        dialog.setMessageCount(parse);
+                        new StringBuilder();
+                    }
+                }
+
+                adapter = new DialogAdapter(context, dialog);
                 recyclerView.setAdapter(adapter);
 
                 recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -301,10 +315,10 @@ public class DialogActivity extends AppCompatActivity {
                     }
                 });
             } else {
-                final int size = messageList.size();
-                messageList.addAll(data);
-                adapter.notifyItemInserted(size);
+                dialog.addMessages(data);
+                adapter.notifyItemRangeInserted(messageCount, data.size());
             }
+
             VkMessageStorage.putAll(data);
         }
 

@@ -3,6 +3,7 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers;
 import android.content.Context;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IDialog;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.ISender;
 import com.github.aliakseiKaraliou.onechatapp.Constants;

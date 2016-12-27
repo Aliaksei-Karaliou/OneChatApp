@@ -24,6 +24,7 @@ import android.widget.ProgressBar;
 import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.Constants;
 import com.github.aliakseiKaraliou.onechatapp.R;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IDialog;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IEvent;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
@@ -48,6 +49,9 @@ import java.util.Set;
 public class DialogsListActivity extends AppCompatActivity {
 
     private final String OFFSET = "offset";
+
+
+
     private List<IMessage> messages;
     private BroadcastReceiver broadcastReceiver;
     private SharedPreferences sharedPreferences;

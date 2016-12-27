@@ -6,7 +6,6 @@ import android.util.Pair;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IGroup;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.IParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IUser;
 import com.github.aliakseiKaraliou.onechatapp.Constants;

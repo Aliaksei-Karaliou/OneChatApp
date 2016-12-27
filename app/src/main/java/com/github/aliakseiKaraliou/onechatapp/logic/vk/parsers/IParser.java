@@ -1,4 +1,4 @@
-package com.github.aliakseiKaraliou.onechatapp.logic.common;
+package com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers;
 
 import android.support.annotation.Nullable;
 

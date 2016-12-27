@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.IParser;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.ISender;
 import com.github.aliakseiKaraliou.onechatapp.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkIdConverter;

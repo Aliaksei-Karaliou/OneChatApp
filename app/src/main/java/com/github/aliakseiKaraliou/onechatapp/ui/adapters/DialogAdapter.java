@@ -3,7 +3,6 @@ package com.github.aliakseiKaraliou.onechatapp.ui.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +13,7 @@ import android.widget.Toast;
 
 import com.github.aliakseiKaraliou.onechatapp.App;
 import com.github.aliakseiKaraliou.onechatapp.R;
+import com.github.aliakseiKaraliou.onechatapp.logic.common.IDialog;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IMessage;
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IReceiver;
 import com.github.aliakseiKaraliou.onechatapp.logic.utils.DateFriendlyFormat;
@@ -21,11 +21,9 @@ import com.github.aliakseiKaraliou.onechatapp.logic.utils.imageLoader.AvatarImag
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkInfo;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.storages.VkReceiverStorage;
 
-import java.util.List;
-
 public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final List<IMessage> messageList;
+    private final IDialog dialog;
     private final Context context;
     private final Bitmap defaultBitmap;
     private final View.OnClickListener onClickListener;
@@ -33,12 +31,10 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static final int DATA_TYPE = 0;
     private static final int LOADING_TYPE = 1;
 
-    private static final int ITEM_UNREAD_BACKGROUND = Color.rgb(221, 221, 221);
 
-
-    public DialogAdapter(final Context context, final List<IMessage> messageList) {
+    public DialogAdapter(final Context context, final IDialog dialog) {
         this.context = context;
-        this.messageList = messageList;
+        this.dialog = dialog;
         this.defaultBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.camera_50);
         this.onClickListener = new View.OnClickListener() {
             @Override
@@ -68,7 +64,7 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         if (viewType == DATA_TYPE) {
 
-            final IMessage currentMessage = messageList.get(position);
+            final IMessage currentMessage = dialog.getAllMessages().get(position);
             final AvatarImageLoaderManager loaderManager = ((App) context.getApplicationContext()).getImageLoaderManager();
 
             final DialogAdapterViewHolder dialogAdapterViewHolder = (DialogAdapterViewHolder) holder;
@@ -103,12 +99,12 @@ public class DialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        return messageList.size() + 1;
+        return dialog.getAllMessages().size() == dialog.getMessageCount() ? dialog.getMessageCount() :  dialog.getAllMessages().size() + 1;
     }
 
     @Override
     public int getItemViewType(final int position) {
-        return position == messageList.size() ? LOADING_TYPE : DATA_TYPE;
+        return position == dialog.getAllMessages().size() ? LOADING_TYPE : DATA_TYPE;
     }
 
     private class DialogAdapterViewHolder extends RecyclerView.ViewHolder {

@@ -3,7 +3,6 @@ package com.github.aliakseiKaraliou.onechatapp.logic.vk.parsers;
 import android.support.v4.util.LongSparseArray;
 
 import com.github.aliakseiKaraliou.onechatapp.logic.common.IChat;
-import com.github.aliakseiKaraliou.onechatapp.logic.common.IParser;
 import com.github.aliakseiKaraliou.onechatapp.Constants;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.VkIdConverter;
 import com.github.aliakseiKaraliou.onechatapp.logic.vk.models.VkChat;

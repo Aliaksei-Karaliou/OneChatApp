@@ -10,6 +10,7 @@ public interface Constants {
         String CHAT_IDS = "chat_ids";
         String CHAT_INVITE_USER = "chat_invite_user";
         String CHAT_KICK_USER = "chat_kick_user";
+        String COUNT = "count";
         String DATE = "date";
         String GROUP_ID = "group_ids";
         String FIRST_NAME = "first_name";
