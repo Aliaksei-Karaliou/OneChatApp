@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -37,13 +38,8 @@ public class SettingsActivity extends AppCompatActivity {
             supportActionBar.setTitle(R.string.preferences);
         }
 
-
-        final int darkTheme = R.style.DarkTheme;
-
-        final int lightTheme = R.style.LightTheme;
-
-
         final Switch nightModeSwitch = (Switch) findViewById(R.id.night_mode_switch);
+        nightModeSwitch.setChecked(theme);
         nightModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton compoundButton, final boolean b) {
